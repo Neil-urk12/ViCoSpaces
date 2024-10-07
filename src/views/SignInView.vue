@@ -42,6 +42,7 @@ import NavBar from '@/components/nav-bar.vue';
 </script>
 
 <template>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- for revision after the UI person is back from trip
   functionality only no design -->
   <NavBar />
@@ -53,24 +54,27 @@ import NavBar from '@/components/nav-bar.vue';
         id="email"
         v-model="email"
         type="email"
+        placeholder="Enter email"
       ><br>
       <label for="password">Password</label><br>
       <input
         id="password"
         v-model="password"
         type="password"
+        placeholder="Enter password"
       ><br>
-      <button @click="signIn">
+      <button class="btn-primary" @click="signIn">
         Sign In
       </button><br>
       <p v-if="errorMessage">
         {{ errorMessage }}
       </p>
-      <button @click="signInWithGoogle">
+      <button class="btn-secondary" @click="signInWithGoogle">
+       <a href="http://www.google.com"><i class="fa-brands fa-google"></i></a>
         Sign In with Google
       </button>
-      <p>
-        Don't have an account? <router-link to="/register">
+      <p class="switch-form">
+        Don't have an account ? <router-link to="/register">
           Sign Up
         </router-link>
       </p>
@@ -79,9 +83,12 @@ import NavBar from '@/components/nav-bar.vue';
 </template>
 
 <style scoped>
+body{
+  font-family: Arial, Helvetica, sans-serif;
+}
 .signin {
   max-width: 400px;
-  margin: 0 auto;
+  margin: 35px auto;
   padding: 2rem;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
@@ -92,7 +99,7 @@ import NavBar from '@/components/nav-bar.vue';
 h1 {
   text-align: center;
   color: #333;
-  margin-bottom: 1.5rem;
+  font-size: 2.5rem;
 }
 
 .form-group {
@@ -101,9 +108,9 @@ h1 {
 }
 
 label {
-  margin-bottom: 0.5rem;
   color: #555;
   font-weight: bold;
+  margin-bottom: -5px;
 }
 
 input {
@@ -112,14 +119,22 @@ input {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
+  outline: 0;
+  border: 1px solid rgba(0, 0, 0, 0.174);
+  cursor: pointer;
+}
+
+input:hover{
+  background-color: #7474740d;
 }
 
 input:focus {
-  outline: none;
-  border-color: #4a90e2;
+  border: 1px solid #4a90e2;
   box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
 }
-
+::placeholder{
+  color: lightgrey;
+}
 .btn {
   padding: 0.75rem;
   border: none;
@@ -132,17 +147,34 @@ input:focus {
 .btn-primary {
   background-color: #4a90e2;
   color: white;
-  margin-bottom: 1rem;
+  margin-bottom: 10px;
+  padding: 18px 0;
+  border-radius: 5px;
+  border: 0;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1.1rem;
 }
-
 .btn-primary:hover {
-  background-color: #3a7bc8;
+  background-color: #0f7bff;
 }
 
 .btn-secondary {
   background-color: #ffffff;
   color: #4a90e2;
   border: 1px solid #4a90e2;
+  padding: 15px 0;
+  border-radius: 5px;
+  box-shadow: 0 0 1px black;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.fa-google{
+  font-size: 1.3rem;
+  margin-right: 10px;
+  color: blue;
 }
 
 .btn-secondary:hover {
