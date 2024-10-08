@@ -9,8 +9,10 @@ const router = createRouter({
     { path: '/login', component: () => import('../views/SignInView.vue') },
     { path: '/navbar', component: ()=> import('../components/nav-bar.vue')},
     { path: '/search-bar', component: ()=> import('../components/search-bar.vue') },
-    { path: '/create-room', component: ()=> import('../components/create-room.vue')}
-    
+    { path: '/edit-room', componet: ()=> import('../components/edit-room.vue')},
+    { path: '/filter-bar', component: ()=> import('../components/filter-bar.vue')},
+    { path: '/created-room', component: ()=> import('../components/create-room.vue')},
+    { path: '/room', component: () => import('../views/RoomView.vue')},
     
     // { path: '/profile', component: () => import('../views/ProfileView.vue') },
   ]

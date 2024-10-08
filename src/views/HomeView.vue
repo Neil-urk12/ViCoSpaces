@@ -1,15 +1,43 @@
 <script setup>
-
 import navBar from '@/components/nav-bar.vue';
-import createRoom from '@/components/create-room.vue';
-
+import searchBar from '@/components/search-bar.vue';
+import filterBar from '@/components/filter-bar.vue';
 </script>
 
 <template>
   <header>
-    <nav-bar />
+    <navBar />
+    <searchBar />
+    <filterBar />
   </header>
-  <main>
-    <createRoom />
-  </main>
+  <section class="room-view-container">
+    <div class="room">
+      <div class="image-content">
+        
+      </div>
+      <div class="text-content"></div>
+    </div>
+  </section>
 </template>
+
+
+<style scoped>
+  .room-view-container {
+    background-color: black;
+    width: 96%;
+    height: 71.8vh;
+    margin: auto;
+}
+
+
+  .room {
+    background: white;
+    height: 40%;
+    width: 33%;
+  }
+
+  .image-box {
+
+  }
+
+</style>
