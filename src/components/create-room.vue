@@ -1,18 +1,15 @@
 <template>
   <main>
-    <!-- Import the child component -->
+    <!-- to Import the child component -->
     <CreateRoomButton @add-room="createRoom" />
     <div class="room-container">
-      <div v-for="(room, index) in rooms" 
-           :key="index" 
-           class="room" >
-
-        <div class="top-section">
-
-        </div>
-        <div class="bottom-section">
-
-        </div>
+      <div
+        v-for="(room, index) in rooms"
+        :key="index"
+        class="room"
+      >
+        <div class="top-section" />
+        <div class="bottom-section" />
       </div>
     </div>
   </main>
@@ -51,8 +48,11 @@ main {
 
 .room-container {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 10px;
+  margin: 20px 0px 0px 20px;
+
 }
 
 .room {

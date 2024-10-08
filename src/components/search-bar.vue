@@ -1,26 +1,90 @@
+<script setup>
+import CreateRoom from './buttons/create-room-button.vue';
+
+//**const props = defineProps({
+   // placeholder: String,
+    //modelValue: {
+      //  type: String,
+    //    required: true,
+  //  }
+ //})
+const host = () => {
+    alert("Hosted a Room");
+}  
+const filter = () => {
+  alert("fitered");
+}
+const sort = () => {
+  alert("sorted search");
+}
+
+
+
+
+</script>
+
+
+
 <template>
+  <main>
     <div class="search-bar">
-        <div class="search">
-            <img class="search-icon" src="../images\SVG\search-svgrepo-com.svg" alt="search-icon" width="30px">
-            <input class="search-input" type="text" name="" id="" placeholder="Search here...">
-            <img class="filter-icon" src="../images/SVG/filters-2-svgrepo-com.svg" alt="filter-icon" width="30px">
-            <img class="sort-icon" src="../images/SVG/sort-vertical-svgrepo-com.svg" alt="sort-icon" width="30px">
+      <div class="search">
+        <img
+          class="search-icon"
+          src="../images\SVG\search-svgrepo-com.svg"
+          alt="search-icon"
+          width="30px"
+        >
+        <!-- <input class="search-input" type="text" name="" id="" placeholder="Search here..."> -->
+        <input
+          id=""
+          type="text"
+          class="search-input"
+          name="search-input"
+          placeholder="Search here..."
+
+        >
+        <!-- <input type="text" v-model="search" @input="$emit('update:modelValue', $event.targe)" placeholder="Search here..." /> -->
+
+        <div class="filter-sort">
+        <a href="" @click="filter">
+          <img
+          class="filter-icon"
+          src="../images/SVG/filters-2-svgrepo-com.svg"
+          alt="filter-icon"
+          width="30px"
+        >
+        </a>
+          
+        <a href="" @click="sort">
+          <img
+          class="sort-icon"
+          src="../images/SVG/sort-vertical-svgrepo-com.svg"
+          alt="sort-icon"
+          width="30px"
+        >
+        </a>
+        
         </div>
         
-        <div class="button-container">
-            <button id="join-room">Join Room</button>
-            <button @click = 'emitCreateRoom'>Create Room</button>
-        </div>
-  </div>
+      </div>
+            
+      <div class="button-container">
+        <button>Join Room</button>
+        <CreateRoom
+          label="Host"
+          @click="host"
+        />
+
+            
+            
+        <!-- <button @click="BtnCreateRoom">+ Create Room</button> -->
+      </div>
+    </div>
+  </main>
 </template>
 <script>
-    export default {
-    methods: {
-      emitCreateRoom() {
-        this.$emit('add-room'); // Emit the event to the parent component
-      },
-    },
-  };
+    
 </script>
 
 <style scoped>
@@ -31,9 +95,10 @@
         font-family: Arial, Helvetica, sans-serif;
     }
     .search-bar{
-        margin: 24px 0px 0px 12px;
         display: flex;
-        padding-left: 60px;
+        justify-content: center;
+        margin-top: 20px;
+
 
         
     }
@@ -62,8 +127,10 @@
     .search-icon, .sort-icon, .filter-icon {
         cursor: pointer;
     }
-    .sort-icon, .filter-icon {
-        margin-left: 12px;
+    .filter-sort{
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
     }
     .button-container{
         display: flex;
@@ -71,7 +138,6 @@
         justify-content: space-evenly;
         width: 20%;
         display: flex;
-        margin-left: 12px;
         
     }
     button{
