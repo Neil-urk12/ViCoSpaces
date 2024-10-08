@@ -10,7 +10,7 @@ const router = createRouter({
     { path: '/navbar', component: ()=> import('../components/nav-bar.vue')},
     { path: '/search-bar', component: ()=> import('../components/search-bar.vue') },
     { path: '/edit-room', componet: ()=> import('../components/edit-room.vue')},
-    { path: '/filter-bar', component: ()=> import('../components/filter-bar.vue')},
+    { path: '/filter-bar', component: ()=> import('../components/categoryBar.vue')},
     { path: '/created-room', component: ()=> import('../components/create-room.vue')},
     { path: '/room', component: () => import('../views/RoomView.vue')},
     
