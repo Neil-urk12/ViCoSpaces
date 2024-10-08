@@ -19,15 +19,22 @@ import NavBar from '@/components/nav-bar.vue';
           switch(error.code){
               case 'auth/wrong-password':
                   errorMessage.value = 'Wrong Password'
+                  document.querySelector("#password").style.border = "2px solid red"
                   break
               case 'auth/user-not-found':
                   errorMessage.value = 'User not found'
+                  document.querySelector("#password").style.border = "2px solid red"
+                  document.querySelector("#email").style.border = "2px solid red"       
                   break
               case 'auth/too-many-requests':
                   errorMessage.value = 'Too many requests'
+                  document.querySelector("#password").style.border = "2px solid red"
+                  document.querySelector("#email").style.border = "2px solid red"       
                   break
               case 'auth/invalid-email':
                   errorMessage.value = 'Invalid Email'
+                  document.querySelector("#password").style.border = "2px solid red"
+                  document.querySelector("#email").style.border = "2px solid red"        
                   break
               case 'auth/user-disabled':
                   errorMessage.value = 'User disabled'
@@ -49,6 +56,7 @@ import NavBar from '@/components/nav-bar.vue';
   <div class="signin">
     <h1>Sign In</h1>
     <div class="form-group">
+      
       <label for="email">Email</label><br>
       <input
         id="email"
@@ -63,16 +71,23 @@ import NavBar from '@/components/nav-bar.vue';
         type="password"
         placeholder="Enter password"
       ><br>
+      <p class="erroMessage" v-if="errorMessage">
+        {{ errorMessage }}
+      </p>
       <button class="btn-primary" @click="signIn">
         Sign In
       </button><br>
-      <p v-if="errorMessage">
-        {{ errorMessage }}
-      </p>
       <button class="btn-secondary" @click="signInWithGoogle">
        <a href="http://www.google.com"><i class="fa-brands fa-google"></i></a>
         Sign In with Google
       </button>
+
+      <button class="btn-Third" @click="signInWithGithub">
+       <a href="https://github.com/login"><i class="fa-brands fa-github"></i></a>
+        Sign In with Github
+      </button>
+
+      
       <p class="switch-form">
         Don't have an account ? <router-link to="/register">
           Sign Up
@@ -88,18 +103,23 @@ body{
 }
 .signin {
   max-width: 400px;
-  margin: 35px auto;
+  margin: 20px auto;
   padding: 2rem;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
 }
-
+.erroMessage{
+  margin-top: -4%;
+  text-align: center;
+  color: red;
+}
 h1 {
   text-align: center;
   color: #333;
   font-size: 2.5rem;
+  margin-bottom: 20px;
 }
 
 .form-group {
@@ -115,7 +135,7 @@ label {
 
 input {
   padding: 0.75rem;
-  margin-bottom: 1rem;
+  margin-bottom: 2%;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
@@ -147,7 +167,7 @@ input:focus {
 .btn-primary {
   background-color: #4a90e2;
   color: white;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   padding: 18px 0;
   border-radius: 5px;
   border: 0;
@@ -169,6 +189,7 @@ input:focus {
   cursor: pointer;
   font-weight: 500;
   font-size: 1.1rem;
+  margin-bottom: 1rem;
 }
 
 .fa-google{
@@ -178,7 +199,27 @@ input:focus {
 }
 
 .btn-secondary:hover {
-  background-color: #f0f7ff;
+  background-color: #e7f2fe;
+}
+
+.btn-Third{
+  background-color: #ffffff;
+  color: #4a90e2;
+  border: 1px solid #4a90e2;
+  padding: 15px 0;
+  border-radius: 5px;
+  box-shadow: 0 0 1px black;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.fa-github{
+  font-size: 1.3rem;
+  margin-right: 10px;
+}
+.btn-Third:hover {
+  background-color: #e7f2fe;
 }
 
 .switch-form {

@@ -56,6 +56,12 @@
         <a href="http://www.google.com"><i class="fa-brands fa-google"></i></a>
         Sign Up with Google
       </button>
+
+      <button class="btn-Third" @click="signUpWithGithub">
+       <a href="https://github.com/login"><i class="fa-brands fa-github"></i></a>
+        Sign Up with Github
+      </button>
+
       <p class="switch-form">
         Already have an account? <router-link to="/login">
           Sign In
@@ -73,7 +79,7 @@
 <style scoped>
 .signup {
   max-width: 400px;
-  margin: 35px auto;
+  margin: 20px auto;
   padding: 2rem;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
@@ -101,7 +107,7 @@ label {
 
 input {
   padding: 0.75rem;
-  margin-bottom: 2.3rem;
+  margin-bottom: 5%;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
@@ -132,7 +138,7 @@ input:focus {
 .btn-primary {
   background-color: #4a90e2;
   color: white;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   padding: 18px 0;
   border-radius: 5px;
   border: 0;
@@ -154,16 +160,37 @@ input:focus {
   cursor: pointer;
   font-weight: 500;
   font-size: 1.1rem;
+  margin-bottom: 1rem;
 }
 
 .btn-secondary:hover {
-  background-color: #f0f7ff;
+  background-color: #e7f2fe;
 }
 
 .fa-google{
   font-size: 1.3rem;
   margin-right: 10px;
   color: blue;
+}
+
+.btn-Third{
+  background-color: #ffffff;
+  color: #4a90e2;
+  border: 1px solid #4a90e2;
+  padding: 15px 0;
+  border-radius: 5px;
+  box-shadow: 0 0 1px black;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.fa-github{
+  font-size: 1.3rem;
+  margin-right: 10px;
+}
+.btn-Third:hover {
+  background-color: #e7f2fe;
 }
 
 .switch-form {

@@ -78,7 +78,7 @@ const toggleMenu = () => {
 
 <style scoped>
 .navbar {
-    background-color: #2c3e50;
+    background-color: #004cff;
     padding: 1rem;
   }
   
