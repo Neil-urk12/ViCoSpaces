@@ -1,16 +1,11 @@
 <script setup>
-import WhiteBoard from '@/components/WhiteBoard.vue'
+import CanvasWhiteBoard from '/src/components/CanvasWhiteBoard.vue';
 </script>
 
 <template>
-  <div class="room-view">
-    <h1>Room</h1>
-    <WhiteBoard />
-  </div>
+  <CanvasWhiteBoard />
 </template>
 
 <style scoped>
-.room-view {
-  padding: 20px;
-}
+
 </style>
