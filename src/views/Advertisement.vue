@@ -125,7 +125,7 @@
         width: 100%;
         padding: 38px 0;
         overflow-x:visible;
-        background-image: linear-gradient(to left, #004cff10, #d900ff17);
+        background-image: linear-gradient(to left, #004cff47, #d900ff2b);
         border-top-right-radius: 50%;
         border-top-left-radius: 50%;
     }
