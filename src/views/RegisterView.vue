@@ -3,7 +3,8 @@
     import { createUserWithEmailAndPassword } from "firebase/auth";
     import { auth } from '../firebase/firebaseconfig';
     import { useRouter } from 'vue-router';
-    import navbar from '/src/components/nav-bar.vue';
+    import logonav from '@/components/logonav.vue';
+
     const email = ref('')
     const password = ref('')
     const router = useRouter()
@@ -31,7 +32,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- for revision after the UI person is back from trip
   functionality only no design -->
-  <navbar />
+  <logonav />
   <div class="signup">
     <h1>Sign Up</h1>
     <div class="form-group">

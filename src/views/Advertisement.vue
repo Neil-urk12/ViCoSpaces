@@ -101,11 +101,16 @@
         padding: 15px 35px;
         font-size: 1rem;
         margin-left: 43%;
-        background-image: linear-gradient(to right, #004cff, #d900ff);
+        background-image: linear-gradient(35deg , #004cff, #d900ff);
+        background-size: 200%;
+        background-position: left;
+        transition: background-position 2s;
+        background-blend-mode:hard-light;
         border: 0;
         cursor: pointer;
         transition: 0.4s ease-in-out;
         margin-right: 2%;
+        animation: changeColor 2.5s ease-in-out infinite;
     }
     .signbutton a{
         font-weight: 600;
@@ -115,7 +120,9 @@
     .signbutton:hover{
         transform: translateY(-3px);
         box-shadow: 0 0 5px #004cff;
-        background-image: linear-gradient(to left, #004cff, #d900ff);
+    }
+    @keyframes changeColor {
+        50%{background-position: right;}
     }
     .icons{
         display: flex;
@@ -125,7 +132,7 @@
         width: 100%;
         padding: 38px 0;
         overflow-x:visible;
-        background-image: linear-gradient(to left, #004cff47, #d900ff2b);
+        background-image: linear-gradient(to left, #004cff17, #d900ff17);
         border-top-right-radius: 50%;
         border-top-left-radius: 50%;
     }
@@ -154,7 +161,10 @@
         box-shadow: 0 0 5px violet;
         padding: 10px 35px;
         border-radius: 45px;
-        background-image: linear-gradient(to right, #004cff, #d900ff);
+        background-image: linear-gradient(35deg , #004cff, #d900ff);
+        background-size: 200%;
+        background-position: right;
+        transition: background-position 1s;
         cursor: pointer;
     }
     .rightnav a{
@@ -162,6 +172,6 @@
         text-decoration: none;
     }
     .rightnav:hover{
-        background-image: linear-gradient(to left, #004cff, #d900ff);
+        background-position: left;
     }
 </style>
