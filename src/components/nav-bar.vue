@@ -1,154 +1,115 @@
-<script setup>
-import { ref } from 'vue';
-
-const isOpen = ref(false)
-
-const toggleMenu = () => {
-  isOpen.value = !isOpen.value
-}
-</script>
 
 
 <template>
-  <nav class="navbar">
-    <div class="navbar-container">
-      <div class="logo">
-        <span>Vico</span>
+  <header>
+    <nav class="nav-bar">
+      <div class="nav-div">
+        <div class="logo-container">
+          <img src="../assets/svg/filters-2-svgrepo-com.svg" alt="ViCoSpaces-Logo" class="logo-img">
+          <span class="logo-name">ViCoSpaces</span>
+        </div>
+        <div class="nav-links-and-buttons">
+          <ul class="pages-container">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+          <a href="" id="user-profile">
+            <div class="user-profile">
+              <img src="../images/black-default-user-profile-ll(1).webp" alt="">
+            </div>
+          </a>
+        </div>
       </div>
-      <div
-        class="mobile-menu-button"
-        @click="toggleMenu"
-      >
-        <span v-if="!isOpen">☰</span>
-        <span v-else>✕</span>
-      </div>
-      <div class="desktop-menu">
-        <a
-          href="#"
-          class="nav-link"
-        >
-          <span class="icon">🏠</span>
-          Home
-        </a>
-        <a
-          href="#"
-          class="nav-link"
-        >
-          <span class="icon">✉️</span>
-          Contact Us
-        </a>
-        <a
-          href="#"
-          class="nav-link profile-icon"
-        >
-          <span class="icon">👤</span>
-        </a>
-      </div>
-    </div>
-    
-    <!-- Mobile menu -->
-    <div
-      v-if="isOpen"
-      class="mobile-menu"
-    >
-      <a
-        href="#"
-        class="nav-link"
-      >
-        <span class="icon">🏠</span>
-        Home
-      </a>
-      <a
-        href="#"
-        class="nav-link"
-      >
-        <span class="icon">✉️</span>
-        Contact Us
-      </a>
-      <a
-        href="#"
-        class="nav-link"
-      >
-        <span class="icon">👤</span>
-        Profile
-      </a>
-    </div>
-  </nav>
+    </nav>
+  </header>
 </template>
 
+
 <style scoped>
-.navbar {
-    background-color: #004cff;
-    padding: 1rem;
-  }
-  
-  .navbar-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: white;
-  }
-  
-  .mobile-menu-button {
-    display: none;
-    color: #ecf0f1;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
-  
-  .desktop-menu {
-    display: flex;
-    align-items: center;
-  }
-  
-  .nav-link {
-    color: #ecf0f1;
-    text-decoration: none;
-    margin-left: 1rem;
-    display: flex;
-    align-items: center;
-  }
-  
-  .nav-link:hover {
-    color: #3498db;
-  }
-  
-  .icon {
-    margin-right: 0.5rem;
-  }
-  
-  .profile-icon .icon {
-    margin-right: 0;
-  }
-  
-  .mobile-menu {
-    display: none;
-    padding-top: 1rem;
-  }
-  
-  @media (max-width: 768px) {
-    .mobile-menu-button {
-      display: block;
+* {
+      text-decoration: none;
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-  
-    .desktop-menu {
-      display: none;
+    
+    .nav-bar {
+      background: #2d8eff;
+      font-family: Calibri, sans-serif;
+      align-items: center;
+      height: 70px;
+      padding: 15px 40px 0px 40px;
     }
-  
-    .mobile-menu {
+    
+    .nav-div {
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      
     }
-  
-    .mobile-menu .nav-link {
-      padding: 0.5rem 0;
+    
+    .logo-container {
+      display: flex;
+      align-items: center;
+      font-size: 35px;
+      font-weight: 600;
+      color: white;
     }
-  }
+    
+    .logo-img {
+      height: 40px;
+      margin-right: 10px;
+    }
+    
+    .nav-links-and-buttons {
+      display: flex;
+      align-items: center;
+      gap: 70px; /** adjust the space between progile picture and pages options **/
+    }
+    
+    .pages-container {
+      display: flex;
+      list-style: none;
+      gap: 80px; /** adjust the space between nav pages options **/
+      margin: 0;
+    }
+    .pages-container li a {
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      position: relative; 
+      text-align: center;
+    }
+    
+    .pages-container li a::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -2px;
+      width: 0;
+      height: 2px;
+      background-color: white;
+      transition: all 0.3s ease-in-out;
+      transform: translateX(-50%);
+    }
+    
+    .pages-container li a:hover::after {
+      width: 100%;
+      left: 50%; 
+      transform: translateX(-50%);  
+    }
+    
+    
+    .user-profile{
+        display: flex;
+        background-color: white;
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        justify-content: center;
+    }
 </style>
+
+
