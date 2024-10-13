@@ -7,12 +7,15 @@ const canvasEl = ref(null);
 let canvas = null;
 const isDrawingMode = ref(false);
 const selectedColor = ref('#000000');
+const brushThickness = ref(5);
+const selectedBrush = ref('pencil'); 
+const showBrushOptions = ref(false);
 const gridSize = 20;
 
 const imageInput = ref(null);
 const showShapeLibrary = ref(false);
 
-onMounted(() => {
+onMounted(() => { //Initializing the Whiteboard with Snapping Grid
   canvas = new fabric.Canvas(canvasEl.value, {
     width: window.innerWidth * 0.8,
     height: window.innerHeight * 0.85,
@@ -44,7 +47,7 @@ onMounted(() => {
     });
 });
 
-function addGrid() {
+function addGrid() { //Snapping Grid Feature
   for (let i = 0; i < (canvas.width / gridSize); i++) {
     const lineX = new fabric.Line([i * gridSize, 0, i * gridSize, canvas.height], {
       stroke: '#ccc',
@@ -65,7 +68,7 @@ function addGrid() {
   }
 }
 
-const addTextToCanvas = () => {
+const addTextToCanvas = () => { //Adding text Feature
   const text = new fabric.Textbox('Enter Text', {
     left: 100,
     top: 100,
@@ -80,7 +83,7 @@ const addTextToCanvas = () => {
   canvas.renderAll();
 };
 
-function addShapeToCanvas(shapeType, isFilled) {
+function addShapeToCanvas(shapeType, isFilled) { //Adding Shapes Feature
   let shape;
   const fillColor = isFilled ? selectedColor.value : 'transparent';
   const strokeColor = isFilled ? 'transparent' : selectedColor.value;
@@ -132,32 +135,14 @@ function addShapeToCanvas(shapeType, isFilled) {
     case 'hexagon':
       shape = createPolygon(6, 50, fillColor, strokeColor);
       break;
-    case 'pentagon':
-      shape = createPolygon(5, 50, fillColor, strokeColor);
-      break;
     case 'octagon':
       shape = createPolygon(8, 50, fillColor, strokeColor);
-      break;
-    case 'star':
-      shape = createStar(5, 50, 25, fillColor, strokeColor);
       break;
     case 'diamond':
       shape = createDiamond(fillColor, strokeColor);
       break;
     case 'parallelogram':
       shape = createParallelogram(fillColor, strokeColor);
-      break;
-    case 'arrow-left':
-      shape = createArrow('left', fillColor, strokeColor);
-      break;
-    case 'arrow-right':
-      shape = createArrow('right', fillColor, strokeColor);
-      break;
-    case 'arrow-up':
-      shape = createArrow('up', fillColor, strokeColor);
-      break;
-    case 'arrow-down':
-      shape = createArrow('down', fillColor, strokeColor);
       break;
     default:
       console.log('Unknown shape');
@@ -167,7 +152,7 @@ function addShapeToCanvas(shapeType, isFilled) {
   canvas.renderAll();
 }
 
-function createPolygon(sides, radius, fillColor, strokeColor) {
+function createPolygon(sides, radius, fillColor, strokeColor) {//Used for creating Polygon Shapes
   const points = Array.from({ length: sides }, (_, i) => {
     const angle = (i * 2 * Math.PI) / sides;
     return {
@@ -186,27 +171,7 @@ function createPolygon(sides, radius, fillColor, strokeColor) {
   });
 }
 
-function createStar(points, outerRadius, innerRadius, fillColor, strokeColor) {
-  const starPoints = Array.from({ length: points * 2 }, (_, i) => {
-    const radius = i % 2 === 0 ? outerRadius : innerRadius;
-    const angle = (i * Math.PI) / points;
-    return {
-      x: radius * Math.cos(angle),
-      y: radius * Math.sin(angle),
-    };
-  });
-
-  return new fabric.Polygon(starPoints, {
-    left: 200,
-    top: 200,
-    fill: fillColor,
-    stroke: strokeColor,
-    strokeWidth: 2,
-    selectable: true,
-  });
-}
-
-function createDiamond(fillColor, strokeColor) {
+function createDiamond(fillColor, strokeColor) {//Used for creating Diamond Shape
   return new fabric.Polygon([
     { x: 0, y: -50 },
     { x: 50, y: 0 },
@@ -222,7 +187,7 @@ function createDiamond(fillColor, strokeColor) {
   });
 }
 
-function createParallelogram(fillColor, strokeColor) {
+function createParallelogram(fillColor, strokeColor) {//Used for creating Parallelogram Shape
   return new fabric.Polygon([
     { x: -50, y: -25 },
     { x: 50, y: -25 },
@@ -238,98 +203,36 @@ function createParallelogram(fillColor, strokeColor) {
   });
 }
 
-function createArrow(direction, fillColor, strokeColor) {
-  let line, arrowHead;
-  const lineLength = 80;
-  const arrowSize = 20;
-
-  switch (direction) {
-    case 'left':
-      line = new fabric.Line([lineLength, 0, 0, 0], { stroke: strokeColor, strokeWidth: 2 });
-      arrowHead = new fabric.Triangle({
-        left: 0,
-        top: 0,
-        width: arrowSize,
-        height: arrowSize,
-        angle: -90,
-        fill: fillColor,
-        stroke: strokeColor,
-        strokeWidth: 2,
-        originX: 'center',
-        originY: 'center',
-      });
+const applyBrushSettings = () => {//Drawing Feature
+  switch (selectedBrush.value) {
+    case 'pencil':
+      canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
       break;
-    case 'right':
-      line = new fabric.Line([0, 0, lineLength, 0], { stroke: strokeColor, strokeWidth: 2 });
-      arrowHead = new fabric.Triangle({
-        left: lineLength,
-        top: 0,
-        width: arrowSize,
-        height: arrowSize,
-        angle: 90,
-        fill: fillColor,
-        stroke: strokeColor,
-        strokeWidth: 2,
-        originX: 'center',
-        originY: 'center',
-      });
-      break;
-    case 'up':
-      line = new fabric.Line([0, lineLength, 0, 0], { stroke: strokeColor, strokeWidth: 2 });
-      arrowHead = new fabric.Triangle({
-        left: 0,
-        top: 0,
-        width: arrowSize,
-        height: arrowSize,
-        angle: 0,
-        fill: fillColor,
-        stroke: strokeColor,
-        strokeWidth: 2,
-        originX: 'center',
-        originY: 'center',
-      });
-      break;
-    case 'down':
-      line = new fabric.Line([0, 0, 0, lineLength], { stroke: strokeColor, strokeWidth: 2 });
-      arrowHead = new fabric.Triangle({
-        left: 0,
-        top: lineLength,
-        width: arrowSize,
-        height: arrowSize,
-        angle: 180,
-        fill: fillColor,
-        stroke: strokeColor,
-        strokeWidth: 2,
-        originX: 'center',
-        originY: 'center',
-      });
+    case 'circle':
+      canvas.freeDrawingBrush = new fabric.CircleBrush(canvas);
       break;
     default:
-      return;
+      canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
   }
 
-  return new fabric.Group([line, arrowHead], { left: 200, top: 200, selectable: true });
-}
+  canvas.freeDrawingBrush.color = selectedColor.value;
+  canvas.freeDrawingBrush.width = brushThickness.value;
+  canvas.renderAll();
+};
 
-watch(selectedColor, (newColor) => {
-  if (isDrawingMode.value) {
-    canvas.freeDrawingBrush.color = newColor;
-  }
-});
+watch([selectedBrush, selectedColor, brushThickness], applyBrushSettings);
 
 const toggleDrawMode = () => {
   isDrawingMode.value = !isDrawingMode.value;
   canvas.isDrawingMode = isDrawingMode.value;
+  showBrushOptions.value = isDrawingMode.value;
 
   if (isDrawingMode.value) {
-    canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
-    canvas.freeDrawingBrush.color = selectedColor.value;
-    canvas.freeDrawingBrush.width = 5;
+    applyBrushSettings();
   }
-  canvas.renderAll();
 };
 
-const removeSelected = () => {
+const removeSelected = () => {//Removing Selected Object Feature
   const activeObject = canvas.getActiveObject();
   if (activeObject) {
     canvas.remove(activeObject);
@@ -337,7 +240,7 @@ const removeSelected = () => {
   }
 };
 
-const clearCanvas = () => {
+const clearCanvas = () => {//Clearing the entire board feature
   canvas.getObjects().forEach((obj) => {
     if (!obj.isGrid) {
       canvas.remove(obj);
@@ -350,7 +253,7 @@ const triggerFileSelect = () => {
   imageInput.value.click();
 };
 
-const insertImage = (event) => {
+const insertImage = (event) => { //Image Insertion Feature
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
@@ -364,6 +267,19 @@ const insertImage = (event) => {
           angle: 0,
           opacity: 1,
         });
+
+        const canvasWidth = canvas.getWidth();
+        const canvasHeight = canvas.getHeight();
+
+        const imageOriginalWidth = img.width;
+        const imageOriginalHeight = img.height;
+
+        const scaleX = canvasWidth / imageOriginalWidth;
+        const scaleY = canvasHeight / imageOriginalHeight;
+        let scaleFactor = Math.min(scaleX, scaleY) * 0.8;
+
+        fabricImage.scale(scaleFactor);
+
         canvas.add(fabricImage);
         canvas.renderAll();
       };
@@ -371,6 +287,15 @@ const insertImage = (event) => {
     reader.readAsDataURL(file);
   }
 };
+
+const downloadCanvasAsImage = () => {//Exporting Canvas into IMG Feature
+  const dataURL = canvas.toDataURL({ format: 'png' });
+  const link = document.createElement('a');
+  link.href = dataURL;
+  link.download = 'canvas-image.png';
+  link.click();
+};
+
 </script>
 
 <template>
@@ -429,16 +354,6 @@ const insertImage = (event) => {
             <polygon points="50,10 86.6,30 86.6,70 50,90 13.4,70 13.4,30" fill="transparent" stroke="black" stroke-width="2" />
           </svg>
         </div>
-        <div class="shape-option" @click="addShapeToCanvas('pentagon', true)" title="Filled Pentagon">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <polygon points="50,15 90,35 75,85 25,85 10,35" fill="black" />
-          </svg>
-        </div>
-        <div class="shape-option" @click="addShapeToCanvas('pentagon', false)" title="Outlined Pentagon">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <polygon points="50,15 90,35 75,85 25,85 10,35" fill="transparent" stroke="black" stroke-width="2" />
-          </svg>
-        </div>
         <div class="shape-option" @click="addShapeToCanvas('octagon', true)" title="Filled Octagon">
           <svg width="50" height="50" viewBox="0 0 100 100">
             <polygon points="30,10 70,10 90,30 90,70 70,90 30,90 10,70 10,30" fill="black" />
@@ -447,16 +362,6 @@ const insertImage = (event) => {
         <div class="shape-option" @click="addShapeToCanvas('octagon', false)" title="Outlined Octagon">
           <svg width="50" height="50" viewBox="0 0 100 100">
             <polygon points="30,10 70,10 90,30 90,70 70,90 30,90 10,70 10,30" fill="transparent" stroke="black" stroke-width="2" />
-          </svg>
-        </div>
-        <div class="shape-option" @click="addShapeToCanvas('star', true)" title="Filled Star">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <polygon points="50,10 61.8,38.2 90,38.2 67.4,58.2 76.6,86.6 50,70 23.4,86.6 32.6,58.2 10,38.2 38.2,38.2" fill="black" />
-          </svg>
-        </div>
-        <div class="shape-option" @click="addShapeToCanvas('star', false)" title="Outlined Star">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <polygon points="50,10 61.8,38.2 90,38.2 67.4,58.2 76.6,86.6 50,70 23.4,86.6 32.6,58.2 10,38.2 38.2,38.2" fill="transparent" stroke="black" stroke-width="2" />
           </svg>
         </div>
         <div class="shape-option" @click="addShapeToCanvas('diamond', true)" title="Filled Diamond">
@@ -479,39 +384,33 @@ const insertImage = (event) => {
             <polygon points="20,20 80,20 60,80 0,80" fill="transparent" stroke="black" stroke-width="2" />
           </svg>
         </div>
-        <div class="shape-option" @click="addShapeToCanvas('arrow-left', true)" title="Filled Left Arrow">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <line x1="60" y1="50" x2="20" y2="50" stroke="black" stroke-width="2" />
-            <polygon points="20,40 20,60 10,50" fill="black" />
-          </svg>
-        </div>
-        <div class="shape-option" @click="addShapeToCanvas('arrow-right', true)" title="Filled Right Arrow">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <line x1="20" y1="50" x2="60" y2="50" stroke="black" stroke-width="2" />
-            <polygon points="60,40 60,60 70,50" fill="black" />
-          </svg>
-        </div>
-        <div class="shape-option" @click="addShapeToCanvas('arrow-up', true)" title="Filled Up Arrow">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <line x1="50" y1="60" x2="50" y2="20" stroke="black" stroke-width="2" />
-            <polygon points="40,20 60,20 50,10" fill="black" />
-          </svg>
-        </div>
-        <div class="shape-option" @click="addShapeToCanvas('arrow-down', true)" title="Filled Down Arrow">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <line x1="50" y1="20" x2="50" y2="60" stroke="black" stroke-width="2" />
-            <polygon points="40,60 60,60 50,70" fill="black" />
-          </svg>
-        </div>
       </div>
       <div class="color-picker-wrapper">
         <input type="color" v-model="selectedColor" title="Choose Color" />
       </div>
       <button @click="toggleDrawMode" title="Enable/Disable Drawing">{{ isDrawingMode ? '✏️' : '🖊️' }}</button>
+      <div v-if="showBrushOptions" class="brush-options-popup">
+        <div class="brush-option">
+          <label for="brush-type">Brush Type:</label>
+          <select v-model="selectedBrush" id="brush-type">
+            <option value="pencil">Pencil</option>
+            <option value="circle">Circle</option>
+          </select>
+        </div>
+        <div class="brush-option">
+          <label for="brush-color">Brush Color:</label>
+          <input type="color" v-model="selectedColor" id="brush-color" />
+        </div>
+        <div class="brush-option">
+          <label for="brush-thickness">Thickness:</label>
+          <input type="range" v-model="brushThickness" id="brush-thickness" min="1" max="30" />
+        </div>
+      </div>
       <button @click="clearCanvas" title="Clear Canvas">🗑️</button>
       <button @click="triggerFileSelect" title="Insert Image">🖼️</button>
       <input type="file" ref="imageInput" @change="insertImage" style="display: none" />
       <button @click="removeSelected" title="Remove Selected">❌</button>
+      <button @click="downloadCanvasAsImage" title="Download Image">⬇️</button>
     </div>
     <div class="canvas-area">
       <canvas ref="canvasEl"></canvas>
@@ -558,6 +457,24 @@ const insertImage = (event) => {
   gap: 10px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 20; 
+}
+
+.brush-options-popup {
+  position: absolute;
+  left: 80px;
+  top: 50px;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  width: 180px;
+}
+
+.brush-option {
+  margin-bottom: 10px;
 }
 
 .shape-option {
