@@ -1,18 +1,30 @@
 <script setup>
+import { ref } from 'vue';
+
 import navBar from '@/components/nav-bar.vue';
 import searchBar from '@/components/search-bar.vue';
 import categoryBar from '@/components/categoryBar.vue';
+import createRoom from '@/components/create-room.vue';
+// import editRoom from '@/components/edit-room.vue';
 
 const join = () =>{
   alert("neil joined the program!");
+}
+
+const isCreateRoomVisible = ref(false); // Reactive variable to control overlay visibility
+const title = ref('Production Design');
+
+function update(newTitle){
+  title.value = newTitle;
 }
 </script>
 
 <template>
   <header>
-    <navBar />
-    <searchBar />
-    <categoryBar />
+    <navBar  />
+    <searchBar @open-room="isCreateRoomVisible = true" />
+
+    <categoryBar @changetitle ="update" />
   </header>
   <section class="room-view-container">
     <div class="room">
@@ -38,7 +50,11 @@ const join = () =>{
         </div>
       </div>
     </div>
+    <createRoom :isVisible="isCreateRoomVisible" @close-room="isCreateRoomVisible = false" />
+    
   </section>
+
+  
 </template>
 
 
@@ -145,6 +161,21 @@ const join = () =>{
     background-color: #2d8eff;
 }
 
+
+
+
+
+
+/* @media (min-width: 600px) {
+  *{
+
+  }
+
+  body{
+    width: 100%;
+    height: 100vh;
+  }
   
+} */
 
 </style>

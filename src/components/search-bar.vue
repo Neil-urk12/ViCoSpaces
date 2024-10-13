@@ -1,6 +1,8 @@
 <script setup>
 import CreateRoom from './buttons/create-room-button.vue';
 
+// import EditRoom from './edit-room.vue';
+
 //**const props = defineProps({
    // placeholder: String,
     //modelValue: {
@@ -8,15 +10,26 @@ import CreateRoom from './buttons/create-room-button.vue';
     //    required: true,
   //  }
  //})
-const host = () => {
-    alert("Hosted a Room");
-}  
+// const HostRoom = () => {
+  
+// };
+//const emit = defineEmits(['changetitle']);
+
+function notify (){
+//  emit('changetitle','New Home Title')
+  alert('hello babe, I love you');
+}
+
 const filter = () => {
   alert("fitered");
 }
 const sort = () => {
   alert("sorted search");
 }
+
+
+
+const emit = defineEmits(['open-room']);
 
 
 
@@ -70,10 +83,11 @@ const sort = () => {
       </div>
             
       <div class="button-container">
-        <button>Join Room</button>
+        <button @click="notify">Join Room</button>
+
         <CreateRoom
           label="Host"
-          @click="host"
+          @click="emit('open-room')"
         />
 
             

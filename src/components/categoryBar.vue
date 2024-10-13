@@ -1,8 +1,11 @@
-<script>
+<script setup>
+
+
 </script>
 <template>
-    <h1>test</h1>
+    <h4>hi</h4>
 </template>
+
 <style scoped>
     *{
         margin: 0;

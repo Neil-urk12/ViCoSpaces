@@ -1,11 +1,14 @@
-
+<script setup>
+ 
+</script>
 
 <template>
   <header>
     <nav class="nav-bar">
       <div class="nav-div">
         <div class="logo-container">
-          <img src="../assets/svg/filters-2-svgrepo-com.svg" alt="ViCoSpaces-Logo" class="logo-img">
+        
+          <img src="../images/logo/logo.png" alt="ViCoSpaces-Logo" class="logo-img">
           <span class="logo-name">ViCoSpaces</span>
         </div>
         <div class="nav-links-and-buttons">
