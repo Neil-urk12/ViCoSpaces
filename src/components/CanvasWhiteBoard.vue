@@ -67,17 +67,16 @@ function addGrid() {
 
 const addTextToCanvas = () => {
   const text = new fabric.Textbox('Enter Text', {
-    left: 100, // Default position on canvas
+    left: 100,
     top: 100,
-    fill: selectedColor.value, // Use selected color for text
+    fill: selectedColor.value, 
     fontSize: 20,
     fontFamily: 'Arial',
-    editable: true, // Make the text editable
+    editable: true, 
   });
   
-  // Add the text object to the canvas
   canvas.add(text);
-  canvas.setActiveObject(text); // Make the text active for immediate editing
+  canvas.setActiveObject(text);
   canvas.renderAll();
 };
 
@@ -311,7 +310,6 @@ function createArrow(direction, fillColor, strokeColor) {
 
   return new fabric.Group([line, arrowHead], { left: 200, top: 200, selectable: true });
 }
-
 
 watch(selectedColor, (newColor) => {
   if (isDrawingMode.value) {
