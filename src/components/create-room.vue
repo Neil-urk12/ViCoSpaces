@@ -3,12 +3,15 @@
 // Edit to make the overlay possible
 import { defineProps, defineEmits } from 'vue';
 
+const emit = defineEmits(['close-room']);
+//make the overlay invisible
 const props = defineProps({
   isVisible: Boolean
 });
+// checker
 console.log(props);
 
-const emit = defineEmits(['close-room']);
+
 
 
 </script>

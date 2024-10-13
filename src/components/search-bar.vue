@@ -1,34 +1,21 @@
 <script setup>
 import CreateRoom from './buttons/create-room-button.vue';
 
-// import EditRoom from './edit-room.vue';
-
-//**const props = defineProps({
-   // placeholder: String,
-    //modelValue: {
-      //  type: String,
-    //    required: true,
-  //  }
- //})
-// const HostRoom = () => {
-  
-// };
-//const emit = defineEmits(['changetitle']);
-
 function notify (){
-//  emit('changetitle','New Home Title')
+  // used in the joint btn
   alert('hello babe, I love you');
 }
-
+// test functions
 const filter = () => {
   alert("fitered");
 }
+
 const sort = () => {
   alert("sorted search");
 }
 
 
-
+// to activale the create room overlay
 const emit = defineEmits(['open-room']);
 
 
@@ -48,7 +35,8 @@ const emit = defineEmits(['open-room']);
           alt="search-icon"
           width="30px"
         >
-        <!-- <input class="search-input" type="text" name="" id="" placeholder="Search here..."> -->
+
+        <!-- search bar input -->
         <input
           id=""
           type="text"
@@ -57,7 +45,6 @@ const emit = defineEmits(['open-room']);
           placeholder="Search here..."
 
         >
-        <!-- <input type="text" v-model="search" @input="$emit('update:modelValue', $event.targe)" placeholder="Search here..." /> -->
 
         <div class="filter-sort">
         <a href="" @click="filter">
