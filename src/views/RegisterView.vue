@@ -3,7 +3,8 @@
     import { createUserWithEmailAndPassword } from "firebase/auth";
     import { auth } from '../firebase/firebaseconfig';
     import { useRouter } from 'vue-router';
-    import navbar from '/src/components/nav-bar.vue';
+    import logonav from '@/components/logonav.vue';
+
     const email = ref('')
     const password = ref('')
     const router = useRouter()
@@ -28,9 +29,10 @@
 </script>
 
 <template>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- for revision after the UI person is back from trip
   functionality only no design -->
-  <navbar />
+  <logonav />
   <div class="signup">
     <h1>Sign Up</h1>
     <div class="form-group">
@@ -39,29 +41,38 @@
         id="email"
         v-model="email"
         type="email"
+        placeholder="Enter email"
       >
       <label for="password">Password</label>
       <input
         id="password"
         v-model="password"
         type="password"
+        placeholder="Enter password"
       >
-      <button @click="register">
+      <button class="btn-primary" @click="register">
         Sign Up
       </button>
-      <button @click="signInWithGoogle">
+      <button class="btn-secondary" @click="signInWithGoogle">
+        <a href="http://www.google.com"><i class="fa-brands fa-google"></i></a>
         Sign Up with Google
       </button>
-      <p>
+
+      <button class="btn-Third" @click="signUpWithGithub">
+       <a href="https://github.com/login"><i class="fa-brands fa-github"></i></a>
+        Sign Up with Github
+      </button>
+
+      <p class="switch-form">
         Already have an account? <router-link to="/login">
           Sign In
         </router-link>
       </p>
-      <p>
+      <!-- <p>
         Don't have an account? <router-link to="/register">
           Sign Up
         </router-link>
-      </p>
+      </p> -->
     </div>
   </div>
 </template>
@@ -69,7 +80,7 @@
 <style scoped>
 .signup {
   max-width: 400px;
-  margin: 0 auto;
+  margin: 20px auto;
   padding: 2rem;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
@@ -80,7 +91,8 @@
 h1 {
   text-align: center;
   color: #333;
-  margin-bottom: 1.5rem;
+  /* margin-bottom: 1.5rem; */
+  font-size: 2.5rem;
 }
 
 .form-group {
@@ -89,17 +101,24 @@ h1 {
 }
 
 label {
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   color: #555;
   font-weight: bold;
 }
 
 input {
   padding: 0.75rem;
-  margin-bottom: 1rem;
+  margin-bottom: 5%;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
+  cursor: pointer;
+}
+::placeholder{
+  color: lightgrey;
+}
+input:hover{
+  background-color: #7474740d;
 }
 
 input:focus {
@@ -121,20 +140,58 @@ input:focus {
   background-color: #4a90e2;
   color: white;
   margin-bottom: 1rem;
+  padding: 18px 0;
+  border-radius: 5px;
+  border: 0;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1.1rem;
 }
-
 .btn-primary:hover {
-  background-color: #3a7bc8;
+  background-color: #0f7bff;
 }
 
 .btn-secondary {
   background-color: #ffffff;
   color: #4a90e2;
   border: 1px solid #4a90e2;
+  padding: 15px 0;
+  border-radius: 5px;
+  box-shadow: 0 0 1px black;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
 }
 
 .btn-secondary:hover {
-  background-color: #f0f7ff;
+  background-color: #e7f2fe;
+}
+
+.fa-google{
+  font-size: 1.3rem;
+  margin-right: 10px;
+  color: blue;
+}
+
+.btn-Third{
+  background-color: #ffffff;
+  color: #4a90e2;
+  border: 1px solid #4a90e2;
+  padding: 15px 0;
+  border-radius: 5px;
+  box-shadow: 0 0 1px black;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.fa-github{
+  font-size: 1.3rem;
+  margin-right: 10px;
+}
+.btn-Third:hover {
+  background-color: #e7f2fe;
 }
 
 .switch-form {
