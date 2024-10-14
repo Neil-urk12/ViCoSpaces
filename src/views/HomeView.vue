@@ -2,10 +2,13 @@
 import navBar from '@/components/nav-bar.vue';
 import searchBar from '@/components/search-bar.vue';
 import categoryBar from '@/components/categoryBar.vue';
+import { useRouter } from 'vue-router';
+const router = useRouter()
 
 const join = () =>{
   alert("neil joined the program!");
-}
+} 
+  
 </script>
 
 <template>
@@ -26,7 +29,7 @@ const join = () =>{
         
       </div>
       <div class="text-content">
-          <h2> Production Design</h2><!--Tittle holder to be modified-->
+          <h2>Production Design</h2><!--Tittle holder to be modified-->
           <div class="joined-users">
             <i class="icon"></i>
           </div>
@@ -143,6 +146,10 @@ const join = () =>{
     width: 124px;
     color: white;
     background-color: #2d8eff;
+    cursor: pointer;
+}
+.join-btn:hover{
+  background-color: #4ea1ff;
 }
 
   

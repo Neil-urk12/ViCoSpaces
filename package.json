@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "fabric": "^6.4.3",
-    "firebase": "^10.14.0",
+    "firebase": "^10.14.1",
+    "firestore": "^1.1.6",
     "pinia": "^2.1.7",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3"

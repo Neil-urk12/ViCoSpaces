@@ -1,51 +1,81 @@
 <script setup>
-import { ref } from 'vue';
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../firebase/firebaseconfig';
-import { useRouter } from 'vue-router';
-import logonav from '@/components/logonav.vue';
+import { ref } from 'vue'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { signInWithPopup } from 'firebase/auth'
+import { auth , googleprovider} from '@/firebase/firebaseconfig'
+import { authstart,  githubProvider } from '@/firebase/githubconfig'
+import { useRouter } from 'vue-router'
+import logonav from '@/components/logonav.vue'
+
+
   const email = ref('')
   const password = ref('')
   const router = useRouter()
   const errorMessage = ref()
 
-  const signIn = () => {
-      signInWithEmailAndPassword(auth, email.value, password.value)
-      .then((data) => {
-          // const user = data.user;
-          router.push('/')
-      })
-      .catch((error) => {
-          switch(error.code){
-              case 'auth/wrong-password':
-                  errorMessage.value = 'Wrong Password'
-                  document.querySelector("#password").style.border = "2px solid red"
-                  break
-              case 'auth/user-not-found':
-                  errorMessage.value = 'User not found'
-                  document.querySelector("#password").style.border = "2px solid red"
-                  document.querySelector("#email").style.border = "2px solid red"       
-                  break
-              case 'auth/too-many-requests':
-                  errorMessage.value = 'Too many requests'
-                  document.querySelector("#password").style.border = "2px solid red"
-                  document.querySelector("#email").style.border = "2px solid red"       
-                  break
-              case 'auth/invalid-email':
-                  errorMessage.value = 'Invalid Email'
-                  document.querySelector("#password").style.border = "2px solid red"
-                  document.querySelector("#email").style.border = "2px solid red"        
-                  break
-              case 'auth/user-disabled':
-                  errorMessage.value = 'User disabled'
-                  break
-          }
-      })
+  const signIn = async () => {
+    try {
+      const credential = await signInWithEmailAndPassword(auth , email.value, password.value)
+        if(credential){
+          console.log("User signed in: ", credential.user);
+          router.replace('/home')  
+        }
+    }catch(error) {
+        switch(error.code){
+                case 'auth/invalid-email':
+                    errorMessage.value = 'Complete all fields'
+                    document.querySelector("#password").style.border = "2px solid red"
+                    document.querySelector("#email").style.border = "2px solid red"
+                    break
+                case 'auth/missing-password':
+                    errorMessage.value = 'Missing password'
+                    document.querySelector("#password").style.border = "2px solid red"
+                    document.querySelector("#email").style.border = "2px solid #4a90e2"
+                    break
+                case 'auth/invalid-credential':
+                    errorMessage.value = 'Something went wrong'
+                    document.querySelector("#password").style.border = "2px solid red"
+                    document.querySelector("#email").style.border = "2px solid red"
+                    break
+                case 'auth/user-disabled':
+                    errorMessage.value = 'User disabled'
+                    break
+                case 'auth/network-request-failed':
+                    alert('Please Check your network')
+                    break
+            }
+            // const errorCode = error.code;
+            const geterrorMessage = error.message;
+            console.log(geterrorMessage)
+      };
+
+    }
+  
+  const signInWithGoogle = () => {
+      signInWithPopup(auth, googleprovider)
+        .then((result) => {
+          // Successful sign-in
+          const user = result.user;
+          console.log("User Info: ", user);
+          router.push('/home')
+        })
+        .catch((error) => {
+          
+        });
   }
 
-  const signInWithGoogle = () => {
-      console.log('Google Sign In')
+  const signInWithGithub = async () => {
+    const confidential = await signInWithPopup(authstart , githubProvider)
+      try {
+          if(confidential){
+            const user = result.user
+            console.log(user)
+          }
+      } catch (error) {
+          console.log(error.code)
+      }  
   }
+
 </script>
 
 <template>
@@ -69,7 +99,7 @@ import logonav from '@/components/logonav.vue';
         id="password"
         v-model="password"
         type="password"
-        placeholder="Enter password"
+        placeholder="Enter password" 
       ><br>
       <p class="erroMessage" v-if="errorMessage">
         {{ errorMessage }}
@@ -77,7 +107,7 @@ import logonav from '@/components/logonav.vue';
       <button class="btn-primary" @click="signIn">
         Sign In
       </button><br>
-      <button class="btn-secondary" @click="signInWithGoogle">
+      <button class="btn-secondary" name="SignIn" @click="signInWithGoogle">
        <a href="http://www.google.com"><i class="fa-brands fa-google"></i></a>
         Sign In with Google
       </button>
@@ -104,7 +134,7 @@ body{
 .signin {
   max-width: 400px;
   margin: 20px auto;
-  padding: 2rem;
+  padding: 1.5rem;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -143,14 +173,13 @@ input {
   border: 1px solid rgba(0, 0, 0, 0.174);
   cursor: pointer;
 }
-
 input:hover{
   background-color: #7474740d;
 }
 
 input:focus {
   border: 1px solid #4a90e2;
-  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+  box-shadow: 0 0 0 2px rgba(0, 119, 255, 0.288);
 }
 ::placeholder{
   color: lightgrey;
@@ -174,9 +203,10 @@ input:focus {
   cursor: pointer;
   font-weight: 500;
   font-size: 1.1rem;
+  transition: 0.3s ease-in-out;
 }
 .btn-primary:hover {
-  background-color: #0f7bff;
+  background-color: #0073ff;
 }
 
 .btn-secondary {
@@ -190,6 +220,7 @@ input:focus {
   font-weight: 500;
   font-size: 1.1rem;
   margin-bottom: 1rem;
+  transition: 0.3s ease-in-out;
 }
 
 .fa-google{
@@ -212,6 +243,7 @@ input:focus {
   cursor: pointer;
   font-weight: 500;
   font-size: 1.1rem;
+  transition: 0.3s ease-in-out;
 }
 
 .fa-github{

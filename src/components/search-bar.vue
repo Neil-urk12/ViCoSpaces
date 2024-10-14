@@ -138,10 +138,8 @@ const sort = () => {
         justify-content: space-evenly;
         width: 20%;
         display: flex;
-        
     }
     button{
-        
         background-color: #2d8eff;
         color: white;
         border: none;
@@ -149,6 +147,7 @@ const sort = () => {
         width: 123px;
         height: 50px;
         font-weight: bold;
+        cursor: pointer;
     }
 
     button:first-child {

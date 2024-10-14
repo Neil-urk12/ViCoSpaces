@@ -1,37 +1,73 @@
 <script setup>
     import { ref } from 'vue';
     import { createUserWithEmailAndPassword } from "firebase/auth";
-    import { auth } from '../firebase/firebaseconfig';
+    import { signInWithPopup } from 'firebase/auth';
+    import { auth , googleprovider } from '@/firebase/firebaseconfig';
     import { useRouter } from 'vue-router';
-    import logonav from '@/components/logonav.vue';
+    import logonav from '@/components/logonav.vue'
 
     const email = ref('')
     const password = ref('')
     const router = useRouter()
+    let isSignendIn = ref(false)
+    const errorMessage = ref()
 
-    const register = () => {
-        createUserWithEmailAndPassword(auth, email.value, password.value)
-        .then((data) => {
-            // const user = data.user;
-            router.push('/')
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log(errorCode, errorMessage)
-        })
-    }
 
-    const signInWithGoogle = () => {
-        console.log('Google Sign In')
-    }
+       const signInWithGoogle = ()=> {
+          signInWithPopup(auth , googleprovider)
+            .then((result) => {
+              console.log("User Info: ", result.user.displayName);
+                  isSignendIn = true 
+                  router.push('/home')          
+            })
+            .catch((error) => {
+              console.error("Error during sign in: ", error);
+            })
+        }
+
+        const register = async ()=> {
+          try {
+            const confidential = await createUserWithEmailAndPassword(auth , email.value , password.value)
+              if(confidential){
+                const user = confidential.user
+                console.log(user);
+                router.replace('/home')
+                isSignendIn = true
+              }
+          } catch (error) {
+              switch(error.code){
+                case 'auth/invalid-email':
+                  errorMessage.value = 'Complete all details'
+                  document.getElementById('email').style.border = '2px solid red'
+                  document.getElementById('password').style.border = '2px solid red'
+                  break
+                case 'auth/email-already-in-use':
+                  errorMessage.value = 'Email is already in use'
+                  document.getElementById('email').style.border = '2px solid red'
+                  document.getElementById('password').style.border = '2px solid red'
+                  break
+                case 'auth/missing-email':
+                  errorMessage.value = 'Missing email'
+                  document.getElementById('email').style.border = '2px solid red'
+                  document.getElementById('password').style.border = '2px solid  #4a90e2'
+                  break
+                case 'auth/missing-password':
+                  errorMessage.value = 'Missing password'
+                  document.getElementById('password').style.border = '2px solid red'
+                  document.getElementById('email').style.border = '2px solid  #4a90e2'
+                  break
+              }
+              const geterrorMessage = error.message;
+              console.log(geterrorMessage)     
+            }
+          }
+
     
 </script>
 
 <template>
+  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <!-- for revision after the UI person is back from trip
-  functionality only no design -->
   <logonav />
   <div class="signup">
     <h1>Sign Up</h1>
@@ -50,15 +86,20 @@
         type="password"
         placeholder="Enter password"
       >
+      <p class="erroMessage" v-if="errorMessage">
+        {{ errorMessage }}
+      </p>
+
       <button class="btn-primary" @click="register">
         Sign Up
       </button>
-      <button class="btn-secondary" @click="signInWithGoogle">
+      
+      <button class="btn-secondary" name="SignIn" v-if="!isSignendIn" @click="signInWithGoogle">
         <a href="http://www.google.com"><i class="fa-brands fa-google"></i></a>
         Sign Up with Google
       </button>
 
-      <button class="btn-Third" @click="signUpWithGithub">
+      <button class="btn-Third" v-if="!isSignendIn" @click="signUpWithGithub">
        <a href="https://github.com/login"><i class="fa-brands fa-github"></i></a>
         Sign Up with Github
       </button>
@@ -68,11 +109,6 @@
           Sign In
         </router-link>
       </p>
-      <!-- <p>
-        Don't have an account? <router-link to="/register">
-          Sign Up
-        </router-link>
-      </p> -->
     </div>
   </div>
 </template>
@@ -81,11 +117,16 @@
 .signup {
   max-width: 400px;
   margin: 20px auto;
-  padding: 2rem;
+  padding: 1.5rem;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
+}
+.erroMessage{
+  margin-top: -1%;
+  text-align: center;
+  color: red;
 }
 
 h1 {
