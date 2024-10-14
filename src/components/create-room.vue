@@ -2,6 +2,7 @@
 // import { ref } from 'vue';
 // Edit to make the overlay possible
 import { defineProps, defineEmits } from 'vue';
+import { useRouter } from 'vue-router';
 
 const emit = defineEmits(['close-room']);
 //make the overlay invisible
@@ -11,7 +12,15 @@ const props = defineProps({
 // checker
 console.log(props);
 
+const router = useRouter();
 
+function goToRoom() {
+  console.log('Navigating to room...');
+  router.push({ name: 'room' });
+}
+
+
+console.log(goToRoom);
 
 
 </script>
@@ -54,7 +63,7 @@ console.log(props);
         
       </div>
       <div class="button-container">
-        <button class="create-btn">Create</button>  
+        <button class="create-btn" @click="goToRoom">Create</button>  
       </div>
     </div>
   </section>

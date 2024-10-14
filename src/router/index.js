@@ -7,6 +7,7 @@ const router = createRouter({
     { path: '/home', component: () => import('../views/HomeView.vue') },
     { path: '/home', redirect: '/'},
     { path: '/register', component: () => import('../views/RegisterView.vue') },
+    { path: '/room', name: 'room', component: () => import ('../components/CanvasWhiteBoard.vue')}
     // { path: '/login', component: () => import('../views/SignInView.vue') },
     // { path: '/navbar', component: ()=> import('../components/nav-bar.vue')},
     // { path: '/search-bar', component: ()=> import('../components/search-bar.vue') },
