@@ -8,7 +8,7 @@ const router = createRouter({
     { path: '/register', component: () => import('../views/RegisterView.vue') },
     { path: '/login', component: () => import('../views/SignInView.vue') },
     //temporary room path for testing, should be changed with a dynamic path accepting roomIDs
-    { path: '/room', component: () => import('../views/RoomView.vue')}
+    { path: '/room', name: 'Room', component: () => import('../views/RoomView.vue')}
     // { path: '/profile', component: () => import('../views/ProfileView.vue') },
   ]
 })

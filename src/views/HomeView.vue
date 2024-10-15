@@ -52,7 +52,6 @@ function update(newTitle){
       :is-visible="isCreateRoomVisible"
       @close-room="isCreateRoomVisible = false"
     />
-    
   </main>
 </template>
 

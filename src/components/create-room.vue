@@ -16,7 +16,7 @@ const router = useRouter();
 
 function goToRoom() {
   console.log('Navigating to room...');
-  router.push({ name: 'room' });
+  router.push({ name: 'Room' });
 }
 
 
