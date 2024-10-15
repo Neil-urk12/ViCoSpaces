@@ -26,44 +26,90 @@ console.log(goToRoom);
 </script>
 
 <template>
-  <section v-if="isVisible" class="overlay">
+  <section
+    v-if="isVisible"
+    class="overlay"
+  >
     <div class="edit-room">
       <header>
-        <h2 class="room-name">Host Room</h2>
-        <button class="close-btn" @click="emit('close-room')">
-          <img src="../images/SVG/close-bold-svgrepo-com.svg" alt="">
+        <h2 class="room-name">
+          Host Room
+        </h2>
+        <button
+          class="close-btn"
+          @click="emit('close-room')"
+        >
+          <img
+            src="../images/SVG/close-bold-svgrepo-com.svg"
+            alt=""
+          >
         </button>
       </header>
       <div class="edit-room-inputs">
         <div class="name-container">
-          <input class="input-room-name" type="text" placeholder="Name">
+          <input
+            class="input-room-name"
+            type="text"
+            placeholder="Name"
+          >
         </div>
         <div class="password-container">
-          <input class="input-room-password" type="password" placeholder="Password">
-          <span class="password-toggle-icon"><i class="fas fa-eye"></i></span>
+          <input
+            class="input-room-password"
+            type="password"
+            placeholder="Password"
+          >
+          <span class="password-toggle-icon"><i class="fas fa-eye" /></span>
         </div>
-        
       </div>
       <div class="room-info">
-        <select name="status" id="status" class="status">
-          <option value="private">Private</option>
-          <option value="public">Public</option>
+        <select
+          id="status"
+          name="status"
+          class="status"
+        >
+          <option value="private">
+            Private
+          </option>
+          <option value="public">
+            Public
+          </option>
         </select>
         <div class="capacity-content">
           <label for="capacity">Capacity </label>
-          <select name="capacity" id="capacity" class="capacity">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="1">3</option>
-            <option value="2">4</option>
-            <option value="1">5</option>
-            <option value="2">6</option>
+          <select
+            id="capacity"
+            name="capacity"
+            class="capacity"
+          >
+            <option value="1">
+              1
+            </option>
+            <option value="2">
+              2
+            </option>
+            <option value="1">
+              3
+            </option>
+            <option value="2">
+              4
+            </option>
+            <option value="1">
+              5
+            </option>
+            <option value="2">
+              6
+            </option>
           </select>
         </div>
-        
       </div>
       <div class="button-container">
-        <button class="create-btn" @click="goToRoom">Create</button>  
+        <button
+          class="create-btn"
+          @click="goToRoom"
+        >
+          Create
+        </button>  
       </div>
     </div>
   </section>
