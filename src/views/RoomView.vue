@@ -1,11 +1,20 @@
 <script setup>
-import CanvasWhiteBoard from '@/components/CanvasWhiteBoard.vue';
+const Whiteboard =  () => import('@/components/whiteboard.vue')
 </script>
 
 <template>
-    <CanvasWhiteBoard />
+  <div class="room">
+    <h1>Room</h1>
+  </div>
+  <Whiteboard />
 </template>
 
 <style scoped>
-    
+.room {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  font-weight: bold;
+}
 </style>

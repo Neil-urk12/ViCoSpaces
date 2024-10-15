@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../firebase/firebaseconfig';
 import { useRouter } from 'vue-router';
-import logonav from '@/components/logonav.vue';
+import logonav from '@/components/landing-page-nav.vue';
   const email = ref('')
   const password = ref('')
   const router = useRouter()
@@ -42,21 +42,23 @@ import logonav from '@/components/logonav.vue';
           }
       })
   }
-
   const signInWithGoogle = () => {
       console.log('Google Sign In')
   }
 </script>
 
 <template>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <!-- for revision after the UI person is back from trip
-  functionality only no design -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  >
   <logonav />
   <div class="signin">
     <h1>Sign In</h1>
     <div class="form-group">
-      
       <label for="email">Email</label><br>
       <input
         id="email"
@@ -71,19 +73,31 @@ import logonav from '@/components/logonav.vue';
         type="password"
         placeholder="Enter password"
       ><br>
-      <p class="erroMessage" v-if="errorMessage">
+      <p
+        v-if="errorMessage"
+        class="erroMessage"
+      >
         {{ errorMessage }}
       </p>
-      <button class="btn-primary" @click="signIn">
+      <button
+        class="btn-primary"
+        @click="signIn"
+      >
         Sign In
       </button><br>
-      <button class="btn-secondary" @click="signInWithGoogle">
-       <a href="http://www.google.com"><i class="fa-brands fa-google"></i></a>
+      <button
+        class="btn-secondary"
+        @click="signInWithGoogle"
+      >
+        <a href="http://www.google.com"><i class="fa-brands fa-google" /></a>
         Sign In with Google
       </button>
 
-      <button class="btn-Third" @click="signInWithGithub">
-       <a href="https://github.com/login"><i class="fa-brands fa-github"></i></a>
+      <button
+        class="btn-Third"
+        @click="signInWithGithub"
+      >
+        <a href="https://github.com/login"><i class="fa-brands fa-github" /></a>
         Sign In with Github
       </button>
 
