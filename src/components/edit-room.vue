@@ -10,11 +10,16 @@ const emit = defineEmits(['close-room']);
 </script>
 
 <template>
-  <div class="overlay" v-if="isVisible">
+  <div
+    v-if="isVisible"
+    class="overlay"
+  >
     <div class="overlay-content">
       <h2>Create Room</h2>
       <!-- Room creation form or content goes here -->
-      <button @click="emit('close-room')">Close</button>
+      <button @click="emit('close-room')">
+        Close
+      </button>
     </div>
   </div>
 </template>
