@@ -21,10 +21,10 @@ function update(newTitle){
 
 <template>
   <header>
-    <navBar  />
+    <navBar />
     <searchBar @open-room="isCreateRoomVisible = true" />
 
-    <categoryBar @changetitle ="update" />
+    <categoryBar @changetitle="update" />
   </header>
   <main class="room-view-container">
     <div class="room">
@@ -48,11 +48,12 @@ function update(newTitle){
         </div>
       </div>
     </div>
-    <createRoom :isVisible="isCreateRoomVisible" @close-room="isCreateRoomVisible = false" />
+    <createRoom
+      :is-visible="isCreateRoomVisible"
+      @close-room="isCreateRoomVisible = false"
+    />
     
-  </section>
-
-  
+  </main>
 </template>
 
 <style scoped>
@@ -60,7 +61,7 @@ function update(newTitle){
   display: grid;
   column-gap: 20px;
   row-gap: 20px;
-  grid-template-columns: 28% 1fr 1fr; /
+  grid-template-columns: 28% 1fr 1fr; 
   grid-template-rows: 300px auto auto; 
   background-color: rgb(255, 255, 255);
   width: 96%;
