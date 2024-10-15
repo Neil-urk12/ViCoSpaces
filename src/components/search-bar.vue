@@ -1,22 +1,26 @@
 <script setup>
 import CreateRoom from './create-room-button.vue';
 
-//**const props = defineProps({
-   // placeholder: String,
-    //modelValue: {
-      //  type: String,
-    //    required: true,
-  //  }
- //})
-const host = () => {
-    alert("Hosted a Room");
-}  
+function notify (){
+  // used in the joint btn
+  alert('hello babe, I love you');
+}
+// test functions
 const filter = () => {
   alert("fitered");
 }
+
 const sort = () => {
   alert("sorted search");
 }
+
+
+// to activale the create room overlay
+const emit = defineEmits(['open-room']);
+
+
+
+
 </script>
 
 <template>
@@ -29,7 +33,8 @@ const sort = () => {
           alt="search-icon"
           width="30px"
         >
-        <!-- <input class="search-input" type="text" name="" id="" placeholder="Search here..."> -->
+
+        <!-- search bar input -->
         <input
           id=""
           type="text"
@@ -37,7 +42,6 @@ const sort = () => {
           name="search-input"
           placeholder="Search here..."
         >
-        <!-- <input type="text" v-model="search" @input="$emit('update:modelValue', $event.targe)" placeholder="Search here..." /> -->
 
         <div class="filter-sort">
           <a
@@ -66,11 +70,15 @@ const sort = () => {
         </div>
       </div>    
       <div class="button-container">
-        <button>Join Room</button>
+        <button @click="notify">Join Room</button>
+
         <CreateRoom
           label="Host"
-          @click="host"
-        />    
+          @click="emit('open-room')"
+        />
+
+            
+            
         <!-- <button @click="BtnCreateRoom">+ Create Room</button> -->
       </div>
     </div>
