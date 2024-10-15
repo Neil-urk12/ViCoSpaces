@@ -16,6 +16,7 @@ const router = useRouter();
 
 function goToRoom() {
   console.log('Navigating to room...');
+  //make sure that the name matches to the router path name(ex. path'/', name: *this is the name*, )
   router.push({ name: 'Room' });
 }
 
