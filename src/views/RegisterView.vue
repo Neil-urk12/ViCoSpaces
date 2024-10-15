@@ -1,37 +1,39 @@
 <script setup>
-    import { ref } from 'vue';
-    import { createUserWithEmailAndPassword } from "firebase/auth";
-    import { auth } from '../firebase/firebaseconfig';
-    import { useRouter } from 'vue-router';
-    import logonav from '@/components/logonav.vue';
+  import { ref } from 'vue'
+import { createUserWithEmailAndPassword } from "firebase/auth"
+import { auth } from '../firebase/firebaseconfig'
+import { useRouter } from 'vue-router'
+import logonav from '@/components/landing-page-nav.vue'
 
-    const email = ref('')
-    const password = ref('')
-    const router = useRouter()
+const email = ref('')
+const password = ref('')
+const router = useRouter()
 
-    const register = () => {
-        createUserWithEmailAndPassword(auth, email.value, password.value)
-        .then((data) => {
-            // const user = data.user;
-            router.push('/')
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log(errorCode, errorMessage)
-        })
-    }
-
-    const signInWithGoogle = () => {
-        console.log('Google Sign In')
-    }
-    
+const register = () => {
+  createUserWithEmailAndPassword(auth, email.value, password.value)
+  .then((data) => {
+      // const user = data.user;
+      router.push('/')
+  })
+  .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode, errorMessage)
+  })
+}
+const signInWithGoogle = () => {
+    console.log('Google Sign In')
+}
 </script>
 
 <template>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <!-- for revision after the UI person is back from trip
-  functionality only no design -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  >
   <logonav />
   <div class="signup">
     <h1>Sign Up</h1>
@@ -50,16 +52,24 @@
         type="password"
         placeholder="Enter password"
       >
-      <button class="btn-primary" @click="register">
+      <button
+        class="btn-primary"
+        @click="register"
+      >
         Sign Up
       </button>
-      <button class="btn-secondary" @click="signInWithGoogle">
-        <a href="http://www.google.com"><i class="fa-brands fa-google"></i></a>
+      <button
+        class="btn-secondary"
+        @click="signInWithGoogle"
+      >
+        <a href="http://www.google.com"><i class="fa-brands fa-google" /></a>
         Sign Up with Google
       </button>
-
-      <button class="btn-Third" @click="signUpWithGithub">
-       <a href="https://github.com/login"><i class="fa-brands fa-github"></i></a>
+      <button
+        class="btn-Third"
+        @click="signUpWithGithub"
+      >
+        <a href="https://github.com/login"><i class="fa-brands fa-github" /></a>
         Sign Up with Github
       </button>
 
@@ -68,11 +78,6 @@
           Sign In
         </router-link>
       </p>
-      <!-- <p>
-        Don't have an account? <router-link to="/register">
-          Sign Up
-        </router-link>
-      </p> -->
     </div>
   </div>
 </template>
@@ -87,25 +92,20 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
 }
-
 h1 {
   text-align: center;
   color: #333;
-  /* margin-bottom: 1.5rem; */
   font-size: 2.5rem;
 }
-
 .form-group {
   display: flex;
   flex-direction: column;
 }
-
 label {
   margin-bottom: 1rem;
   color: #555;
   font-weight: bold;
 }
-
 input {
   padding: 0.75rem;
   margin-bottom: 5%;
@@ -115,18 +115,16 @@ input {
   cursor: pointer;
 }
 ::placeholder{
-  color: lightgrey;
+  color: black;
 }
 input:hover{
   background-color: #7474740d;
 }
-
 input:focus {
   outline: none;
   border-color: #4a90e2;
   box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
 }
-
 .btn {
   padding: 0.75rem;
   border: none;
@@ -135,7 +133,6 @@ input:focus {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
 .btn-primary {
   background-color: #4a90e2;
   color: white;
@@ -150,7 +147,6 @@ input:focus {
 .btn-primary:hover {
   background-color: #0f7bff;
 }
-
 .btn-secondary {
   background-color: #ffffff;
   color: #4a90e2;
@@ -163,17 +159,14 @@ input:focus {
   font-size: 1.1rem;
   margin-bottom: 1rem;
 }
-
 .btn-secondary:hover {
   background-color: #e7f2fe;
 }
-
 .fa-google{
   font-size: 1.3rem;
   margin-right: 10px;
   color: blue;
 }
-
 .btn-Third{
   background-color: #ffffff;
   color: #4a90e2;
@@ -185,7 +178,6 @@ input:focus {
   font-weight: 500;
   font-size: 1.1rem;
 }
-
 .fa-github{
   font-size: 1.3rem;
   margin-right: 10px;
@@ -193,29 +185,24 @@ input:focus {
 .btn-Third:hover {
   background-color: #e7f2fe;
 }
-
 .switch-form {
   text-align: center;
   margin-top: 1rem;
   font-size: 0.9rem;
   color: #666;
 }
-
 .switch-form a {
   color: #4a90e2;
   text-decoration: none;
   font-weight: bold;
 }
-
 .switch-form a:hover {
   text-decoration: underline;
 }
-
 @media (max-width: 480px) {
   .signup {
     padding: 1.5rem;
   }
-
   input, .btn {
     font-size: 0.9rem;
   }

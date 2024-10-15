@@ -15,24 +15,15 @@
   </main>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue';
 import CreateRoomButton from './search-bar.vue';
 
-export default {
-  components: {
-    CreateRoomButton,
-  },
-  data() {
-    return {
-      rooms: [], // Store rooms in parent
-    };
-  },
-  methods: {
-    createRoom() {
-      this.rooms.push({}); // Add a new room
-    },
-  },
-};
+const rooms = ref([]);
+
+function createRoom() {
+  rooms.value.push({});
+}
 </script>
 
 <style scoped>
@@ -41,11 +32,9 @@ export default {
   margin: 0;
   box-sizing: border-box;
 }
-
 main {
   padding: 20px;
 }
-
 .room-container {
   display: flex;
   justify-content: center;
@@ -54,7 +43,6 @@ main {
   margin: 20px 0px 0px 20px;
 
 }
-
 .room {
   width: 200px;
   height: 200px;
@@ -62,12 +50,10 @@ main {
   display: flex;
   flex-direction: column;
 }
-
 .top-section {
   background-color: blue;
   height: 50%;
 }
-
 .bottom-section {
   background-color: white;
   height: 50%;
