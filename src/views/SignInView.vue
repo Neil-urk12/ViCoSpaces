@@ -1,47 +1,49 @@
 <script setup>
 import { ref } from 'vue';
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../firebase/firebaseconfig';
 import { useRouter } from 'vue-router';
 import logonav from '@/components/landing-page-nav.vue';
+import { useAuthStore } from '@/stores/authStore';
   const email = ref('')
   const password = ref('')
   const router = useRouter()
   const errorMessage = ref()
+  const auth = useAuthStore()
 
-  const signIn = () => {
-      signInWithEmailAndPassword(auth, email.value, password.value)
-      .then((data) => {
-          // const user = data.user;
-          router.push('/')
-      })
-      .catch((error) => {
-          switch(error.code){
-              case 'auth/wrong-password':
-                  errorMessage.value = 'Wrong Password'
-                  document.querySelector("#password").style.border = "2px solid red"
-                  break
-              case 'auth/user-not-found':
-                  errorMessage.value = 'User not found'
-                  document.querySelector("#password").style.border = "2px solid red"
-                  document.querySelector("#email").style.border = "2px solid red"       
-                  break
-              case 'auth/too-many-requests':
-                  errorMessage.value = 'Too many requests'
-                  document.querySelector("#password").style.border = "2px solid red"
-                  document.querySelector("#email").style.border = "2px solid red"       
-                  break
-              case 'auth/invalid-email':
-                  errorMessage.value = 'Invalid Email'
-                  document.querySelector("#password").style.border = "2px solid red"
-                  document.querySelector("#email").style.border = "2px solid red"        
-                  break
-              case 'auth/user-disabled':
-                  errorMessage.value = 'User disabled'
-                  break
-          }
-      })
-  }
+  const login = async () => {
+    try {
+      await auth.login({ email: email.value, password: password.value });
+      router.push('/home');
+    } catch (error) {
+      switch (error.code) {
+        case 'auth/wrong-password':
+          errorMessage.value = 'Wrong Password';
+          document.querySelector("#password").style.border = "2px solid red";
+          break;
+        case 'auth/user-not-found':
+          errorMessage.value = 'User not found';
+          document.querySelector("#password").style.border = "2px solid red";
+          document.querySelector("#email").style.border = "2px solid red";
+          break;
+        case 'auth/too-many-requests':
+          errorMessage.value = 'Too many requests';
+          document.querySelector("#password").style.border = "2px solid red";
+          document.querySelector("#email").style.border = "2px solid red";
+          break;
+        case 'auth/invalid-email':
+          errorMessage.value = 'Invalid Email';
+          document.querySelector("#password").style.border = "2px solid red";
+          document.querySelector("#email").style.border = "2px solid red";
+          break;
+        case 'auth/user-disabled':
+          errorMessage.value = 'User disabled';
+          break;
+        default:
+          errorMessage.value = 'An error occurred during login';
+          break;
+      }
+    }
+  };
+
   const signInWithGoogle = () => {
       console.log('Google Sign In')
   }
@@ -81,7 +83,7 @@ import logonav from '@/components/landing-page-nav.vue';
       </p>
       <button
         class="btn-primary"
-        @click="signIn"
+        @click="login"
       >
         Sign In
       </button><br>

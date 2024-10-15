@@ -1,5 +1,17 @@
 <script setup>
-    import { RouterLink } from 'vue-router';
+import { RouterLink } from 'vue-router';
+import { useAuthStore } from '@/stores/authStore';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const authStore = useAuthStore();
+
+const { isAuthenticated } = authStore;
+
+if (!isAuthenticated) {
+  router.push('/login');
+}
 </script>
 <template>
   <link
@@ -22,8 +34,17 @@
           </p>
         </div>
         <div class="rightnav">
-          <RouterLink to="/login">
+          <RouterLink
+            v-if="!isAuthenticated"
+            to="/login"
+          >
             Log in
+          </RouterLink>
+          <RouterLink
+            v-else
+            to="/home"
+          >
+            Home
           </RouterLink>
         </div>
       </nav>
@@ -40,9 +61,18 @@
         <li><b>Stay Connected:</b> Use the chat to encourage and motivate each other, but keep distractions to a minimum.</li>
       </ol>
       <button class="signbutton">
-        <RouterLink to="/login">
+        <RouterLink
+          v-if="!isAuthenticated"
+          to="/login"
+        >
           Get Started it's FREE &nbsp; <span><i class="fa-solid fa-arrow-right" /></span>
         </RouterLink>
+        <RouterLink
+          v-else
+          to="/home"
+        >
+          Continue where you left off &nbsp; <span><i class="fa-solid fa-arrow-right" /></span>
+        </RouterLink> 
       </button>
       <p style="font-size: 13px; margin:7px 0 0 3%; color:rgba(0, 0, 0, 0.699);">
         Free Forever. No Credit Card.

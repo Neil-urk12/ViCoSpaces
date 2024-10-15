@@ -44,7 +44,7 @@ const join = () =>{
   display: grid;
   column-gap: 20px;
   row-gap: 20px;
-  grid-template-columns: 28% 1fr 1fr; /
+  grid-template-columns: 28% 1fr 1fr; 
   grid-template-rows: 300px auto auto; 
   background-color: rgb(255, 255, 255);
   width: 96%;

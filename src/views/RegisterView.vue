@@ -1,25 +1,22 @@
 <script setup>
-  import { ref } from 'vue'
-import { createUserWithEmailAndPassword } from "firebase/auth"
-import { auth } from '../firebase/firebaseconfig'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import logonav from '@/components/landing-page-nav.vue'
+import { useAuthStore } from '@/stores/authStore'
 
 const email = ref('')
 const password = ref('')
 const router = useRouter()
+const authStore = useAuthStore()
 
-const register = () => {
-  createUserWithEmailAndPassword(auth, email.value, password.value)
-  .then((data) => {
-      // const user = data.user;
-      router.push('/')
-  })
-  .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorCode, errorMessage)
-  })
+
+const register = async () => {
+  try {
+    await authStore.register({ email: email.value, password: password.value });
+    router.push('/home');
+  } catch (error) {
+    console.error('Error during registration:', error.message);
+  }
 }
 const signInWithGoogle = () => {
     console.log('Google Sign In')
