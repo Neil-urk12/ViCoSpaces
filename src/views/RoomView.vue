@@ -6,7 +6,6 @@ import CanvasWhiteBoard from '/src/components/CanvasWhiteBoard.vue';
   <div class="room">
     <h1>Room</h1>
   </div>
-  <Whiteboard />
   <CanvasWhiteBoard />
 </template>
 

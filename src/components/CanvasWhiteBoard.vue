@@ -1,7 +1,70 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { FabricImage } from 'fabric';
 import * as fabric from 'fabric';
+import { ref as dbRef, onValue, set, off } from 'firebase/database'
+import { realTimeDb as db } from '@/firebase/firebaseconfig';
+
+const localCursor = ref({ x: 0, y: 0, username: '' })
+const otherCursors = ref({})
+const userId = ref(generateUserId())
+const username = ref(`User_${userId.value.slice(0, 5)}`)
+
+const cursorsRef = dbRef(db, 'cursors')
+const throttle = (func, limit) => {
+  let inThrottle
+  return function() {
+    const args = arguments
+    const context = this
+    if (!inThrottle) {
+      func.apply(context, args)
+      inThrottle = true
+      setTimeout(() => inThrottle = false, limit)
+    }
+  }
+}
+
+const updateFirebaseCursor = throttle((x, y) => {
+  set(dbRef(db, `cursors/${userId.value}`), {
+    x,
+    y,
+    username: username.value
+  })
+}, 50) // Throttle to 50ms
+
+const updateCursorPosition = (event) => {
+  if (canvasEl.value) {
+    const rect = canvasEl.value.getBoundingClientRect();
+    const offsetX = 140;
+    const offsetY = 10;
+    const x = event.clientX - rect.left + offsetX;
+    const y = event.clientY - rect.top + offsetY;
+    localCursor.value = { x, y, username: username.value };
+    updateFirebaseCursor(x, y);
+  }
+}
+
+onMounted(() => {
+  localCursor.value.username = username.value
+  onValue(cursorsRef, (snapshot) => {
+    const data = snapshot.val() || {}
+    otherCursors.value = Object.entries(data).reduce((acc, [key, value]) => {
+      if (key !== userId.value) {
+        acc[key] = value
+      }
+      return acc
+    }, {})
+  })
+})
+
+onUnmounted(() => {
+  off(cursorsRef)
+  set(dbRef(db, `cursors/${userId.value}`), null)
+})
+
+function generateUserId() {
+  return Math.random().toString(36).substr(2, 9)
+}
 
 const canvasEl = ref(null);
 let canvas = null;
@@ -21,6 +84,9 @@ onMounted(() => { //Initializing the Whiteboard with Snapping Grid
     height: window.innerHeight * 0.85,
     backgroundColor: '#fff',
   });
+  canvas.defaultCursor = 'none';
+  canvas.hoverCursor = 'none';
+  canvas.moveCursor = 'none';
   canvas.isDrawingMode = false;
   canvas.renderAll();
   
@@ -299,7 +365,7 @@ const downloadCanvasAsImage = () => {//Exporting Canvas into IMG Feature
 </script>
 
 <template>
-  <div class="whiteboard-container">
+  <div class="whiteboard-container" @mousemove="updateCursorPosition">
     <div class="sidebar">
       <button @click="addTextToCanvas" title="Add Text">📝</button>
       <button @click="showShapeLibrary = !showShapeLibrary" title="Shape Library">🧩</button>
@@ -414,11 +480,36 @@ const downloadCanvasAsImage = () => {//Exporting Canvas into IMG Feature
     </div>
     <div class="canvas-area">
       <canvas ref="canvasEl"></canvas>
+      <div
+        class="cursor"
+        :style="{ left: `${localCursor.x}px`, top: `${localCursor.y}px` }"
+      >
+        <div class="spaceship">
+          👆
+        </div>
+        <div class="username-label">
+          {{ localCursor.username }}
+        </div>
+      </div>
+      <div
+        v-for="(cursor, userId) in otherCursors"
+        :key="userId"
+        class="cursor"
+        :style="{ left: `${cursor.x}px`, top: `${cursor.y}px` }"
+      >
+        <div class="spaceship" />
+        <div class="username-label">
+          {{ cursor.username }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+* {
+  cursor: none;
+}
 .whiteboard-container {
   display: flex;
   height: 100vh;
@@ -456,7 +547,7 @@ const downloadCanvasAsImage = () => {//Exporting Canvas into IMG Feature
   grid-template-columns: repeat(3, 50px);
   gap: 10px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: 20; 
+  z-index: 10; 
 }
 
 .brush-options-popup {
@@ -521,10 +612,44 @@ const downloadCanvasAsImage = () => {//Exporting Canvas into IMG Feature
   align-items: center;
   padding: 10px;
   position: relative;
+  cursor: none;
 }
 
 canvas {
   border: 2px solid #ccc;
   background-color: white;
+  cursor: none;
+}
+
+.cursor {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: all 0.1s ease;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.spaceship {
+  width: 30px;
+  height: 30px;
+  background-color: #ff9900;
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  transform: rotate(-45deg);
+}
+
+.username-label {
+  font-size: 12px;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #0f0f3f;
+  padding: 2px 4px;
+  border-radius: 4px;
+  white-space: nowrap;
+  position: absolute;
+  top: 41%;
+  left: 229%;
+  transform: translateX(-50%);
+  margin-top: 5px;
 }
 </style>
