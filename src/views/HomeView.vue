@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 // import navBar from '@/components/nav-bar.vue';
 // import searchBar from '@/components/search-bar.vue';
-import myHome from '@/components/myHome.vue';
+import myHome from '@/components/home-components.vue';
 import createRoom from '@/components/create-room.vue';
 // import editRoom from '@/components/edit-room.vue';
 
