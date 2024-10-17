@@ -1,12 +1,12 @@
 <script setup>
-const Whiteboard =  () => import('@/components/whiteboard.vue')
+import CanvasWhiteBoard from '/src/components/CanvasWhiteBoard.vue';
 </script>
 
 <template>
   <div class="room">
     <h1>Room</h1>
   </div>
-  <Whiteboard />
+  <CanvasWhiteBoard />
 </template>
 
 <style scoped>
@@ -17,4 +17,5 @@ const Whiteboard =  () => import('@/components/whiteboard.vue')
   font-size: 10px;
   font-weight: bold;
 }
+
 </style>
