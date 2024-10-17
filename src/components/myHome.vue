@@ -29,6 +29,10 @@ const editHostRoom = () => {
           <img src="../images/logo/logo.png" alt="ViCoSpaces-Logo" class="logo-img">
           <span class="logo-name">ViCoSpaces</span>
         </div>
+        <div class="burger" @click="toggleMenu">
+          <img src="../images/SVG/burger-simple-svgrepo-com.svg" alt="menu-icon" width="30px" />
+        </div>
+
         <div class="nav-links-and-buttons">
           <ul class="pages-container">
             <li><a href="#">Home</a></li>
@@ -114,6 +118,11 @@ const editHostRoom = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.burger {
+  display: none;
+  cursor: pointer;
 }
 
 .logo-container {
@@ -302,16 +311,53 @@ button {
 }
 }
 
-@media (min-width: 414px) {
-
+@media (max-width: 641px) {
   .nav-bar {
-  background: #003d5b;
-  font-family: Calibri, sans-serif;
+    background: #003d5b;
+    font-family: Calibri, sans-serif;
+    align-items: center;
+    height: 70px;
+
+  }
+
+  .burger {
+    display: block;
+
+  }
+
+  .logo-container {
+  display: none;
   align-items: center;
-  height: 70px;
-  padding: 15px 40px 0px 40px;
+  font-size: 35px;
+  font-weight: 600;
+  color: white;
 }
-  
-  
+
+.logo-img {
+  height: 40px;
+  margin-right: 10px;
+}
+
+  .nav-links-and-buttons {
+    display: none;
+  }
+
+  .nav-links-and-buttons.menu-open {
+    display: flex;
+    position: absolute;
+    top: 70px;
+    right: 0;
+    background: #003d5b;
+    width: 100%;
+    padding: 20px;
+    gap: 20px;
+    z-index: 10;
+  }
+
+  .pages-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
 }
 </style>
