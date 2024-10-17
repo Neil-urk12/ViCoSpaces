@@ -1,9 +1,9 @@
 <script setup>
 import { ref } from 'vue';
 
-import navBar from '@/components/nav-bar.vue';
-import searchBar from '@/components/search-bar.vue';
-import categoryBar from '@/components/categoryBar.vue';
+// import navBar from '@/components/nav-bar.vue';
+// import searchBar from '@/components/search-bar.vue';
+import myHome from '@/components/home-components.vue';
 import createRoom from '@/components/create-room.vue';
 // import editRoom from '@/components/edit-room.vue';
 
@@ -21,8 +21,9 @@ function update(newTitle){
 
 <template>
   <header>
-    <navBar />
-    <searchBar @open-room="isCreateRoomVisible = true" />
+    <!-- <navBar />
+    <searchBar @open-room="isCreateRoomVisible = true" /> -->
+    <myHome @open-room="isCreateRoomVisible = true" />
 
     <categoryBar @changetitle="update" />
   </header>
