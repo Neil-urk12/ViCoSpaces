@@ -26,11 +26,22 @@ const editHostRoom = () => {
     <nav class="nav-bar">
       <div class="nav-div">
         <div class="logo-container">
-          <img src="../images/logo/logo.png" alt="ViCoSpaces-Logo" class="logo-img">
+          <img
+            src="../images/logo/logo.png"
+            alt="ViCoSpaces-Logo"
+            class="logo-img"
+          >
           <span class="logo-name">ViCoSpaces</span>
         </div>
-        <div class="burger" @click="toggleMenu">
-          <img src="../images/SVG/burger-simple-svgrepo-com.svg" alt="menu-icon" width="30px" />
+        <div
+          class="burger"
+          @click="toggleMenu"
+        >
+          <img
+            src="../images/SVG/burger-simple-svgrepo-com.svg"
+            alt="menu-icon"
+            width="30px"
+          >
         </div>
 
         <div class="nav-links-and-buttons">
@@ -39,9 +50,15 @@ const editHostRoom = () => {
             <li><a href="#">About</a></li>
             <li><a href="#">Contact</a></li>
           </ul>
-          <a href="" id="user-profile">
+          <a
+            id="user-profile"
+            href=""
+          >
             <div class="user-profile">
-              <img src="../images/black-default-user-profile-ll(1).webp" alt="User Profile">
+              <img
+                src="../images/black-default-user-profile-ll(1).webp"
+                alt="User Profile"
+              >
             </div>
           </a>
         </div>
@@ -67,7 +84,10 @@ const editHostRoom = () => {
         >
 
         <div class="filter-sort">
-          <a href="#" @click.prevent="filter">
+          <a
+            href="#"
+            @click.prevent="filter"
+          >
             <img
               class="filter-icon"
               src="../images/SVG/filters-2-svgrepo-com.svg"
@@ -76,7 +96,10 @@ const editHostRoom = () => {
             >
           </a>
 
-          <a href="#" @click.prevent="sort">
+          <a
+            href="#"
+            @click.prevent="sort"
+          >
             <img
               class="sort-icon"
               src="../images/SVG/sort-vertical-svgrepo-com.svg"
@@ -88,8 +111,12 @@ const editHostRoom = () => {
       </div>
 
       <div class="button-container">
-        <button @click="notifyJoin">Join Room</button>
-        <button @click="editHostRoom">Host Room</button>
+        <button @click="notifyJoin">
+          Join Room
+        </button>
+        <button @click="editHostRoom">
+          Host Room
+        </button>
       </div>
     </div>
 
