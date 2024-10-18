@@ -1,5 +1,4 @@
 <script setup>
-// Functions from search-bar
 function notifyJoin() {
   alert('hello babe, I love you');
 }
@@ -12,11 +11,10 @@ const sort = () => {
   alert("sorted search");
 }
 
-// To activate the create room overlay
 const emit = defineEmits(['open-room']);
 
-const editHostRoom = () => {
-    console.log('button clicked')
+const HostRoom = () => {
+  console.log('button clicked')
   emit('open-room');
 }
 </script>
@@ -43,12 +41,25 @@ const editHostRoom = () => {
             width="30px"
           >
         </div>
-
         <div class="nav-links-and-buttons">
           <ul class="pages-container">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
+            <ul class="pages-container">
+              <li>
+                <router-link to="/">
+                  Home
+                </router-link>
+              </li>
+              <li>
+                <router-link to="/about">
+                  About
+                </router-link>
+              </li>
+              <li>
+                <router-link to="/contact">
+                  Contact
+                </router-link>
+              </li>
+            </ul>
           </ul>
           <a
             id="user-profile"
@@ -114,7 +125,7 @@ const editHostRoom = () => {
         <button @click="notifyJoin">
           Join Room
         </button>
-        <button @click="editHostRoom">
+        <button @click="HostRoom">
           Host Room
         </button>
       </div>

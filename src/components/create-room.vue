@@ -1,20 +1,57 @@
 <script setup>
-import { useRouter } from 'vue-router';
+import { computed, ref } from 'vue'
+import { ref as dbRef, push, set } from 'firebase/database'
+import { realTimeDb as database } from '@/firebase/firebaseconfig';
 
-const emit = defineEmits(['close-room']);
+import { useRouter } from 'vue-router'
 
-const props = defineProps({
-  isVisible: Boolean
-});
+const emit = defineEmits(['close-room'])
+const privacy = ref('private')
+const isPrivate = computed(() => privacy.value === 'private')
+const props = defineProps({isVisible: Boolean})
+const router = useRouter()
 
-const router = useRouter();
+const roomName = ref('')
+const password = ref('')
+const roomCapacity = ref(1)
+const error = ref('')
+const isLoading = ref(false)
 
-function goToRoom() {
-  console.log('Navigating to room...');
-  //make sure that the name matches to the router path name(ex. path'/', name: *this is the name*, )
-  router.push({ name: 'Room' });
+const createRoom = async () => {
+  try {
+    isLoading.value = true
+    error.value = ''
+
+    if (!roomName.value.trim()) 
+      throw new Error('Room name is required')
+    if (isPrivate.value && !password.value.trim()) 
+      throw new Error('Password is required for private rooms')
+
+    const room = {
+      name: roomName.value,
+      isPrivate: isPrivate.value,
+      password: isPrivate.value ? password.value : null,
+      capacity: roomCapacity.value,
+      createdAt: Date.now(),
+    }
+
+    const roomsRef = dbRef(database, 'rooms')
+    const newRoomRef = push(roomsRef)
+    await set(newRoomRef, room)
+
+    console.log('Room created:', newRoomRef.key)
+    router.push({ 
+      name: 'Room', 
+      params: { id: newRoomRef.key },
+      query: { name: room.name } 
+    });
+  } catch (err) {
+    console.error('Error creating room:', err)
+    error.value = err.message
+  } finally {
+    isLoading.value = false
+  }
 }
-
 </script>
 
 <template>
@@ -40,13 +77,18 @@ function goToRoom() {
       <div class="edit-room-inputs">
         <div class="name-container">
           <input
+            v-model="roomName"
             class="input-room-name"
             type="text"
-            placeholder="Name"
+            placeholder="Room Name"
           >
         </div>
-        <div class="password-container">
+        <div
+          v-if="isPrivate"
+          class="password-container"
+        >
           <input
+            v-model="password"
             class="input-room-password"
             type="password"
             placeholder="Password"
@@ -57,6 +99,7 @@ function goToRoom() {
       <div class="room-info">
         <select
           id="status"
+          v-model="privacy"
           name="status"
           class="status"
         >
@@ -80,16 +123,16 @@ function goToRoom() {
             <option value="2">
               2
             </option>
-            <option value="1">
+            <option value="3">
               3
             </option>
-            <option value="2">
+            <option value="4">
               4
             </option>
-            <option value="1">
+            <option value="5">
               5
             </option>
-            <option value="2">
+            <option value="6">
               6
             </option>
           </select>
@@ -98,7 +141,7 @@ function goToRoom() {
       <div class="button-container">
         <button
           class="create-btn"
-          @click="goToRoom"
+          @click="createRoom"
         >
           Create
         </button>  
@@ -119,7 +162,6 @@ function goToRoom() {
   justify-content: center;
   align-items: center;
 }
-
 .edit-room {
   box-sizing: border-box;
   border-radius: 12px;
@@ -146,26 +188,20 @@ header {
   width: 100%;
   justify-content: space-between;
 }
-
 .close-btn {
   background-color: #2d8eff;
   border: none;
 }
-
 .close-btn img {
   height: 30px;
   width: 30px;
 }
-
-
-
 .name-container {
   width: 100%;
   padding: 14px;
   border-radius: 12px;
   background: #f6f6f6;
 }
-
 .input-room-name {
   width: 100%;
   font-size: 16px;
@@ -181,7 +217,6 @@ header {
   border-radius: 12px;
   background: #f6f6f6;
 }
-
 .input-room-password {
   width: 100%;
   font-size: 16px;
@@ -191,7 +226,6 @@ header {
   background: transparent;
   flex: 1;
 }
-
 .room-info{
   display: flex;
   justify-content: flex-start;
@@ -199,13 +233,10 @@ header {
   width: 100%;
 
 }
-
-
 select {
   color:#2d8eff;
   border: none;
 }
-
 .status { 
   width: 80px;
   padding: 5px;
@@ -218,7 +249,6 @@ select {
   background-position-x: 100%;
   background-position-y: 6px;
 }
-
 .capacity {
   width: 40px;
   padding: 5px;
@@ -237,17 +267,14 @@ select {
   display: flex;
   justify-content: flex-end;
 }
-.create-btn{
-  
-        
+.create-btn{        
   background-color: #fff;
   color:#2d8eff;
   border: none;
   border-radius: 6px;
   width: 30%;
   height: 35px;
-  font-weight: bold;
-    
+  font-weight: bold; 
 }
 /* Responsive Styles */
 @media (max-width: 768px) {
@@ -256,35 +283,28 @@ select {
     padding: 15px;
     gap: 15px;
   }
-
   header {
     gap: 1em;
   }
-
   .name-container {
     padding: 10px;
   }
-
   .input-room-name {
     font-size: 14px;
   }
 }
-
 @media (max-width: 480px) {
   .edit-room {
     width: 95%;
     padding: 10px;
     gap: 10px;
   }
-
   .input-room-name {
     font-size: 12px;
   }
-
   .room-name {
     font-size: 18px;
   }
-
   .close-btn img {
     height: 25px;
     width: 25px;
