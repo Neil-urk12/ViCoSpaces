@@ -1,17 +1,13 @@
 <script setup>
 import { ref } from 'vue';
-
-// import navBar from '@/components/nav-bar.vue';
-// import searchBar from '@/components/search-bar.vue';
 import myHome from '@/components/home-components.vue';
 import createRoom from '@/components/create-room.vue';
-// import editRoom from '@/components/edit-room.vue';
 
 const join = () =>{
   alert("neil joined the program!");
 }
 
-const isCreateRoomVisible = ref(false); // Reactive variable to control overlay visibility
+const isCreateRoomVisible = ref(false);
 const title = ref('Production Design');
 
 function update(newTitle){
@@ -22,7 +18,6 @@ function update(newTitle){
 <template>
   <header>
     <myHome @open-room="isCreateRoomVisible = true" />
-
     <categoryBar @changetitle="update" />
   </header>
   <main class="room-view-container">
@@ -33,7 +28,7 @@ function update(newTitle){
         </div>
       </div>
       <div class="text-content">
-        <h2> Production Design</h2><!--Tittle holder to be modified-->
+        <h2> Production Design</h2>
         <div class="joined-users">
           <i class="icon" />
         </div>
@@ -147,6 +142,4 @@ function update(newTitle){
   color: white;
   background-color: #2d8eff;
 }
-
-
 </style>
