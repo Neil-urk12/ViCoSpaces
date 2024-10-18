@@ -1,28 +1,24 @@
 <script setup>
-import navBar from '@/components/nav-bar.vue';
-import searchBar from '@/components/search-bar.vue';
-import categoryBar from '@/components/category-bar.vue';
-import { useRouter } from 'vue-router';
-const router = useRouter()
-
-
-if(sessionStorage.getItem('loggedin') != 'true'){
-    router.push('/login')
-}
-
-
+import { ref } from 'vue';
+import myHome from '@/components/home-components.vue';
+import createRoom from '@/components/create-room.vue';
 
 const join = () =>{
   alert("neil joined the program!");
-} 
-  
+}
+
+const isCreateRoomVisible = ref(false);
+const title = ref('Production Design');
+
+function update(newTitle){
+  title.value = newTitle;
+}
 </script>
 
 <template>
   <header>
-    <navBar />
-    <searchBar />
-    <categoryBar />
+    <myHome @open-room="isCreateRoomVisible = true" />
+    <categoryBar @changetitle="update" />
   </header>
   <main class="room-view-container">
     <div class="room">
@@ -32,7 +28,7 @@ const join = () =>{
         </div>
       </div>
       <div class="text-content">
-        <h2> Production Design</h2><!--Tittle holder to be modified-->
+        <h2> Production Design</h2>
         <div class="joined-users">
           <i class="icon" />
         </div>
@@ -46,6 +42,10 @@ const join = () =>{
         </div>
       </div>
     </div>
+    <createRoom
+      :is-visible="isCreateRoomVisible"
+      @close-room="isCreateRoomVisible = false"
+    />
   </main>
 </template>
 
@@ -54,7 +54,7 @@ const join = () =>{
   display: grid;
   column-gap: 20px;
   row-gap: 20px;
-  grid-template-columns: 28% 1fr 1fr;
+  grid-template-columns: 28% 1fr 1fr; 
   grid-template-rows: 300px auto auto; 
   background-color: rgb(255, 255, 255);
   width: 96%;

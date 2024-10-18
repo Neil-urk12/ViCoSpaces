@@ -1,62 +1,56 @@
 <script setup>
 import { ref } from 'vue';
-import { signInWithEmailAndPassword , signInWithPopup  } from "firebase/auth";
-import { auth , googleprovider } from '../firebase/firebaseconfig';
 import { useRouter } from 'vue-router';
+import { signInWithPopup } from 'firebase/auth';
+import { authnow , googleprovider } from '@/firebase/firebaseconfig';
 import logonav from '@/components/landing-page-nav.vue';
+import { useAuthStore } from '@/stores/authStore';
 
   const email = ref('')
   const password = ref('')
   const router = useRouter()
   const errorMessage = ref()
-  const isloggend = ref(false)
+  const auth = useAuthStore()
 
-
-  const signIn = async () => {
-    sessionStorage.getItem('loggedin','true')
+  const login = async () => {
     try {
-      await signInWithEmailAndPassword(auth , email.value , password.value);
-      this.$router.push("/home");
+      await auth.login({ email: email.value, password: password.value });
+      router.push('/home');
     } catch (error) {
-      switch(error.code){
+      switch (error.code) {
+        case 'auth/wrong-password':
+          errorMessage.value = 'Wrong Password';
+          document.querySelector("#password").style.border = "2px solid red";
+          break;
+        case 'auth/user-not-found':
+          errorMessage.value = 'User not found';
+          document.querySelector("#password").style.border = "2px solid red";
+          document.querySelector("#email").style.border = "2px solid red";
+          break;
+        case 'auth/too-many-requests':
+          errorMessage.value = 'Too many requests';
+          document.querySelector("#password").style.border = "2px solid red";
+          document.querySelector("#email").style.border = "2px solid red";
+          break;
         case 'auth/invalid-email':
-          errorMessage.value = 'Complete all fields'
-          document.querySelector("#password").style.border = "2px solid red"
-          document.querySelector("#email").style.border = "2px solid red"
-          break
-        case 'auth/missing-email':
-          errorMessage.value = 'Missing email'
-          document.querySelector("#password").style.border = "2px solid #4a90e2"
-          document.querySelector("#email").style.border = "2px solid red"
-          break
-        case 'auth/missing-password':
-          errorMessage.value = 'Missing password'
-          document.querySelector("#password").style.border = "2px solid red"
-          document.querySelector("#email").style.border = "2px solid #4a90e2"
-          break
-        case 'auth/invalid-credential':
-            errorMessage.value = 'Invalid email'
-            document.querySelector("#password").style.border = "2px solid red"
-            document.querySelector("#email").style.border = "2px solid red"
-            break
+          errorMessage.value = 'Invalid Email';
+          document.querySelector("#password").style.border = "2px solid red";
+          document.querySelector("#email").style.border = "2px solid red";
+          break;
         case 'auth/user-disabled':
-            errorMessage.value = 'User disabled'
-            break
-        case 'auth/network-request-failed':
-            alert('Please Check your network')
-            break
-            }
-            // const errorCode = error.code;
-            const geterrorMessage = error.message;
-            console.log(geterrorMessage)
-      };
-
+          errorMessage.value = 'User disabled';
+          break;
+        default:
+          errorMessage.value = 'An error occurred during login';
+          break;
+      }
     }
-  
+  };
+
   const signInWithGoogle = async () => {
-    sessionStorage.setItem('loggedin', 'true')
+    // sessionStorage.setItem('loggedin', 'true')
       try {
-         const confidential = await signInWithPopup(auth, googleprovider)
+         const confidential = await signInWithPopup(authnow, googleprovider)
             if(confidential){
               const user = confidential.user;
               console.log("User Info: ", user);
@@ -66,13 +60,14 @@ import logonav from '@/components/landing-page-nav.vue';
       } catch (error) {
             console.error(error)
       }
-  }
-
-  if(sessionStorage.getItem('loggedin') === 'true'){
-        router.push('/home')
-  }  
-
-
+    }
+    const checkbox = () => {
+      if(document.querySelector('#password').type == 'password'){
+        document.querySelector('#password').type = 'text'
+      }else{
+        document.querySelector('#password').type = 'password'
+      }
+    }
 </script>
 
 <template>
@@ -100,7 +95,11 @@ import logonav from '@/components/landing-page-nav.vue';
         v-model="password"
         type="password"
         placeholder="Enter password" 
-      ><br>
+      >
+      <label for="checkbox" style="font-weight: 100; cursor: pointer;">
+        <input type="checkbox" @click="checkbox" id="checkbox">
+        Show password
+      </label><br>
       <p
         v-if="errorMessage"
         class="erroMessage"
@@ -109,15 +108,13 @@ import logonav from '@/components/landing-page-nav.vue';
       </p>
       <button
         class="btn-primary"
-        @click="signIn"
-        v-if="!isloggend"
+        @click="login"
       >
         Sign In
       </button><br>
       <button
         class="btn-secondary"
         @click="signInWithGoogle"
-        v-if="!isloggend"
       >
         <img class="imagelogo" src="../images/google.png" alt="google logo" />
         Sign In with Google
@@ -126,7 +123,6 @@ import logonav from '@/components/landing-page-nav.vue';
       <button
         class="btn-Third"
         @click="signInWithGithub"
-        v-if="!isloggend"
       >
         <i class="fa-brands fa-github" />
         Sign In with Github

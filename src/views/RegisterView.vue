@@ -1,70 +1,65 @@
 <script setup>
 import { ref } from 'vue'
-import { createUserWithEmailAndPassword , signInWithPopup } from "firebase/auth"
-import { auth , googleprovider } from '../firebase/firebaseconfig'
 import { useRouter } from 'vue-router'
+import { signInWithPopup } from 'firebase/auth';
+import { authnow , googleprovider } from '@/firebase/firebaseconfig';
 import logonav from '@/components/landing-page-nav.vue'
+import { useAuthStore } from '@/stores/authStore'
 
 
 const email = ref('')
 const password = ref('')
 const router = useRouter()
 const errorMessage = ref()
-let isloggend = ref()
+const authStore = useAuthStore()
 
 
 const register = async () => {
   try {
-    await createUserWithEmailAndPassword(auth , email.value, password.value);
-    router.push("/home");
-
+    await authStore.register({ email: email.value, password: password.value });
+    router.push('/home');
   } catch (error) {
-      switch(error.code){
-        case 'auth/invalid-email':
-          errorMessage.value = 'Complete all fields'
-          document.querySelector("#password").style.border = "2px solid red"
-          document.querySelector("#email").style.border = "2px solid red"
-          break
-        case 'auth/missing-email':
-          errorMessage.value = 'Missing email'
-          document.querySelector("#password").style.border = "2px solid #4a90e2"
-          document.querySelector("#email").style.border = "2px solid red"
-          break
-        case 'auth/missing-password':
-          errorMessage.value = 'Missing password'
-          document.querySelector("#password").style.border = "2px solid red"
-          document.querySelector("#email").style.border = "2px solid #4a90e2"
-          break
-        case 'auth/email-already-in-use':
-          errorMessage.value = 'Email already in use'
-          document.querySelector("#password").style.border = "2px solid red"
-          document.querySelector("#email").style.border = "2px solid red"
-          break
-        case 'auth/weak-password':
-          errorMessage.value = 'Password should be at least 6 characters '
-          document.querySelector("#password").style.border = "2px solid red"
-          document.querySelector("#email").style.border = "2px solid red"
-          break
-      }
-      const geterrorMessage = error.message;
-      console.log(geterrorMessage)
+    switch(error.code){
+      case 'auth/invalid-email':
+        errorMessage.value = 'complete all details'
+        document.querySelector("#password").style.border = "2px solid red";
+        document.querySelector("#email").style.border = "2px solid red";
+        break
+      case 'auth/missing-password':
+        errorMessage.value = 'Missing password'
+        document.querySelector("#password").style.border = "2px solid red";
+        document.querySelector("#email").style.border = "2px solid #4a90e2";
+        break
+      case 'auth/missing-email':
+        errorMessage.value = 'Missing email'
+        document.querySelector("#password").style.border = "2px solid #4a90e2";
+        document.querySelector("#email").style.border = "2px solid red";
+        break
+      case 'auth/email-already-in-use':
+        errorMessage.value = 'Email is already in use'
+        document.querySelector("#password").style.border = "2px solid red";
+        document.querySelector("#email").style.border = "2px solid red";
+        break
+    }
+    console.error('Error during registration:', error.message);
   }
 }
-
-
 
 const signInWithGoogle = async () => {
 
       try {
-          const confidential = await  signInWithPopup(auth , googleprovider)
+          const confidential = await  signInWithPopup(authnow , googleprovider)
           if(confidential) {
             const user = confidential.user
             console.log(`user: ${user}`)
+            router.push('/home');
           } 
       } catch (error) {
           console.error(error)
       }
 }
+
+
 </script>
 
 <template>
@@ -109,7 +104,6 @@ const signInWithGoogle = async () => {
       <button
         class="btn-secondary"
         @click="signInWithGoogle"
-        v-if="!isloggend"
       >
         <img class="imagelogo" src="../images/google.png" alt="google logo">
         Sign Up with Google

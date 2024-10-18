@@ -11,13 +11,23 @@ const firebaseConfig = {
   appId: "1:997233602935:web:71e36f5469a92a3d8c3172",
   measurementId: "G-RWCMGJ0R2F"
 }
+// =======
+//   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+//   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+//   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+//   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+//   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+//   appId: import.meta.env.VITE_FIREBASE_APP_ID,
+//   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+// };
+// >>>>>>> fee0f2db6921ab2a8f57826a38b6f7a5a0c3e68e
 
 const app = initializeApp(firebaseConfig)
-const auth = getAuth(app)
+const authnow = getAuth(app)
 const realTimeDb = getDatabase(app)
 const googleprovider = new GoogleAuthProvider()
 const githubProvider = new GithubAuthProvider()
 
 
-export { app, auth, realTimeDb , googleprovider ,githubProvider }
+export { app, authnow, realTimeDb , googleprovider ,githubProvider }
 // const analytics = getAnalytics(app);
