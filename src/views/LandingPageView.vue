@@ -1,17 +1,5 @@
 <script setup>
 import { RouterLink } from 'vue-router';
-import { useAuthStore } from '@/stores/authStore';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-
-const authStore = useAuthStore();
-
-const { isAuthenticated } = authStore;
-
-if (!isAuthenticated) {
-  router.push('/login');
-}
 </script>
 <template>
   <link
