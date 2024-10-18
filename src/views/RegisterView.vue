@@ -59,6 +59,14 @@ const signInWithGoogle = async () => {
       }
 }
 
+const checkbox = () => {
+      if(document.querySelector('#password').type == 'password'){
+        document.querySelector('#password').type = 'text'
+      }else{
+        document.querySelector('#password').type = 'password'
+      }
+}
+
 
 </script>
 
@@ -88,6 +96,11 @@ const signInWithGoogle = async () => {
         type="password"
         placeholder="Enter password"
       >
+      <label for="checkbox" style="font-weight: 100; cursor: pointer;">
+        <input type="checkbox" @click="checkbox" id="checkbox">
+        Show password
+      </label>
+
       <p
         v-if="errorMessage"
         class="erroMessage"
@@ -136,7 +149,7 @@ const signInWithGoogle = async () => {
   background-color: #ffffff;
 }
 .erroMessage{
-  margin-top: -1%;
+  margin-top: -5%;
   text-align: center;
   color: red;
 }
@@ -156,7 +169,7 @@ label {
 }
 input {
   padding: 0.75rem;
-  margin-bottom: 5%;
+  margin-bottom: 3.5%;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
