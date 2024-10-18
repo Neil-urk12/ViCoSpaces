@@ -3,7 +3,6 @@ import { ref } from 'vue';
 
 import navBar from '@/components/nav-bar.vue';
 import searchBar from '@/components/search-bar.vue';
-import categoryBar from '@/components/categoryBar.vue';
 import createRoom from '@/components/create-room.vue';
 // import editRoom from '@/components/edit-room.vue';
 
@@ -147,22 +146,4 @@ function update(newTitle){
   color: white;
   background-color: #2d8eff;
 }
-
-
-
-
-
-
-/* @media (min-width: 600px) {
-  *{
-
-  }
-
-  body{
-    width: 100%;
-    height: 100vh;
-  }
-  
-} */
-
 </style>

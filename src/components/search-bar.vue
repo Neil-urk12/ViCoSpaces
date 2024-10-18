@@ -70,7 +70,9 @@ const emit = defineEmits(['open-room']);
         </div>
       </div>    
       <div class="button-container">
-        <button @click="notify">Join Room</button>
+        <button @click="notify">
+          Join Room
+        </button>
 
         <CreateRoom
           label="Host"

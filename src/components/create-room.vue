@@ -1,16 +1,11 @@
 <script setup>
-// import { ref } from 'vue';
-// Edit to make the overlay possible
-import { defineProps, defineEmits } from 'vue';
 import { useRouter } from 'vue-router';
 
 const emit = defineEmits(['close-room']);
-//make the overlay invisible
+
 const props = defineProps({
   isVisible: Boolean
 });
-// checker
-console.log(props);
 
 const router = useRouter();
 
@@ -18,10 +13,6 @@ function goToRoom() {
   console.log('Navigating to room...');
   router.push({ name: 'Room' });
 }
-
-
-console.log(goToRoom);
-
 
 </script>
 
@@ -116,12 +107,6 @@ console.log(goToRoom);
 </template>
 
 <style scoped>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 .overlay {
   position: fixed;
   top: 0;

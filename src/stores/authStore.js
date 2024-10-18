@@ -9,6 +9,18 @@ export const useAuthStore = defineStore('auth', {
 
   getters: {
     isAuthenticated: (state) => !!state.user,
+    getUid: (state) => state.user?.uid || null,
+    getEmail: (state) => state.user?.email || null,
+    getAccessToken: (state) => state.user?.accessToken || null,
+    getUser: (state) => state.user || null,
+    getDisplayName: (state) => {
+      if (state.user && state.user.displayName) return state.user.displayName;
+      else if (state.user && state.user.email) return state.user.email.split('@')[0];
+      else return 'Anonymous';  
+    },    
+    getCreationTime: (state) => state.user?.metadata?.creationTime || null,
+    getLastSignInTime: (state) => state.user?.metadata?.lastSignInTime || null,
+
   },
 
   actions: {
@@ -20,6 +32,7 @@ export const useAuthStore = defineStore('auth', {
         localStorage.setItem('user', JSON.stringify({
           uid: userCredential.user.uid,
           email: userCredential.user.email,
+          displayName: userCredential.user.displayName || email.split('@')[0],
           accessToken: await userCredential.user.getIdToken(),  
         }));
       } catch (error) {
@@ -37,6 +50,7 @@ export const useAuthStore = defineStore('auth', {
           localStorage.setItem('user', JSON.stringify({
             uid: userCredential.user.uid,
             email: userCredential.user.email,
+            displayName: userCredential.user.displayName || email.split('@')[0],
           }));
   
           return userCredential.user;

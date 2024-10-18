@@ -1,5 +1,5 @@
 <script setup>
-const Whiteboard =  () => import('@/components/whiteboard.vue')
+import Whiteboard from '../components/CanvasWhiteBoard.vue'
 </script>
 
 <template>
