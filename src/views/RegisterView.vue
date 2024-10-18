@@ -1,73 +1,80 @@
 <script setup>
-    import { ref } from 'vue';
-    import { createUserWithEmailAndPassword } from "firebase/auth";
-    import { signInWithPopup } from 'firebase/auth';
-    import { auth , googleprovider } from '@/firebase/firebaseconfig';
-    import { useRouter } from 'vue-router';
-    import logonav from '@/components/logonav.vue'
-
-    const email = ref('')
-    const password = ref('')
-    const router = useRouter()
-    let isSignendIn = ref(false)
-    const errorMessage = ref()
+import { ref } from 'vue'
+import { createUserWithEmailAndPassword , signInWithPopup } from "firebase/auth"
+import { auth , googleprovider } from '../firebase/firebaseconfig'
+import { useRouter } from 'vue-router'
+import logonav from '@/components/landing-page-nav.vue'
 
 
-       const signInWithGoogle = ()=> {
-          signInWithPopup(auth , googleprovider)
-            .then((result) => {
-              console.log("User Info: ", result.user.displayName);
-                  isSignendIn = true 
-                  router.push('/home')          
-            })
-            .catch((error) => {
-              console.error("Error during sign in: ", error);
-            })
-        }
+const email = ref('')
+const password = ref('')
+const router = useRouter()
+const errorMessage = ref()
+let isloggend = ref()
 
-        const register = async ()=> {
-          try {
-            const confidential = await createUserWithEmailAndPassword(auth , email.value , password.value)
-              if(confidential){
-                const user = confidential.user
-                console.log(user);
-                router.replace('/home')
-                isSignendIn = true
-              }
-          } catch (error) {
-              switch(error.code){
-                case 'auth/invalid-email':
-                  errorMessage.value = 'Complete all details'
-                  document.getElementById('email').style.border = '2px solid red'
-                  document.getElementById('password').style.border = '2px solid red'
-                  break
-                case 'auth/email-already-in-use':
-                  errorMessage.value = 'Email is already in use'
-                  document.getElementById('email').style.border = '2px solid red'
-                  document.getElementById('password').style.border = '2px solid red'
-                  break
-                case 'auth/missing-email':
-                  errorMessage.value = 'Missing email'
-                  document.getElementById('email').style.border = '2px solid red'
-                  document.getElementById('password').style.border = '2px solid  #4a90e2'
-                  break
-                case 'auth/missing-password':
-                  errorMessage.value = 'Missing password'
-                  document.getElementById('password').style.border = '2px solid red'
-                  document.getElementById('email').style.border = '2px solid  #4a90e2'
-                  break
-              }
-              const geterrorMessage = error.message;
-              console.log(geterrorMessage)     
-            }
-          }
 
-    
+const register = async () => {
+  try {
+    await createUserWithEmailAndPassword(auth , email.value, password.value);
+    router.push("/home");
+
+  } catch (error) {
+      switch(error.code){
+        case 'auth/invalid-email':
+          errorMessage.value = 'Complete all fields'
+          document.querySelector("#password").style.border = "2px solid red"
+          document.querySelector("#email").style.border = "2px solid red"
+          break
+        case 'auth/missing-email':
+          errorMessage.value = 'Missing email'
+          document.querySelector("#password").style.border = "2px solid #4a90e2"
+          document.querySelector("#email").style.border = "2px solid red"
+          break
+        case 'auth/missing-password':
+          errorMessage.value = 'Missing password'
+          document.querySelector("#password").style.border = "2px solid red"
+          document.querySelector("#email").style.border = "2px solid #4a90e2"
+          break
+        case 'auth/email-already-in-use':
+          errorMessage.value = 'Email already in use'
+          document.querySelector("#password").style.border = "2px solid red"
+          document.querySelector("#email").style.border = "2px solid red"
+          break
+        case 'auth/weak-password':
+          errorMessage.value = 'Password should be at least 6 characters '
+          document.querySelector("#password").style.border = "2px solid red"
+          document.querySelector("#email").style.border = "2px solid red"
+          break
+      }
+      const geterrorMessage = error.message;
+      console.log(geterrorMessage)
+  }
+}
+
+
+
+const signInWithGoogle = async () => {
+
+      try {
+          const confidential = await  signInWithPopup(auth , googleprovider)
+          if(confidential) {
+            const user = confidential.user
+            console.log(`user: ${user}`)
+          } 
+      } catch (error) {
+          console.error(error)
+      }
+}
 </script>
 
 <template>
-  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  >
   <logonav />
   <div class="signup">
     <h1>Sign Up</h1>
@@ -86,21 +93,32 @@
         type="password"
         placeholder="Enter password"
       >
-      <p class="erroMessage" v-if="errorMessage">
+      <p
+        v-if="errorMessage"
+        class="erroMessage"
+      >
         {{ errorMessage }}
       </p>
 
-      <button class="btn-primary" @click="register">
+      <button
+        class="btn-primary"
+        @click="register"
+      >
         Sign Up
       </button>
-      
-      <button class="btn-secondary" name="SignIn" v-if="!isSignendIn" @click="signInWithGoogle">
-        <a href="http://www.google.com"><i class="fa-brands fa-google"></i></a>
+      <button
+        class="btn-secondary"
+        @click="signInWithGoogle"
+        v-if="!isloggend"
+      >
+        <img class="imagelogo" src="../images/google.png" alt="google logo">
         Sign Up with Google
       </button>
-
-      <button class="btn-Third" v-if="!isSignendIn" @click="signUpWithGithub">
-       <a href="https://github.com/login"><i class="fa-brands fa-github"></i></a>
+      <button
+        class="btn-Third"
+        @click="signUpWithGithub"
+      >
+        <i class="fa-brands fa-github" />
         Sign Up with Github
       </button>
 
@@ -128,25 +146,20 @@
   text-align: center;
   color: red;
 }
-
 h1 {
   text-align: center;
   color: #333;
-  /* margin-bottom: 1.5rem; */
   font-size: 2.5rem;
 }
-
 .form-group {
   display: flex;
   flex-direction: column;
 }
-
 label {
   margin-bottom: 1rem;
   color: #555;
   font-weight: bold;
 }
-
 input {
   padding: 0.75rem;
   margin-bottom: 5%;
@@ -161,13 +174,11 @@ input {
 input:hover{
   background-color: #7474740d;
 }
-
 input:focus {
   outline: none;
   border-color: #4a90e2;
   box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
 }
-
 .btn {
   padding: 0.75rem;
   border: none;
@@ -176,7 +187,6 @@ input:focus {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
 .btn-primary {
   background-color: #4a90e2;
   color: white;
@@ -191,7 +201,6 @@ input:focus {
 .btn-primary:hover {
   background-color: #0f7bff;
 }
-
 .btn-secondary {
   background-color: #ffffff;
   color: #4a90e2;
@@ -203,18 +212,16 @@ input:focus {
   font-weight: 500;
   font-size: 1.1rem;
   margin-bottom: 1rem;
+  transition: 0.3s ease-in-out;
 }
-
 .btn-secondary:hover {
   background-color: #e7f2fe;
 }
 
-.fa-google{
-  font-size: 1.3rem;
-  margin-right: 10px;
-  color: blue;
+.imagelogo{
+  width: 1.3rem;
+  margin: 0 10px -3px 0;
 }
-
 .btn-Third{
   background-color: #ffffff;
   color: #4a90e2;
@@ -225,40 +232,39 @@ input:focus {
   cursor: pointer;
   font-weight: 500;
   font-size: 1.1rem;
+  transition: 0.3s ease-in-out;
 }
-
 .fa-github{
   font-size: 1.3rem;
-  margin-right: 10px;
+  margin: 0 10px -3px 0;
+  color: black;
 }
 .btn-Third:hover {
   background-color: #e7f2fe;
 }
-
 .switch-form {
   text-align: center;
   margin-top: 1rem;
   font-size: 0.9rem;
   color: #666;
 }
-
 .switch-form a {
   color: #4a90e2;
   text-decoration: none;
   font-weight: bold;
 }
-
 .switch-form a:hover {
   text-decoration: underline;
 }
-
-@media (max-width: 480px) {
+@media screen and (min-width: 480px) and (max-width: 600px) {
   .signup {
     padding: 1.5rem;
+    border: 0;
+    box-shadow:none;
   }
-
-  input, .btn {
+  input , .btn {
     font-size: 0.9rem;
   }
 }
+
 </style>

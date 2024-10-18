@@ -1,10 +1,13 @@
 <template>
-    <nav class="nav-bar">
-        <div class="logo-container">
-          <img src="../assets/svg/filters-2-svgrepo-com.svg" alt="ViCoSpaces-Logo" class="logo-img">
-          <span class="logo-name">ViCoSpaces</span>
-        </div>
-    </nav>
+  <nav class="nav-bar">
+    <div class="logo-container">
+      <img
+        src="../assets/svg/filters-2-svgrepo-com.svg"
+        class="logo-img"
+      >
+      <span class="logo-name">ViCoSpaces</span>
+    </div>
+  </nav>
 </template>
 
 <style scoped>
@@ -28,6 +31,12 @@
       font-size: 35px;
       font-weight: 600;
       color: white;
+    }
+    @media (min-width: 480px) and (max-width: 600px) {
+      .logo-container{
+        height: 50px;
+        font-size: 25px;
+      }
     }
     
 </style>

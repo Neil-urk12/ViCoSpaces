@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app"
-import { getAuth , GoogleAuthProvider } from "firebase/auth"
-
-
+import { getAuth ,GoogleAuthProvider , GithubAuthProvider } from "firebase/auth"
+import { getDatabase } from "firebase/database"
+// import { getAnalytics } from "firebase/analytics"
 const firebaseConfig = {
   apiKey: "AIzaSyBJfCx_rUkvT7yCpjmfz7t_auEi8scHpk4",
   authDomain: "vicospacesdb.firebaseapp.com",
@@ -14,7 +14,10 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
+const realTimeDb = getDatabase(app)
 const googleprovider = new GoogleAuthProvider()
+const githubProvider = new GithubAuthProvider()
 
-export { app, auth , googleprovider }
 
+export { app, auth, realTimeDb , googleprovider ,githubProvider }
+// const analytics = getAnalytics(app);

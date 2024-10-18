@@ -1,48 +1,50 @@
 <script setup>
-import { ref } from 'vue'
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { signInWithPopup } from 'firebase/auth'
-import { auth , googleprovider} from '@/firebase/firebaseconfig'
-import { authstart,  githubProvider } from '@/firebase/githubconfig'
-import { useRouter } from 'vue-router'
-import logonav from '@/components/logonav.vue'
-
+import { ref } from 'vue';
+import { signInWithEmailAndPassword , signInWithPopup  } from "firebase/auth";
+import { auth , googleprovider } from '../firebase/firebaseconfig';
+import { useRouter } from 'vue-router';
+import logonav from '@/components/landing-page-nav.vue';
 
   const email = ref('')
   const password = ref('')
   const router = useRouter()
   const errorMessage = ref()
+  const isloggend = ref(false)
+
 
   const signIn = async () => {
+    sessionStorage.getItem('loggedin','true')
     try {
-      const credential = await signInWithEmailAndPassword(auth , email.value, password.value)
-        if(credential){
-          console.log("User signed in: ", credential.user);
-          router.replace('/home')  
-        }
-    }catch(error) {
-        switch(error.code){
-                case 'auth/invalid-email':
-                    errorMessage.value = 'Complete all fields'
-                    document.querySelector("#password").style.border = "2px solid red"
-                    document.querySelector("#email").style.border = "2px solid red"
-                    break
-                case 'auth/missing-password':
-                    errorMessage.value = 'Missing password'
-                    document.querySelector("#password").style.border = "2px solid red"
-                    document.querySelector("#email").style.border = "2px solid #4a90e2"
-                    break
-                case 'auth/invalid-credential':
-                    errorMessage.value = 'Something went wrong'
-                    document.querySelector("#password").style.border = "2px solid red"
-                    document.querySelector("#email").style.border = "2px solid red"
-                    break
-                case 'auth/user-disabled':
-                    errorMessage.value = 'User disabled'
-                    break
-                case 'auth/network-request-failed':
-                    alert('Please Check your network')
-                    break
+      await signInWithEmailAndPassword(auth , email.value , password.value);
+      this.$router.push("/home");
+    } catch (error) {
+      switch(error.code){
+        case 'auth/invalid-email':
+          errorMessage.value = 'Complete all fields'
+          document.querySelector("#password").style.border = "2px solid red"
+          document.querySelector("#email").style.border = "2px solid red"
+          break
+        case 'auth/missing-email':
+          errorMessage.value = 'Missing email'
+          document.querySelector("#password").style.border = "2px solid #4a90e2"
+          document.querySelector("#email").style.border = "2px solid red"
+          break
+        case 'auth/missing-password':
+          errorMessage.value = 'Missing password'
+          document.querySelector("#password").style.border = "2px solid red"
+          document.querySelector("#email").style.border = "2px solid #4a90e2"
+          break
+        case 'auth/invalid-credential':
+            errorMessage.value = 'Invalid email'
+            document.querySelector("#password").style.border = "2px solid red"
+            document.querySelector("#email").style.border = "2px solid red"
+            break
+        case 'auth/user-disabled':
+            errorMessage.value = 'User disabled'
+            break
+        case 'auth/network-request-failed':
+            alert('Please Check your network')
+            break
             }
             // const errorCode = error.code;
             const geterrorMessage = error.message;
@@ -51,42 +53,40 @@ import logonav from '@/components/logonav.vue'
 
     }
   
-  const signInWithGoogle = () => {
-      signInWithPopup(auth, googleprovider)
-        .then((result) => {
-          // Successful sign-in
-          const user = result.user;
-          console.log("User Info: ", user);
-          router.push('/home')
-        })
-        .catch((error) => {
-          
-        });
+  const signInWithGoogle = async () => {
+    sessionStorage.setItem('loggedin', 'true')
+      try {
+         const confidential = await signInWithPopup(auth, googleprovider)
+            if(confidential){
+              const user = confidential.user;
+              console.log("User Info: ", user);
+              router.push('/home')
+            }
+            
+      } catch (error) {
+            console.error(error)
+      }
   }
 
-  const signInWithGithub = async () => {
-    const confidential = await signInWithPopup(authstart , githubProvider)
-      try {
-          if(confidential){
-            const user = result.user
-            console.log(user)
-          }
-      } catch (error) {
-          console.log(error.code)
-      }  
-  }
+  if(sessionStorage.getItem('loggedin') === 'true'){
+        router.push('/home')
+  }  
+
 
 </script>
 
 <template>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <!-- for revision after the UI person is back from trip
-  functionality only no design -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  >
   <logonav />
   <div class="signin">
     <h1>Sign In</h1>
     <div class="form-group">
-      
       <label for="email">Email</label><br>
       <input
         id="email"
@@ -101,19 +101,34 @@ import logonav from '@/components/logonav.vue'
         type="password"
         placeholder="Enter password" 
       ><br>
-      <p class="erroMessage" v-if="errorMessage">
+      <p
+        v-if="errorMessage"
+        class="erroMessage"
+      >
         {{ errorMessage }}
       </p>
-      <button class="btn-primary" @click="signIn">
+      <button
+        class="btn-primary"
+        @click="signIn"
+        v-if="!isloggend"
+      >
         Sign In
       </button><br>
-      <button class="btn-secondary" name="SignIn" @click="signInWithGoogle">
-       <a href="http://www.google.com"><i class="fa-brands fa-google"></i></a>
+      <button
+        class="btn-secondary"
+        @click="signInWithGoogle"
+        v-if="!isloggend"
+      >
+        <img class="imagelogo" src="../images/google.png" alt="google logo" />
         Sign In with Google
       </button>
 
-      <button class="btn-Third" @click="signInWithGithub">
-       <a href="https://github.com/login"><i class="fa-brands fa-github"></i></a>
+      <button
+        class="btn-Third"
+        @click="signInWithGithub"
+        v-if="!isloggend"
+      >
+        <i class="fa-brands fa-github" />
         Sign In with Github
       </button>
 
@@ -223,10 +238,9 @@ input:focus {
   transition: 0.3s ease-in-out;
 }
 
-.fa-google{
-  font-size: 1.3rem;
-  margin-right: 10px;
-  color: blue;
+.imagelogo{
+  width: 1.3rem;
+  margin: 0 10px -3px 0;
 }
 
 .btn-secondary:hover {
@@ -248,7 +262,8 @@ input:focus {
 
 .fa-github{
   font-size: 1.3rem;
-  margin-right: 10px;
+  margin: 0 10px -3px 0;
+  color: black;
 }
 .btn-Third:hover {
   background-color: #e7f2fe;
@@ -271,13 +286,20 @@ input:focus {
   text-decoration: underline;
 }
 
-@media (max-width: 480px) {
+@media screen and (min-width: 480px) and (max-width: 600px) {
   .signin {
     padding: 1.5rem;
+    border: 0;
+    box-shadow:none;
   }
-
-  input, .btn {
+  input , .btn {
     font-size: 0.9rem;
   }
 }
+
+@media (min-width: 480px) and (max-width: 600px) {
+
+}
+
+
 </style>

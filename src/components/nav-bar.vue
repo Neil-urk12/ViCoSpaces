@@ -100,8 +100,6 @@
       left: 50%; 
       transform: translateX(-50%);  
     }
-    
-    
     .user-profile{
         display: flex;
         background-color: white;
@@ -110,6 +108,7 @@
         border-radius: 50%;
         justify-content: center;
     }
+
 </style>
 
 
