@@ -121,6 +121,21 @@ const editHostRoom = () => {
     </div>
 
     <!-- create a category bar below the search bar-->
+    <div class="category">
+      <div class="category-container">
+        <ul>
+        <li><h5>Gaming</h5></li>
+        <li><h5>Gaming</h5></li>
+        <li><h5>Gaming</h5></li>
+        <li><h5>Gaming</h5></li>
+        <li><h5>Gaming</h5></li>
+        <li><h5>Gaming</h5></li>
+        <li><h5>Gaming</h5></li>
+        <li><h5>Gaming</h5></li>
+        <li><h5>Gaming</h5></li>
+      </ul>
+      </div>
+    </div>
   </main>
 </template>
 
@@ -192,7 +207,7 @@ const editHostRoom = () => {
   left: 50%;
   bottom: -2px;
   width: 0;
-  height: 2px;
+  height: 3px;
   background-color: white;
   transition: all 0.3s ease-in-out;
   transform: translateX(-50%);
@@ -216,11 +231,12 @@ const editHostRoom = () => {
 .search-bar {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 1em;
 }
 
 .search {
   --padding: 14px;
+
   width: max-content;
   display: flex;
   align-items: center;
@@ -268,6 +284,46 @@ button {
   height: 50px;
   font-weight: bold;
 }
+
+/* category */
+.category {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 6px;
+  margin-top: 6px;
+}
+
+.category-container{
+  position: relative;
+  width: 95%;
+  max-width: 100%;
+}
+
+.category-container ul {
+  position: inherit;
+  display: flex;
+  list-style: none;
+  gap: 23px;
+}
+
+.category-container li {
+  position: absolute;
+  color: rgb(43, 43, 43);
+  font-size: 1.2em;
+  font-weight: bold;
+  position: relative;
+  text-align: center;
+
+  border: 1px solid rgb(122, 122, 122);
+  margin: 2px;
+  padding: 6px;
+  width: 7%;
+  border-radius: 6px;
+
+  cursor: pointer;
+}
+
 
 
 @media (max-width: 794px) {

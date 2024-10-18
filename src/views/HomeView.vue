@@ -21,8 +21,6 @@ function update(newTitle){
 
 <template>
   <header>
-    <!-- <navBar />
-    <searchBar @open-room="isCreateRoomVisible = true" /> -->
     <myHome @open-room="isCreateRoomVisible = true" />
 
     <categoryBar @changetitle="update" />
@@ -67,6 +65,7 @@ function update(newTitle){
   width: 96%;
   height: 71.8vh;
   margin: auto;
+ 
 }
 .room {
   border-radius: 12px;
@@ -149,21 +148,5 @@ function update(newTitle){
   background-color: #2d8eff;
 }
 
-
-
-
-
-
-/* @media (min-width: 600px) {
-  *{
-
-  }
-
-  body{
-    width: 100%;
-    height: 100vh;
-  }
-  
-} */
 
 </style>
