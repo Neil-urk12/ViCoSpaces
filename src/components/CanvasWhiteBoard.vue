@@ -1,14 +1,16 @@
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue';
-import { FabricImage } from 'fabric';
-import * as fabric from 'fabric';
-import { ref as dbRef, onValue, set, off } from 'firebase/database'
-import { realTimeDb as db } from '@/firebase/firebaseconfig';
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
+import { FabricImage } from 'fabric'
+import * as fabric from 'fabric'
+import { ref as dbRef, onValue, set, off, get } from 'firebase/database'
+import { realTimeDb as db } from '@/firebase/firebaseconfig'
+import { useAuthStore } from '@/stores/authStore'
 
+const authStore = useAuthStore()
 const localCursor = ref({ x: 0, y: 0, username: '' })
 const otherCursors = ref({})
-const userId = ref(generateUserId())
-const username = ref(`User_${userId.value.slice(0, 5)}`)
+const userId = computed(() => authStore.getUid)
+const username = computed(() => authStore.getDisplayName)
 
 const cursorsRef = dbRef(db, 'cursors')
 const throttle = (func, limit) => {
@@ -28,9 +30,9 @@ const updateFirebaseCursor = throttle((x, y) => {
   set(dbRef(db, `cursors/${userId.value}`), {
     x,
     y,
-    username: username.value
-  })
-}, 50) // Throttle to 50ms
+    username: authStore.getDisplayName,
+  });
+}, 50);
 
 const updateCursorPosition = (event) => {
   if (canvasEl.value) {
@@ -44,27 +46,30 @@ const updateCursorPosition = (event) => {
   }
 }
 
-onMounted(() => {
-  localCursor.value.username = username.value
+onMounted(async () => {
+  const userCursorRef = dbRef(db, `cursors/${userId.value}`);
+  const userCursorSnapshot = await get(userCursorRef);
+  if (userCursorSnapshot.exists()) {
+    localCursor.value = userCursorSnapshot.val();
+  } else {
+    localCursor.value = { x: 0, y: 0, username: username.value };
+  }
+
   onValue(cursorsRef, (snapshot) => {
-    const data = snapshot.val() || {}
+    const data = snapshot.val() || {};
     otherCursors.value = Object.entries(data).reduce((acc, [key, value]) => {
       if (key !== userId.value) {
-        acc[key] = value
+        acc[key] = value;
       }
-      return acc
-    }, {})
-  })
-})
+      return acc;
+    }, {});
+  });
+});
 
 onUnmounted(() => {
-  off(cursorsRef)
-  set(dbRef(db, `cursors/${userId.value}`), null)
+  off(cursorsRef);
+  set(dbRef(db, `cursors/${userId.value}`), null);
 })
-
-function generateUserId() {
-  return Math.random().toString(36).substr(2, 9)
-}
 
 const canvasEl = ref(null);
 let canvas = null;
@@ -78,7 +83,7 @@ const gridSize = 20;
 const imageInput = ref(null);
 const showShapeLibrary = ref(false);
 
-onMounted(() => { //Initializing the Whiteboard with Snapping Grid
+onMounted(() => { 
   canvas = new fabric.Canvas(canvasEl.value, {
     width: window.innerWidth * 0.8,
     height: window.innerHeight * 0.85,
@@ -365,121 +370,399 @@ const downloadCanvasAsImage = () => {//Exporting Canvas into IMG Feature
 </script>
 
 <template>
-  <div class="whiteboard-container" @mousemove="updateCursorPosition">
+  <div
+    class="whiteboard-container"
+    @mousemove="updateCursorPosition"
+  >
     <div class="sidebar">
-      <button @click="addTextToCanvas" title="Add Text">📝</button>
-      <button @click="showShapeLibrary = !showShapeLibrary" title="Shape Library">🧩</button>
-      <div v-if="showShapeLibrary" class="shape-library-popup">
-        <div class="shape-option" @click="addShapeToCanvas('rectangle', true)" title="Filled Rectangle">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <rect width="80" height="80" x="10" y="10" fill="black" />
+      <button
+        title="Add Text"
+        @click="addTextToCanvas"
+      >
+        📝
+      </button>
+      <button
+        title="Shape Library"
+        @click="showShapeLibrary = !showShapeLibrary"
+      >
+        🧩
+      </button>
+      <div
+        v-if="showShapeLibrary"
+        class="shape-library-popup"
+      >
+        <div
+          class="shape-option"
+          title="Filled Rectangle"
+          @click="addShapeToCanvas('rectangle', true)"
+        >
+          <svg
+            width="50"
+            height="50"
+            viewBox="0 0 100 100"
+          >
+            <rect
+              width="80"
+              height="80"
+              x="10"
+              y="10"
+              fill="black"
+            />
           </svg>
         </div>
-        <div class="shape-option" @click="addShapeToCanvas('rectangle', false)" title="Outlined Rectangle">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <rect width="80" height="80" x="10" y="10" fill="transparent" stroke="black" stroke-width="2" />
+        <div
+          class="shape-option"
+          title="Outlined Rectangle"
+          @click="addShapeToCanvas('rectangle', false)"
+        >
+          <svg
+            width="50"
+            height="50"
+            viewBox="0 0 100 100"
+          >
+            <rect
+              width="80"
+              height="80"
+              x="10"
+              y="10"
+              fill="transparent"
+              stroke="black"
+              stroke-width="2"
+            />
           </svg>
         </div>
-        <div class="shape-option" @click="addShapeToCanvas('circle', true)" title="Filled Circle">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="40" fill="black" />
+        <div
+          class="shape-option"
+          title="Filled Circle"
+          @click="addShapeToCanvas('circle', true)"
+        >
+          <svg
+            width="50"
+            height="50"
+            viewBox="0 0 100 100"
+          >
+            <circle
+              cx="50"
+              cy="50"
+              r="40"
+              fill="black"
+            />
           </svg>
         </div>
-        <div class="shape-option" @click="addShapeToCanvas('circle', false)" title="Outlined Circle">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="40" fill="transparent" stroke="black" stroke-width="2" />
+        <div
+          class="shape-option"
+          title="Outlined Circle"
+          @click="addShapeToCanvas('circle', false)"
+        >
+          <svg
+            width="50"
+            height="50"
+            viewBox="0 0 100 100"
+          >
+            <circle
+              cx="50"
+              cy="50"
+              r="40"
+              fill="transparent"
+              stroke="black"
+              stroke-width="2"
+            />
           </svg>
         </div>
-        <div class="shape-option" @click="addShapeToCanvas('triangle', true)" title="Filled Triangle">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <polygon points="50,15 90,85 10,85" fill="black" />
+        <div
+          class="shape-option"
+          title="Filled Triangle"
+          @click="addShapeToCanvas('triangle', true)"
+        >
+          <svg
+            width="50"
+            height="50"
+            viewBox="0 0 100 100"
+          >
+            <polygon
+              points="50,15 90,85 10,85"
+              fill="black"
+            />
           </svg>
         </div>
-        <div class="shape-option" @click="addShapeToCanvas('triangle', false)" title="Outlined Triangle">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <polygon points="50,15 90,85 10,85" fill="transparent" stroke="black" stroke-width="2" />
+        <div
+          class="shape-option"
+          title="Outlined Triangle"
+          @click="addShapeToCanvas('triangle', false)"
+        >
+          <svg
+            width="50"
+            height="50"
+            viewBox="0 0 100 100"
+          >
+            <polygon
+              points="50,15 90,85 10,85"
+              fill="transparent"
+              stroke="black"
+              stroke-width="2"
+            />
           </svg>
         </div>
-        <div class="shape-option" @click="addShapeToCanvas('ellipse', true)" title="Filled Ellipse">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <ellipse cx="50" cy="50" rx="40" ry="25" fill="black" />
+        <div
+          class="shape-option"
+          title="Filled Ellipse"
+          @click="addShapeToCanvas('ellipse', true)"
+        >
+          <svg
+            width="50"
+            height="50"
+            viewBox="0 0 100 100"
+          >
+            <ellipse
+              cx="50"
+              cy="50"
+              rx="40"
+              ry="25"
+              fill="black"
+            />
           </svg>
         </div>
-        <div class="shape-option" @click="addShapeToCanvas('ellipse', false)" title="Outlined Ellipse">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <ellipse cx="50" cy="50" rx="40" ry="25" fill="transparent" stroke="black" stroke-width="2" />
+        <div
+          class="shape-option"
+          title="Outlined Ellipse"
+          @click="addShapeToCanvas('ellipse', false)"
+        >
+          <svg
+            width="50"
+            height="50"
+            viewBox="0 0 100 100"
+          >
+            <ellipse
+              cx="50"
+              cy="50"
+              rx="40"
+              ry="25"
+              fill="transparent"
+              stroke="black"
+              stroke-width="2"
+            />
           </svg>
         </div>
-        <div class="shape-option" @click="addShapeToCanvas('hexagon', true)" title="Filled Hexagon">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <polygon points="50,10 86.6,30 86.6,70 50,90 13.4,70 13.4,30" fill="black" />
+        <div
+          class="shape-option"
+          title="Filled Hexagon"
+          @click="addShapeToCanvas('hexagon', true)"
+        >
+          <svg
+            width="50"
+            height="50"
+            viewBox="0 0 100 100"
+          >
+            <polygon
+              points="50,10 86.6,30 86.6,70 50,90 13.4,70 13.4,30"
+              fill="black"
+            />
           </svg>
         </div>
-        <div class="shape-option" @click="addShapeToCanvas('hexagon', false)" title="Outlined Hexagon">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <polygon points="50,10 86.6,30 86.6,70 50,90 13.4,70 13.4,30" fill="transparent" stroke="black" stroke-width="2" />
+        <div
+          class="shape-option"
+          title="Outlined Hexagon"
+          @click="addShapeToCanvas('hexagon', false)"
+        >
+          <svg
+            width="50"
+            height="50"
+            viewBox="0 0 100 100"
+          >
+            <polygon
+              points="50,10 86.6,30 86.6,70 50,90 13.4,70 13.4,30"
+              fill="transparent"
+              stroke="black"
+              stroke-width="2"
+            />
           </svg>
         </div>
-        <div class="shape-option" @click="addShapeToCanvas('octagon', true)" title="Filled Octagon">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <polygon points="30,10 70,10 90,30 90,70 70,90 30,90 10,70 10,30" fill="black" />
+        <div
+          class="shape-option"
+          title="Filled Octagon"
+          @click="addShapeToCanvas('octagon', true)"
+        >
+          <svg
+            width="50"
+            height="50"
+            viewBox="0 0 100 100"
+          >
+            <polygon
+              points="30,10 70,10 90,30 90,70 70,90 30,90 10,70 10,30"
+              fill="black"
+            />
           </svg>
         </div>
-        <div class="shape-option" @click="addShapeToCanvas('octagon', false)" title="Outlined Octagon">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <polygon points="30,10 70,10 90,30 90,70 70,90 30,90 10,70 10,30" fill="transparent" stroke="black" stroke-width="2" />
+        <div
+          class="shape-option"
+          title="Outlined Octagon"
+          @click="addShapeToCanvas('octagon', false)"
+        >
+          <svg
+            width="50"
+            height="50"
+            viewBox="0 0 100 100"
+          >
+            <polygon
+              points="30,10 70,10 90,30 90,70 70,90 30,90 10,70 10,30"
+              fill="transparent"
+              stroke="black"
+              stroke-width="2"
+            />
           </svg>
         </div>
-        <div class="shape-option" @click="addShapeToCanvas('diamond', true)" title="Filled Diamond">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <polygon points="50,10 80,50 50,90 20,50" fill="black" />
+        <div
+          class="shape-option"
+          title="Filled Diamond"
+          @click="addShapeToCanvas('diamond', true)"
+        >
+          <svg
+            width="50"
+            height="50"
+            viewBox="0 0 100 100"
+          >
+            <polygon
+              points="50,10 80,50 50,90 20,50"
+              fill="black"
+            />
           </svg>
         </div>
-        <div class="shape-option" @click="addShapeToCanvas('diamond', false)" title="Outlined Diamond">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <polygon points="50,10 80,50 50,90 20,50" fill="transparent" stroke="black" stroke-width="2" />
+        <div
+          class="shape-option"
+          title="Outlined Diamond"
+          @click="addShapeToCanvas('diamond', false)"
+        >
+          <svg
+            width="50"
+            height="50"
+            viewBox="0 0 100 100"
+          >
+            <polygon
+              points="50,10 80,50 50,90 20,50"
+              fill="transparent"
+              stroke="black"
+              stroke-width="2"
+            />
           </svg>
         </div>
-        <div class="shape-option" @click="addShapeToCanvas('parallelogram', true)" title="Filled Parallelogram">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <polygon points="20,20 80,20 60,80 0,80" fill="black" />
+        <div
+          class="shape-option"
+          title="Filled Parallelogram"
+          @click="addShapeToCanvas('parallelogram', true)"
+        >
+          <svg
+            width="50"
+            height="50"
+            viewBox="0 0 100 100"
+          >
+            <polygon
+              points="20,20 80,20 60,80 0,80"
+              fill="black"
+            />
           </svg>
         </div>
-        <div class="shape-option" @click="addShapeToCanvas('parallelogram', false)" title="Outlined Parallelogram">
-          <svg width="50" height="50" viewBox="0 0 100 100">
-            <polygon points="20,20 80,20 60,80 0,80" fill="transparent" stroke="black" stroke-width="2" />
+        <div
+          class="shape-option"
+          title="Outlined Parallelogram"
+          @click="addShapeToCanvas('parallelogram', false)"
+        >
+          <svg
+            width="50"
+            height="50"
+            viewBox="0 0 100 100"
+          >
+            <polygon
+              points="20,20 80,20 60,80 0,80"
+              fill="transparent"
+              stroke="black"
+              stroke-width="2"
+            />
           </svg>
         </div>
       </div>
       <div class="color-picker-wrapper">
-        <input type="color" v-model="selectedColor" title="Choose Color" />
+        <input
+          v-model="selectedColor"
+          type="color"
+          title="Choose Color"
+        >
       </div>
-      <button @click="toggleDrawMode" title="Enable/Disable Drawing">{{ isDrawingMode ? '✏️' : '🖊️' }}</button>
-      <div v-if="showBrushOptions" class="brush-options-popup">
+      <button
+        title="Enable/Disable Drawing"
+        @click="toggleDrawMode"
+      >
+        {{ isDrawingMode ? '✏️' : '🖊️' }}
+      </button>
+      <div
+        v-if="showBrushOptions"
+        class="brush-options-popup"
+      >
         <div class="brush-option">
           <label for="brush-type">Brush Type:</label>
-          <select v-model="selectedBrush" id="brush-type">
-            <option value="pencil">Pencil</option>
-            <option value="circle">Circle</option>
+          <select
+            id="brush-type"
+            v-model="selectedBrush"
+          >
+            <option value="pencil">
+              Pencil
+            </option>
+            <option value="circle">
+              Circle
+            </option>
           </select>
         </div>
         <div class="brush-option">
           <label for="brush-color">Brush Color:</label>
-          <input type="color" v-model="selectedColor" id="brush-color" />
+          <input
+            id="brush-color"
+            v-model="selectedColor"
+            type="color"
+          >
         </div>
         <div class="brush-option">
           <label for="brush-thickness">Thickness:</label>
-          <input type="range" v-model="brushThickness" id="brush-thickness" min="1" max="30" />
+          <input
+            id="brush-thickness"
+            v-model="brushThickness"
+            type="range"
+            min="1"
+            max="30"
+          >
         </div>
       </div>
-      <button @click="clearCanvas" title="Clear Canvas">🗑️</button>
-      <button @click="triggerFileSelect" title="Insert Image">🖼️</button>
-      <input type="file" ref="imageInput" @change="insertImage" style="display: none" />
-      <button @click="removeSelected" title="Remove Selected">❌</button>
-      <button @click="downloadCanvasAsImage" title="Download Image">⬇️</button>
+      <button
+        title="Clear Canvas"
+        @click="clearCanvas"
+      >
+        🗑️
+      </button>
+      <button
+        title="Insert Image"
+        @click="triggerFileSelect"
+      >
+        🖼️
+      </button>
+      <input
+        ref="imageInput"
+        type="file"
+        style="display: none"
+        @change="insertImage"
+      >
+      <button
+        title="Remove Selected"
+        @click="removeSelected"
+      >
+        ❌
+      </button>
+      <button
+        title="Download Image"
+        @click="downloadCanvasAsImage"
+      >
+        ⬇️
+      </button>
     </div>
     <div class="canvas-area">
-      <canvas ref="canvasEl"></canvas>
+      <canvas ref="canvasEl" />
       <div
         class="cursor"
         :style="{ left: `${localCursor.x}px`, top: `${localCursor.y}px` }"
