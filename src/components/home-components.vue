@@ -17,11 +17,22 @@ const HostRoom = () => {
   console.log('button clicked')
   emit('open-room');
 }
+
 </script>
 
 <template>
   <header>
     <nav class="nav-bar">
+      <!-- <input
+        id="sidebar-active"
+        type="checkbox"
+      >
+      <label for="sidebar-active">
+        <img
+          src="../images/SVG/mobile-menu-bar.svg"
+          alt="sidebar-icon"
+        >
+      </label> -->
       <div class="nav-div">
         <div class="logo-container">
           <img
@@ -31,35 +42,27 @@ const HostRoom = () => {
           >
           <span class="logo-name">ViCoSpaces</span>
         </div>
-        <div
-          class="burger"
-          @click="toggleMenu"
-        >
-          <img
-            src="../images/SVG/burger-simple-svgrepo-com.svg"
-            alt="menu-icon"
-            width="30px"
-          >
-        </div>
         <div class="nav-links-and-buttons">
+          <input type="checkbox" id="activate-nav">
+          <label for="activate-nav">
+            <img src="../images/SVG/close-bold-svgrepo-com.svg" width="30px" alt="">
+          </label>
           <ul class="pages-container">
-            <ul class="pages-container">
-              <li>
-                <router-link to="/">
-                  Home
-                </router-link>
-              </li>
-              <li>
-                <router-link to="/about">
-                  About
-                </router-link>
-              </li>
-              <li>
-                <router-link to="/contact">
-                  Contact
-                </router-link>
-              </li>
-            </ul>
+            <li>
+              <router-link to="/">
+                Home
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/about">
+                About
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/contact">
+                Contact
+              </router-link>
+            </li>
           </ul>
           <a
             id="user-profile"
@@ -135,16 +138,16 @@ const HostRoom = () => {
     <div class="category">
       <div class="category-container">
         <ul>
-        <li><h5>Gaming</h5></li>
-        <li><h5>Gaming</h5></li>
-        <li><h5>Gaming</h5></li>
-        <li><h5>Gaming</h5></li>
-        <li><h5>Gaming</h5></li>
-        <li><h5>Gaming</h5></li>
-        <li><h5>Gaming</h5></li>
-        <li><h5>Gaming</h5></li>
-        <li><h5>Gaming</h5></li>
-      </ul>
+          <li><h5>Gaming</h5></li>
+          <li><h5>Gaming</h5></li>
+          <li><h5>Gaming</h5></li>
+          <li><h5>Gaming</h5></li>
+          <li><h5>Gaming</h5></li>
+          <li><h5>Gaming</h5></li>
+          <li><h5>Gaming</h5></li>
+          <li><h5>Gaming</h5></li>
+          <li><h5>Gaming</h5></li>
+        </ul>
       </div>
     </div>
   </main>
@@ -254,7 +257,8 @@ const HostRoom = () => {
   padding: var(--padding);
   border-radius: 12px;
   background: #f6f6f6;
-  width: 75%;
+  width: 75vw;
+  max-width: 75%;
 }
 
 .search-input {
@@ -312,7 +316,7 @@ button {
 }
 
 .category-container ul {
-  position: inherit;
+  position: relative;
   display: flex;
   list-style: none;
   gap: 23px;
@@ -335,6 +339,11 @@ button {
   cursor: pointer;
 }
 
+@media (max-width: 1388px) {
+  
+  
+}
+
 
 
 @media (max-width: 794px) {
@@ -347,111 +356,40 @@ button {
   padding: 15px 40px 0px 40px;
 }
 
-.nav-div {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.logo-container {
-  display: flex;
-  align-items: center;
-  font-size: clamp(50px, 1vw, 100px);
-  font-weight: 600;
-  color: white;
-}
-
-.logo-img {
-  height: 40px;
-  margin-right: 10px;
-}
-
-.nav-links-and-buttons {
-  display: flex;
-  align-items: center;
-  gap: 70px;
-}
-.pages-container {
-  display: flex;
-  list-style: none;
-  gap: 80px;
-  margin: 0;
-}
-
-.pages-container li a {
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
-  position: relative;
-  text-align: center;
-}
-
-.pages-container li a::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: -2px;
-  width: 0;
-  height: 2px;
-  background-color: white;
-  transition: all 0.3s ease-in-out;
-  transform: translateX(-50%);
-}
-
-.pages-container li a:hover::after {
-  width: 100%;
-  left: 50%; 
-  transform: translateX(-50%);
-}
-}
-
-@media (max-width: 641px) {
-  .nav-bar {
-    background: #003d5b;
-    font-family: Calibri, sans-serif;
-    align-items: center;
-    height: 70px;
-
-  }
-
-  .burger {
-    display: block;
-
-  }
-
-  .logo-container {
-  display: none;
-  align-items: center;
-  font-size: 35px;
-  font-weight: 600;
-  color: white;
-}
-
-.logo-img {
-  height: 40px;
-  margin-right: 10px;
-}
-
-  .nav-links-and-buttons {
+  .logo-container img{
     display: none;
   }
-
-  .nav-links-and-buttons.menu-open {
+  .logo-container {
     display: flex;
-    position: absolute;
-    top: 70px;
-    right: 0;
-    background: #003d5b;
-    width: 100%;
-    padding: 20px;
-    gap: 20px;
-    z-index: 10;
+    align-items: center;
+    font-size: clamp(30px, 0.2em, 100px);
+    font-weight: 600;
+    color: white;
   }
 
-  .pages-container {
+}
+@media (max-width: 375px) {
+  .logo-container {
+    display: flex;
+    align-items: center;
+    font-size: clamp(19px, 0.02em, 100px);
+    font-weight: 600;
+    color: white;
+  }
+  .nav-links-and-buttons, .pages-container{
+    background-color: red;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    width: 100vw;
+    height: 70vh;
+    z-index: 10;
   }
+  .logo-container{
+    display: none;
+  }
+  
 }
+
+
+
 </style>

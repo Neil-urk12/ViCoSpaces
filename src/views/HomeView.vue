@@ -50,8 +50,10 @@ function update(newTitle){
 </template>
 
 <style scoped>
+
 .room-view-container {
-  display: grid;
+  display: none;
+
   column-gap: 20px;
   row-gap: 20px;
   grid-template-columns: 28% 1fr 1fr; 
