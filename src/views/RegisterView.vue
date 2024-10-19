@@ -40,6 +40,9 @@ const register = async () => {
         document.querySelector("#password").style.border = "2px solid red";
         document.querySelector("#email").style.border = "2px solid red";
         break
+      default:
+        errorMessage.value = 'An error occurred during Signup';
+        break;
     }
     console.error('Error during registration:', error.message);
   }
@@ -142,14 +145,14 @@ const checkbox = () => {
 .signup {
   max-width: 400px;
   margin: 20px auto;
-  padding: 1.5rem;
+  padding: 1.2rem;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
 }
 .erroMessage{
-  margin-top: -5%;
+  margin-top: -1%;
   text-align: center;
   color: red;
 }
@@ -163,9 +166,9 @@ h1 {
   flex-direction: column;
 }
 label {
-  margin-bottom: 1rem;
+  margin-bottom: 10px;
   color: #555;
-  font-weight: bold;
+  font-weight: bold; 
 }
 input {
   padding: 0.75rem;
@@ -272,6 +275,21 @@ input:focus {
   input , .btn {
     font-size: 0.9rem;
   }
+}
+
+@media screen and (min-width: 601px) and (max-width: 900px)  {
+    .signup{
+      background-color: #ffffff;
+      border: 0;
+      box-shadow:none;
+    }
+    
+}
+@media screen and (min-width: 901px) and (max-width: 1200px) {
+  .signup{
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    }
 }
 
 </style>

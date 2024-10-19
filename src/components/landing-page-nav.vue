@@ -32,7 +32,13 @@
       font-weight: 600;
       color: white;
     }
-    @media (min-width: 480px) and (max-width: 600px) {
+    @media screen and (min-width: 480px) and (max-width: 600px) {
+      .logo-container{
+        height: 50px;
+        font-size: 25px;
+      }
+    }
+    @media screen and (min-width: 600px) and (max-width: 800px)   {
       .logo-container{
         height: 50px;
         font-size: 25px;

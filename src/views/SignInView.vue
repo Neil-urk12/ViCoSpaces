@@ -33,7 +33,7 @@ import { useAuthStore } from '@/stores/authStore';
           document.querySelector("#email").style.border = "2px solid red";
           break;
         case 'auth/invalid-email':
-          errorMessage.value = 'Invalid Email';
+          errorMessage.value = 'Complete all fields';
           document.querySelector("#password").style.border = "2px solid red";
           document.querySelector("#email").style.border = "2px solid red";
           break;
@@ -145,14 +145,14 @@ body{
 .signin {
   max-width: 400px;
   margin: 20px auto;
-  padding: 1.5rem;
+  padding: 1.2rem;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
 }
 .erroMessage{
-  margin-top: -4%;
+  margin-top: -1%;
   text-align: center;
   color: red;
 }
@@ -171,7 +171,7 @@ h1 {
 label {
   color: #555;
   font-weight: bold;
-  margin-bottom: -5px;
+  margin-bottom: -10px;
 }
 
 input {
@@ -292,9 +292,19 @@ input:focus {
     font-size: 0.9rem;
   }
 }
-
-@media (min-width: 480px) and (max-width: 600px) {
-
+@media screen and (min-width: 601px) and (max-width: 900px)  {
+    .signin{
+      background-color: #ffffff;
+      border: 0;
+      box-shadow:none;
+    }
+    
+}
+@media screen and (min-width: 901px) and (max-width: 1200px) {
+  .signin{
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    }
 }
 
 
