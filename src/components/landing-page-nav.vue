@@ -38,7 +38,7 @@
         font-size: 25px;
       }
     }
-    @media screen and (min-width: 600px) and (max-width: 800px)   {
+    @media screen and (min-width: 600px) and (max-width: 900px)   {
       .logo-container{
         height: 50px;
         font-size: 25px;

@@ -21,7 +21,7 @@ const register = async () => {
   } catch (error) {
     switch(error.code){
       case 'auth/invalid-email':
-        errorMessage.value = 'complete all details'
+        errorMessage.value = 'Complete all details'
         document.querySelector("#password").style.border = "2px solid red";
         document.querySelector("#email").style.border = "2px solid red";
         break
@@ -41,7 +41,7 @@ const register = async () => {
         document.querySelector("#email").style.border = "2px solid red";
         break
       default:
-        errorMessage.value = 'An error occurred during Signup';
+        alert('Please check your network')
         break;
     }
     console.error('Error during registration:', error.message);
@@ -68,6 +68,21 @@ const checkbox = () => {
       }else{
         document.querySelector('#password').type = 'password'
       }
+}
+
+const showpass = () => {
+      if(document.querySelector('#password').type == 'password'){
+        document.querySelector('#password').type = 'text'
+        document.querySelector('#hidepass').style.display = 'none'
+        document.querySelector('#showpass').style.display = 'block'
+      }
+    }
+const hidepass = () => {
+  if(document.querySelector('#password').type == 'text'){
+    document.querySelector('#password').type = 'password'
+    document.querySelector('#hidepass').style.display = 'block'
+    document.querySelector('#showpass').style.display = 'none'
+  }
 }
 
 
@@ -98,12 +113,11 @@ const checkbox = () => {
         v-model="password"
         type="password"
         placeholder="Enter password"
-      >
-      <label for="checkbox" style="font-weight: 100; cursor: pointer;">
-        <input type="checkbox" @click="checkbox" id="checkbox">
-        Show password
-      </label>
+      ><br>
 
+      <i id="hidepass" class="fa-solid fa-eye-slash" @click="showpass"></i>
+      <i id="showpass" class="fa-solid fa-eye" @click="hidepass"></i><br>
+      
       <p
         v-if="errorMessage"
         class="erroMessage"
@@ -117,6 +131,7 @@ const checkbox = () => {
       >
         Sign Up
       </button>
+
       <button
         class="btn-secondary"
         @click="signInWithGoogle"
@@ -142,18 +157,30 @@ const checkbox = () => {
 </template>
 
 <style scoped>
+
+.fa-eye-slash{
+  margin: -15.5% 0 0 90%;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.452);
+}
+.fa-eye{
+  margin: -15.5% 0 0 90%;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.452);
+  display: none;
+}
+
 .signup {
   max-width: 400px;
-  margin: 20px auto;
-  padding: 1.2rem;
+  margin: 30px auto;
+  padding: 1% 1.2rem;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
 }
 .erroMessage{
-  margin-top: -1%;
-  text-align: center;
+  margin: 1% 0 0 0;
   color: red;
 }
 h1 {
@@ -200,7 +227,7 @@ input:focus {
 .btn-primary {
   background-color: #4a90e2;
   color: white;
-  margin-bottom: 1rem;
+  margin: 5% 0 1.2rem 0;
   padding: 18px 0;
   border-radius: 5px;
   border: 0;

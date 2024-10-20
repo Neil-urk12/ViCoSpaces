@@ -1,5 +1,8 @@
 <script setup>
 import { RouterLink } from 'vue-router';
+import { useAuthStore } from '@/stores/authStore';
+const authStore = useAuthStore();
+const { isAuthenticated } = authStore;
 </script>
 
 <template>
@@ -17,8 +20,21 @@ import { RouterLink } from 'vue-router';
         <div class="navigations">
             <!-- <h5>ViCoSpaces</h5> -->
              <div class="logo">
-                <img src="../assets/svg/filters-2-svgrepo-com.svg" class="logo-img">
-                <span>ViCoSpaces</span>
+                <img src="../images/logo/logo.png" class="logo-img">
+             </div>
+
+             <div class="roadmap">
+              <RouterLink target="_blank" to="/roadmap">
+                Road map
+                <!-- <i class="fa-solid fa-angle-down"></i> -->
+              </RouterLink>
+             </div>
+
+             <div class="aboutpage">
+              <RouterLink target="_blank" to="/about">
+                About
+                <!-- <i class="fa-solid fa-angle-down"></i> -->
+              </RouterLink>
              </div>
        
             <div class="rightnav">
@@ -79,7 +95,7 @@ import { RouterLink } from 'vue-router';
           Continue where you left off &nbsp; <span><i class="fa-solid fa-arrow-right" /></span>
         </RouterLink> 
       </button>
-      <p class="buttonMessage" style="font-size: 12px;margin: 7px 0 0 1%;color:rgba(0, 0, 0, 0.699);">
+      <p class="buttonMessage" style="font-size: 12px;margin: 7px 0 0 4%;color:rgba(0, 0, 0, 0.699);">
         Free Forever. No Credit Card.
       </p>
     </main>
@@ -108,23 +124,40 @@ import { RouterLink } from 'vue-router';
 
 <style scoped>
 
+.roadmap {
+  margin: 17px 20px 0 63%;
+}
+.roadmap a , .aboutpage a{
+  text-decoration: none;
+  color: black;
+}
+.aboutpage{
+  margin: 18px 0 0 0;
+}
+.roadmap a:hover , .aboutpage a:hover{
+  color: blue;
+}
 .navigations{
-  /* background-color: whitesmoke; */
   background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
-  width: 75%;
-  margin: 1.2rem 0 0 15%;
+  width: 80%;
+  margin: 1.2rem 0 0 12%;
   display: flex;
-  padding: 15px 0;
+  padding: 6px 0;
   border-radius: 10px;
-  /* box-shadow: 0 0 1px black; */
 }
 .logo{
-  margin: 10px 0 0 1.1rem;
+  margin: 0 0 0 1.1rem;
+}
+.logo img{
+  width: 55px;
+  height: 50px; 
+  border-radius: 50%;
 }
 .signupForFree{
+  height: 20px;
   background: linear-gradient(to right, #004cff, #d900ff);
   padding: 10px 15px;
-  margin: 0 0 0 -10px;
+  margin: 7px 0 0 -10px;
   border-radius: 5px;
   background-size: 200%;
   background-position: right;
@@ -219,9 +252,10 @@ import { RouterLink } from 'vue-router';
   font-size: 16px;
 }
 .rightnav{
-  margin: 0 2% 0 70%;
+  margin: 7px 2% 0 2%;
   box-shadow: 0 0 1px black;
   padding: 10px 15px;
+  height: 20px;
   border-radius: 5px;
   background-color: white;
   cursor: pointer;
@@ -235,21 +269,28 @@ import { RouterLink } from 'vue-router';
   background-color: rgb(248, 248, 248);
 }
 
-@media screen and (max-width: 600px) {
+/* @media screen and (max-width: 600px) {
   .navigations{
     margin: 0;
     background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
     width: 100%;
   }
+  .roadmap{
+    font-size: 13px;
+    margin-left: 0;
+    margin-right: 0;
+  }
   .signupForFree{
-    margin: 0 0 0 5%;
-    font-size: 15px;
-    padding: 10px 10px;
+    height: 20px;
+  }
+  .signupForFree a{
+    font-size: 13px;
   }
   .rightnav{
-    margin:0 0 0 45%;
+    height: 10px;
     font-size: 15px;
     padding: 10px 10px;
+    margin-left: -40%;
   }
   .title{
     font-size: 5rem;
@@ -259,7 +300,7 @@ import { RouterLink } from 'vue-router';
     font-size: 3.5rem;
   }
   .container p{
-    font-size: 15px;
+    font-size: 1px;
     margin: 0 0 5% 0;
   }
   .container ol{
@@ -278,40 +319,46 @@ import { RouterLink } from 'vue-router';
   .icons{
     margin-top: 11%;
     padding: 30px 0;
+    border-top-right-radius: 40%;
+    border-top-left-radius: 40%;
+
   }
   .icons p{
-    padding: 20px 0 0 0;
-    font-size: 13px;
+    padding: 40px 0 0 0;
+    font-size: 12px;
   }
-}
-@media screen and (min-width: 601px) and (max-width: 900px) {
+} */
+@media screen and (min-width: 600px) and (max-width: 900px) {
   .navigations{
     width: 100%;
     margin: 0;
   }
+  .roadmap{
+    margin: 0 0 0 0;
+  }
   .signupForFree{
     margin: 0 0 0 5%;
-    font-size: 15px;
+    font-size: 10px;
     padding: 10px 10px;
   }
   .rightnav{
-    margin:0 0 0 45%;
+    margin:0 0 0 0%;
     font-size: 15px;
     padding: 10px 10px;
   }
   .title{
-    font-size: 6rem;
+    font-size: 5rem;
   }
   .container h1{
     margin: 10% 0 5% 0;
     font-size: 3.5rem;
   }
   .container p{
-    font-size: 20px;
+    font-size: 1px;
     margin: 0 0 5% 0;
   }
   .container ol{
-    margin: 0 0 5% 0;
+    margin: 3% 0 10% 0;
   }
   .container li{
     font-size: 13px;
@@ -321,30 +368,77 @@ import { RouterLink } from 'vue-router';
     padding: 10px;
   }
   .icons{
-    margin-top: 5%;
+    margin-top: 28.5%;
     padding: 30px 0;
+    border-top-left-radius: 30%;
+    border-top-right-radius: 30%;
   }
-  .icons p{
+  .iconname{
     padding: 20px 0 0 0;
-    font-size: 13px;
+    font-size: 5px;
   }
 }
-@media screen and (max-width: 901px){
-    .signbutton a{
-      background-color: red;
-    }
+
+@media screen and (min-width: 901px) and (max-width:1200px){
     .rightnav{
       margin: 0 0 0 51%;
     }
+    .roadmap{
+      margin: 15px 0 0 43%;
+    }
+    .aboutpage{
+      margin: 15px 15px 0 10px;
+    }
     .signupForFree{
-    margin: 0 0 0 3%;
-    font-size: 15px;
-    padding: 10px 10px;
+      margin: 5px 0 0 1%;
+      font-size: 15px;
+      padding: 8px 10px;
+      width: 80px;
     }
-    .container p{
-      margin: 0 0 0 0;
-      font-size: 18px;
+    .signupForFree a{
+      font-size: 14px;
     }
+    .rightnav{
+      width: 50px;
+      padding: 8px 10px;
+      margin:5px 0 0 0;
+    }
+    .container h1{
+    margin: 13% 0 5% 0;
+    font-size: 3.5rem;
+  }
+  .container p{
+    font-size: 1px;
+    margin: 0 0 5% 0;
+  }
+  .container ol{
+    margin: 3% 0 5% -1%;
+  }
+  .container li{
+    font-size: 13px;
+  }
+  .signbutton{
+    margin: 0 0 0 34%;
+    padding: 10px;
+  }
+  .container p{
+    margin: 0 0 0 0;
+    font-size: 18px;
+  }
+  .signbutton{
+    margin: 0 0 0 40%;
+    padding: 10px;
+  }
+  .icons{
+    margin-top: 15%;
+    padding: 30px 0;
+    border-top-left-radius: 30%;
+    border-top-right-radius: 30%;
+  }
+  .iconname{
+    padding: 20px 0 0 0;
+    font-size: 5px;
+  }
 }
 
 </style>
