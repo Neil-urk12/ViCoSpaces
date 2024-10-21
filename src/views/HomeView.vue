@@ -1,25 +1,222 @@
 <script setup>
+/*we combined the home-component to the main HomeView so I separated the two css in order to differentiate the two styles that we used*/
+import '../assets/styles/home-components.css';
+import '../assets/styles/homeView.css';
+import '../assets/styles/user-profile-settings.css';
 import { ref } from "vue";
-import myHome from "@/components/home-components.vue";
+// import myHome from "@/components/home-components.vue";
 import createRoom from "@/components/create-room.vue";
 
+//from home-components
+const isDisplayed = ref(false);
+
+const toggleInput = () => {
+  isDisplayed.value = !isDisplayed.value;
+}
+
+const filter = () => {
+  alert("filtered");
+};
+
+const sort = () => {
+  alert("sorted search");
+};
+
+const emit = defineEmits(["open-room"]);
+
+const HostRoom = () => {
+  console.log("button clicked");
+  emit("open-room");
+};
+
+//from homeView
 const join = () => {
   alert("neil joined the program!");
 };
 
 const isCreateRoomVisible = ref(false);
-const title = ref("Production Design");
+//const title = ref("Production Design");
 
-function update(newTitle) {
-  title.value = newTitle;
-}
+//function update(newTitle) {
+  //title.value = newTitle;
+//}
+
 </script>
 
 <template>
   <header>
-    <myHome @open-room="isCreateRoomVisible = true" />
-    <categoryBar @changetitle="update" />
+    <nav class="nav-bar">
+      <div class="nav-div">
+        <div class="logo-container">
+          <img
+            src="../assets/images/logo/transparentlogo 1080.png"
+            alt="ViCoSpaces-Logo"
+            class="logo-img"
+            width="100%"
+            height="100%"
+          >
+          <span class="logo-name">ViCoSpaces</span>
+        </div>
+        <div class="open-sidebar">
+          <div class="open-sidebar-icon">
+            <img
+              src="../assets/images/SVG/mobile-menu-bar.svg"
+              alt="side icon"
+              width="40px"
+            >
+          </div>
+        </div>
+        <div class="nav-links-and-buttons">
+          <ul class="pages-container">
+            <li>
+              <router-link to="/">
+                Home
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/about">
+                About
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/contact">
+                Contact
+              </router-link>
+            </li>
+          </ul>
+          <div class="user-dropdown">
+            <div class="user-profile">
+              <img
+                src="../assets/images/UserProfileStocks/megan.jpg"
+                alt="User Profile"
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
   </header>
+  <div class="searchbar-container" />
+  <div class="search-bar">
+    <div class="search">
+      <img
+        class="search-icon"
+        src="../assets/images/SVG/search-svgrepo-com.svg"
+        alt="search-icon"
+        width="30px"
+      >
+      <!-- search bar input -->
+      <input
+        type="text"
+        class="search-input"
+        name="search-input"
+        placeholder="Search here..."
+      >
+
+      <div class="filter-sort">
+        <a
+          href="#"
+          @click.prevent="filter"
+        >
+          <img
+            class="filter-icon"
+            src="../assets/images/SVG/filters-2-svgrepo-com.svg"
+            alt="filter-icon"
+            width="30px"
+          >
+        </a>
+
+        <a
+          href="#"
+          @click.prevent="sort"
+        >
+          <img
+            class="sort-icon"
+            src="../assets/images/SVG/sort-vertical-svgrepo-com.svg"
+            alt="sort-icon"
+            width="30px"
+          >
+        </a>
+      </div>
+    </div>
+
+    <div class="button-container">
+      <div
+        class="link-container"
+        :style="{display: isDisplayed ? 'block' : 'none' }"
+      >
+        <div class="link-align">
+          <img
+            src="../assets/images/SVG/add-link-alt-1-svgrepo-com.svg"
+            alt="add-link-icon"
+            width="20px"
+          >
+          <input
+            id="link-input"
+            type="text"
+            placeholder="Enter Link"
+          >
+        </div>
+      </div>
+
+      <button
+        class="join-btn-container"
+        @click="toggleInput"
+      >
+        <img
+          class="join-icon"
+          src="../assets/images/SVG/session-join-svgrepo-com white.svg"
+          alt="join-icon"
+          width="30px"
+        >
+        <p class="join-text-hide">
+          Join <span class="room-text-hide-on-small">Room</span>
+        </p>
+      </button>
+      <button
+        class="host-btn-container"
+        @click="HostRoom"
+      >
+        <img
+          src="../assets/images/SVG/add-square-svgrepo-com white.svg"
+          alt="host-icon"
+          width="30px"
+        >
+        <p>Host <span class="room-text-hide-on-small">Room</span></p>
+      </button>
+    </div>
+  </div>
+
+  <!-- create a category bar below the search bar-->
+  <div class="category">
+    <div class="category-container">
+      <ul>   
+        <li><h5>Gaming</h5></li>
+        <li><h5>Gaming</h5></li>
+        <li><h5>Gaming</h5></li>
+        <li class="hide-on-small-3">
+          <h5>Gaming</h5>
+        </li>
+        <li class="hide-on-small-3">
+          <h5>Gaming</h5>
+        </li>
+        <li class="hide-on-small-2">
+          <h5>Gaming</h5>
+        </li>
+        <li class="hide-on-small-2">
+          <h5>Gaming</h5>
+        </li>
+        <li class="hide-on-small-1">
+          <h5>Gaming</h5>
+        </li>
+        <li class="hide-on-small-1">
+          <h5>Gaming</h5>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- <myHome @open-room="isCreateRoomVisible = true" />
+    <categoryBar @changetitle="update" /> -->
   <main>
     <div class="room-view-container">
       <div class="room-form">
@@ -30,52 +227,50 @@ function update(newTitle) {
             </div>
           </div>
           <div class="text-content">
-            <h2>Production Design</h2>
-            <div class="joined-users">
-              <i class="icon" />
+            <div class="room-name-container">
+              <h2>Production Design</h2>
             </div>
-            <div class="join-btn-container">
-              <button class="join-btn" @:click="join">Join</button>
-            </div>
-          </div>
-        </div>
-        <createRoom
-          :is-visible="isCreateRoomVisible"
-          @close-room="isCreateRoomVisible = false"
-        />
-        <div class="room 2">
-          <div class="image-content">
-            <div class="hosting-container">
-              <div class="host-profile" />
-            </div>
-          </div>
-          <div class="text-content">
-            <h2>Production Design</h2>
-            <div class="joined-users">
-              <i class="icon" />
-            </div>
-            <div class="join-btn-container">
-              <button class="join-btn" @:click="join">Join</button>
-            </div>
-          </div>
-        </div>
-        <createRoom
-          :is-visible="isCreateRoomVisible"
-          @close-room="isCreateRoomVisible = false"
-        />
-        <div class="room 3">
-          <div class="image-content">
-            <div class="hosting-container">
-              <div class="host-profile" />
-            </div>
-          </div>
-          <div class="text-content">
-            <h2>MAgic Design</h2>
-            <div class="joined-users">
-              <i class="icon" />
-            </div>
-            <div class="join-btn-container">
-              <button class="join-btn" @:click="join">Join</button>
+            <div class="joined-and-button-container">
+              <div class="joined-users">
+                <div class="user-wrapper">
+                  <div id="user-1-container ">
+                    <img
+                      class="user-1"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-2-container ">
+                    <img
+                      class="user-2"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-3-container ">
+                    <img
+                      class="user-3"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-count-container">
+                    <div class="user-count">
+                      <p class="number-count">
+                        10+
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="join-btn-container">
+                <button
+                  class="join-btn"
+                  @:click="join"
+                >
+                  Join
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -83,19 +278,57 @@ function update(newTitle) {
           :is-visible="isCreateRoomVisible"
           @close-room="isCreateRoomVisible = false"
         />
-        <div class="room 4">
+        <div class="room">
           <div class="image-content">
             <div class="hosting-container">
               <div class="host-profile" />
             </div>
           </div>
           <div class="text-content">
-            <h2>Production Design</h2>
-            <div class="joined-users">
-              <i class="icon" />
+            <div class="room-name-container">
+              <h2>Production Design</h2>
             </div>
-            <div class="join-btn-container">
-              <button class="join-btn" @:click="join">Join</button>
+            <div class="joined-and-button-container">
+              <div class="joined-users">
+                <div class="user-wrapper">
+                  <div id="user-1-container ">
+                    <img
+                      class="user-1"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-2-container ">
+                    <img
+                      class="user-2"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-3-container ">
+                    <img
+                      class="user-3"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-count-container">
+                    <div class="user-count">
+                      <p class="number-count">
+                        10+
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="join-btn-container">
+                <button
+                  class="join-btn"
+                  @:click="join"
+                >
+                  Join
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -103,19 +336,57 @@ function update(newTitle) {
           :is-visible="isCreateRoomVisible"
           @close-room="isCreateRoomVisible = false"
         />
-        <div class="room 5">
+        <div class="room">
           <div class="image-content">
             <div class="hosting-container">
               <div class="host-profile" />
             </div>
           </div>
           <div class="text-content">
-            <h2>Production Design</h2>
-            <div class="joined-users">
-              <i class="icon" />
+            <div class="room-name-container">
+              <h2>Production Design</h2>
             </div>
-            <div class="join-btn-container">
-              <button class="join-btn" @:click="join">Join</button>
+            <div class="joined-and-button-container">
+              <div class="joined-users">
+                <div class="user-wrapper">
+                  <div id="user-1-container ">
+                    <img
+                      class="user-1"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-2-container ">
+                    <img
+                      class="user-2"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-3-container ">
+                    <img
+                      class="user-3"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-count-container">
+                    <div class="user-count">
+                      <p class="number-count">
+                        10+
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="join-btn-container">
+                <button
+                  class="join-btn"
+                  @:click="join"
+                >
+                  Join
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -123,19 +394,57 @@ function update(newTitle) {
           :is-visible="isCreateRoomVisible"
           @close-room="isCreateRoomVisible = false"
         />
-        <div class="room 6">
+        <div class="room">
           <div class="image-content">
             <div class="hosting-container">
               <div class="host-profile" />
             </div>
           </div>
           <div class="text-content">
-            <h2>Production Design</h2>
-            <div class="joined-users">
-              <i class="icon" />
+            <div class="room-name-container">
+              <h2>Production Design</h2>
             </div>
-            <div class="join-btn-container">
-              <button class="join-btn" @:click="join">Join</button>
+            <div class="joined-and-button-container">
+              <div class="joined-users">
+                <div class="user-wrapper">
+                  <div id="user-1-container ">
+                    <img
+                      class="user-1"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-2-container ">
+                    <img
+                      class="user-2"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-3-container ">
+                    <img
+                      class="user-3"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-count-container">
+                    <div class="user-count">
+                      <p class="number-count">
+                        10+
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="join-btn-container">
+                <button
+                  class="join-btn"
+                  @:click="join"
+                >
+                  Join
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -143,19 +452,289 @@ function update(newTitle) {
           :is-visible="isCreateRoomVisible"
           @close-room="isCreateRoomVisible = false"
         />
-        <div class="room 4">
+        <div class="room">
           <div class="image-content">
             <div class="hosting-container">
               <div class="host-profile" />
             </div>
           </div>
           <div class="text-content">
-            <h2>Production Design</h2>
-            <div class="joined-users">
-              <i class="icon" />
+            <div class="room-name-container">
+              <h2>Production Design</h2>
             </div>
-            <div class="join-btn-container">
-              <button class="join-btn" @:click="join">Join</button>
+            <div class="joined-and-button-container">
+              <div class="joined-users">
+                <div class="user-wrapper">
+                  <div id="user-1-container ">
+                    <img
+                      class="user-1"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-2-container ">
+                    <img
+                      class="user-2"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-3-container ">
+                    <img
+                      class="user-3"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-count-container">
+                    <div class="user-count">
+                      <p class="number-count">
+                        10+
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="join-btn-container">
+                <button
+                  class="join-btn"
+                  @:click="join"
+                >
+                  Join
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <createRoom
+          :is-visible="isCreateRoomVisible"
+          @close-room="isCreateRoomVisible = false"
+        />
+        <div class="room">
+          <div class="image-content">
+            <div class="hosting-container">
+              <div class="host-profile" />
+            </div>
+          </div>
+          <div class="text-content">
+            <div class="room-name-container">
+              <h2>Production Design</h2>
+            </div>
+            <div class="joined-and-button-container">
+              <div class="joined-users">
+                <div class="user-wrapper">
+                  <div id="user-1-container ">
+                    <img
+                      class="user-1"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-2-container ">
+                    <img
+                      class="user-2"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-3-container ">
+                    <img
+                      class="user-3"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-count-container">
+                    <div class="user-count">
+                      <p class="number-count">
+                        10+
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="join-btn-container">
+                <button
+                  class="join-btn"
+                  @:click="join"
+                >
+                  Join
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <createRoom
+          :is-visible="isCreateRoomVisible"
+          @close-room="isCreateRoomVisible = false"
+        />
+        <div class="room">
+          <div class="image-content">
+            <div class="hosting-container">
+              <div class="host-profile" />
+            </div>
+          </div>
+          <div class="text-content">
+            <div class="room-name-container">
+              <h2>Production Design</h2>
+            </div>
+            <div class="joined-and-button-container">
+              <div class="joined-users">
+                <div class="user-wrapper">
+                  <div id="user-1-container ">
+                    <img
+                      class="user-1"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-2-container ">
+                    <img
+                      class="user-2"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-3-container ">
+                    <img
+                      class="user-3"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-count-container">
+                    <div class="user-count">
+                      <p class="number-count">
+                        10+
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="join-btn-container">
+                <button
+                  class="join-btn"
+                  @:click="join"
+                >
+                  Join
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <createRoom
+          :is-visible="isCreateRoomVisible"
+          @close-room="isCreateRoomVisible = false"
+        />
+        <div class="room">
+          <div class="image-content">
+            <div class="hosting-container">
+              <div class="host-profile" />
+            </div>
+          </div>
+          <div class="text-content">
+            <div class="room-name-container">
+              <h2>Production Design</h2>
+            </div>
+            <div class="joined-and-button-container">
+              <div class="joined-users">
+                <div class="user-wrapper">
+                  <div id="user-1-container ">
+                    <img
+                      class="user-1"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-2-container ">
+                    <img
+                      class="user-2"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-3-container ">
+                    <img
+                      class="user-3"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-count-container">
+                    <div class="user-count">
+                      <p class="number-count">
+                        10+
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="join-btn-container">
+                <button
+                  class="join-btn"
+                  @:click="join"
+                >
+                  Join
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <createRoom
+          :is-visible="isCreateRoomVisible"
+          @close-room="isCreateRoomVisible = false"
+        />
+        <div class="room">
+          <div class="image-content">
+            <div class="hosting-container">
+              <div class="host-profile" />
+            </div>
+          </div>
+          <div class="text-content">
+            <div class="room-name-container">
+              <h2>Production Design</h2>
+            </div>
+            <div class="joined-and-button-container">
+              <div class="joined-users">
+                <div class="user-wrapper">
+                  <div id="user-1-container ">
+                    <img
+                      class="user-1"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-2-container ">
+                    <img
+                      class="user-2"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-3-container ">
+                    <img
+                      class="user-3"
+                      src="../assets/images/UserProfileStocks/megan.jpg"
+                      alt=""
+                    >
+                  </div>
+                  <div id="user-count-container">
+                    <div class="user-count">
+                      <p class="number-count">
+                        10+
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="join-btn-container">
+                <button
+                  class="join-btn"
+                  @:click="join"
+                >
+                  Join
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -167,180 +746,13 @@ function update(newTitle) {
     </div>
   </main>
 </template>
+<style scope>
 
-<style scoped>
-main {
-  height: 100vh;
-  padding: 20px 46px 0px 46px;
-  overflow-y: auto ;
-}
-.room-view-container {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: first baseline;
-  min-height: 100%;
-  width: 100%;
-  
-}
-.room-form {
-  width: 100%;
-  display: grid;
-  align-content: baseline;
-  grid-template-columns: repeat(3, minmax(370px, 1fr));
-  grid-template-rows: auto; 
-  gap: 30px;
-  flex-grow: 1;
-  overflow: auto;
-}
-
-.room {
-  position: relative; 
-  border-radius: 12px;
-  height: 350px;
-  width: 100%;
-  box-sizing: border-box;
-  overflow: hidden;
-  word-wrap: break-word;
-  box-shadow: 3px 5px 20px #9e9e9e;
-}
-
-.image-content {
-  position: relative;
-  background-image: url(../images/SVG/room-background_2.svg);
-  display: grid;
-  grid-template-columns: 28% 1fr 1fr;
-  grid-template-rows: auto auto;
-  border-radius: 12px 12px 0px 0px;
-  height: 60%;
-  box-sizing: border-box;
-  background-color: #2d8eff;
-}
-.hosting-container {
-  grid-column: 3;
-  background-color: rgb(255, 255, 255);
-  height: 64px;
-  width: 64px;
-  border-radius: 50%;
-  align-self: center;
-  transform: translate(107px, -20px);
-  background-image: url("../images/UserProfileStocks/megan.jpg");
-  background-size: 220%;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-.text-content {
-  display: grid;
-  grid-template-columns: auto;
-  grid-template-rows: auto;
-  height: 40%;
-  max-height: 100%;
-  max-width: 100%;
-  border-radius: 0px 0px 12px 12px;
-  background-color: rgb(255, 255, 255);
-  padding: 0px 10px 10px 10px;
-  align-items: center;
-  box-sizing: border-box;
-}
-.title {
-  grid-column: 1 / span 3;
-  grid-row: 1;
-  font-size: 24px;
-  font-weight: bold;
-  align-items: center;
-  text-align: center;
-}
-.title h2 {
-  color: white;
-}
-.joined-users {
-  grid-column: 1 / span 1;
-  grid-row: 3;
-  background-color: rgb(9, 255, 140);
-  border-radius: 50%;
-  height: 32px;
-  width: 32px;
-  font-size: 24px;
-}
-.join-btn-container {
-  grid-column: 4;
-  grid-row: 3;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.join-btn {
-  font-weight: bolder;
-  border: none;
-  border-radius: 12px;
-  height: 42px;
-  width: 124px;
-  color: white;
-  background-color: #2d8eff;
-}
-button {
-  cursor: pointer;
-}
-@media (max-width: 1386px) {
-  main {
-    height: 100vh;
-    padding: 20px 38px 0px 38px;
-    overflow-y: auto ;
-  
+  * {
+    text-decoration: none;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
-  .image-content {
-  position: relative;
-  background-image: url(../images/SVG/room-background_2.svg);
-  display: grid;
-  grid-template-columns: 28% 1fr 1fr;
-  grid-template-rows: auto auto;
-  border-radius: 12px 12px 0px 0px;
-  height: 60%;
-  background-color: #2d8eff;
-}
-
-.hosting-container {
-  position: absolute; /* Use absolute positioning */
-  top: 35px; /* Adjust the top position as needed */
-  right: 120px; /* Adjust the right position as needed */
-  background-color: rgb(255, 255, 255);
-  height: 64px;
-  width: 64px;
-  border-radius: 50%;
-  background-image: url("../images/UserProfileStocks/megan.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-}
-
-@media (max-width: 1228px) {
-  .room-form {
-    grid-template-columns: repeat(2, 1fr); /* Two columns for smaller screens */
-  }
-}
-@media (max-width: 794px){
-  main {
-    height: 100vh;
-    padding: 20px 20px 0px 20px;
-    overflow-y: auto ;
-  
-  }
-  .room-form {
-    grid-template-columns: 1fr; /* One column for even smaller screens */
-  }
-}
-
-@media (max-width: 600px) {
-  .room-form {
-    grid-template-columns: 1fr; /* One column for even smaller screens */
-  }
-  .room-view-container{
-    background-color: #9e9e9e;
-  }
-}
-
 </style>
