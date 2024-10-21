@@ -151,6 +151,12 @@ const createRoom = async () => {
 </template>
 
 <style scoped>
+header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+}
 .overlay {
   position: fixed;
   top: 0;
@@ -161,6 +167,7 @@ const createRoom = async () => {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100;
 }
 .edit-room {
   box-sizing: border-box;
@@ -175,18 +182,16 @@ const createRoom = async () => {
   z-index: 1000;
   width: 25%;
   max-width: 500px;
+  box-sizing: border-box;
 }
-.edit-room-inputs{
+.edit-room-inputs {
   display: flex;
   flex-direction: column;
   gap: 10px;
   width: 100%;
 }
-header {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  justify-content: space-between;
+button {
+  cursor: pointer;
 }
 .close-btn {
   background-color: #2d8eff;
@@ -196,13 +201,14 @@ header {
   height: 30px;
   width: 30px;
 }
-.name-container {
+.name-container, .password-container {
   width: 100%;
   padding: 14px;
   border-radius: 12px;
   background: #f6f6f6;
+  box-sizing: border-box;
 }
-.input-room-name {
+.input-room-name, .input-room-password {
   width: 100%;
   font-size: 16px;
   color: black;
@@ -211,72 +217,105 @@ header {
   background: transparent;
   flex: 1;
 }
-.password-container {
-  width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  background: #f6f6f6;
-}
-.input-room-password {
-  width: 100%;
-  font-size: 16px;
-  color: black;
-  outline: none;
-  border: none;
-  background: transparent;
-  flex: 1;
-}
-.room-info{
+.room-info {
   display: flex;
   justify-content: flex-start;
   gap: 6px;
   width: 100%;
-
 }
 select {
-  color:#2d8eff;
+  color: #2d8eff;
   border: none;
 }
-.status { 
-  width: 80px;
+
+.status{
   padding: 5px;
   font-size: 16px;
   border-radius: 6px;
   appearance: none;
-  background-size:16px 16px ;
+  background-size: 16px 16px;
+  width:18%;
+  background-color: #f9f9f9;
   background-image: url('../images/SVG/drop-down-minor-svgrepo-com.svg');
   background-repeat: no-repeat;
   background-position-x: 100%;
   background-position-y: 6px;
+
 }
 .capacity {
-  width: 40px;
   padding: 5px;
   font-size: 16px;
-  border-radius: 5px;
+  border-radius: 6px;
   appearance: none;
+  background-size: 16px 16px;
+  width: 40px;
   background-color: #f9f9f9;
-  background-size:16px 16px ;
   background-image: url('../images/SVG/drop-down-minor-svgrepo-com.svg');
   background-repeat: no-repeat;
   background-position-x: 100%;
   background-position-y: 6px;
 }
-.button-container{
-  width: 100% ;
+.button-container {
+  width: 100%;
   display: flex;
   justify-content: flex-end;
 }
-.create-btn{        
+.create-btn {
   background-color: #fff;
-  color:#2d8eff;
+  color: #2d8eff;
   border: none;
   border-radius: 6px;
   width: 30%;
   height: 35px;
-  font-weight: bold; 
+  font-weight: bold;
 }
+
 /* Responsive Styles */
+@media (max-width: 1386px) {
+  .status{
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 6px;
+    appearance: none;
+    background-size: 16px 16px;
+    width:25%;
+    background-color: #f9f9f9;
+    background-image: url('../images/SVG/drop-down-minor-svgrepo-com.svg');
+    background-repeat: no-repeat;
+    background-position-x: 100%;
+    background-position-y: 6px;
+  
+  }
+}
+@media (max-width: 972px) {
+  .room-info {
+    display: flex;
+    justify-content: center; /* Center items vertically */
+    align-items: center; /* Center items horizontally */
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+    word-wrap: break-word;
+    width: 100%;
+    height: auto; /* Allow height to adjust based on content */
+    border-radius: 12px;
+}
+  .status{
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 6px;
+    appearance: none;
+    background-size: 16px 16px;
+    width:40%;
+    background-color: #f9f9f9;
+    background-image: url('../images/SVG/drop-down-minor-svgrepo-com.svg');
+    background-repeat: no-repeat;
+    background-position-x: 100%;
+    background-position-y: 6px;
+  
+  }
+}
+
 @media (max-width: 768px) {
   .edit-room {
     width: 90%;
@@ -286,20 +325,21 @@ select {
   header {
     gap: 1em;
   }
-  .name-container {
+  .name-container, .password-container {
     padding: 10px;
   }
-  .input-room-name {
+  .input-room-name, .input-room-password {
     font-size: 14px;
   }
 }
+
 @media (max-width: 480px) {
   .edit-room {
     width: 95%;
     padding: 10px;
     gap: 10px;
   }
-  .input-room-name {
+  .input-room-name, .input-room-password {
     font-size: 12px;
   }
   .room-name {
@@ -308,6 +348,12 @@ select {
   .close-btn img {
     height: 25px;
     width: 25px;
+  }
+  .room-info{
+    align-content: flex-start;
+  }
+  .status{
+    width:25%;
   }
 }
 </style>

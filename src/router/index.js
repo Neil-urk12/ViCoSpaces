@@ -7,7 +7,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/', component: () => import('../views/LandingPageView.vue'), meta: { requiresAuth: false }  },
-    { path: '/home', component: () => import('../views/HomeView.vue'), meta: { requiresAuth: true } },
+    { path: '/home', component: () => import('../views/HomeView.vue'), meta: { requiresAuth: false } },
     { path: '/register', component: () => import('../views/RegisterView.vue'), meta: { requiresAuth: false } },
     { path: '/login', component: () => import('../views/SignInView.vue'), meta: { requiresAuth: false } },
     {

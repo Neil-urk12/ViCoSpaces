@@ -1,52 +1,48 @@
 <script setup>
 function notifyJoin() {
-  alert('hello babe, I love you');
+  alert("hello babe, I love you");
 }
 
 const filter = () => {
   alert("filtered");
-}
+};
 
 const sort = () => {
   alert("sorted search");
-}
+};
 
-const emit = defineEmits(['open-room']);
+const emit = defineEmits(["open-room"]);
 
 const HostRoom = () => {
-  console.log('button clicked')
-  emit('open-room');
-}
-
+  console.log("button clicked");
+  emit("open-room");
+};
 </script>
 
 <template>
   <header>
     <nav class="nav-bar">
-      <!-- <input
-        id="sidebar-active"
-        type="checkbox"
-      >
-      <label for="sidebar-active">
-        <img
-          src="../images/SVG/mobile-menu-bar.svg"
-          alt="sidebar-icon"
-        >
-      </label> -->
       <div class="nav-div">
         <div class="logo-container">
           <img
-            src="../images/logo/logo.png"
+            src="../images/logo/transparentlogo 1080.png"
             alt="ViCoSpaces-Logo"
             class="logo-img"
+            width="100%"
+            height="100%"
           >
           <span class="logo-name">ViCoSpaces</span>
         </div>
+        <div class="open-sidebar">
+          <div class="open-sidebar-icon">
+            <img
+              src="../images/SVG/mobile-menu-bar.svg"
+              alt="side icon"
+              width="40px"
+            >
+          </div>
+        </div>
         <div class="nav-links-and-buttons">
-          <input type="checkbox" id="activate-nav">
-          <label for="activate-nav">
-            <img src="../images/SVG/close-bold-svgrepo-com.svg" width="30px" alt="">
-          </label>
           <ul class="pages-container">
             <li>
               <router-link to="/">
@@ -79,8 +75,8 @@ const HostRoom = () => {
       </div>
     </nav>
   </header>
-
   <main>
+    <div class="searchbar-container" />
     <div class="search-bar">
       <div class="search">
         <img
@@ -125,11 +121,30 @@ const HostRoom = () => {
       </div>
 
       <div class="button-container">
-        <button @click="notifyJoin">
-          Join Room
+        <button
+          class="join-btn-container"
+          @click="notifyJoin"
+        >
+          <img
+            class="join-icon"
+            src="../images/SVG/session-join-svgrepo-com white.svg"
+            alt="join-icon"
+            width="30px"
+          >
+          <p class="join-text-hide">
+            Join <span class="room-text-hide-on-small">Room</span>
+          </p>
         </button>
-        <button @click="HostRoom">
-          Host Room
+        <button
+          class="host-btn-container"
+          @click="HostRoom"
+        >
+          <img
+            src="../images/SVG/add-square-svgrepo-com white.svg"
+            alt="host-icon"
+            width="30px"
+          >
+          <p>Host <span class="room-text-hide-on-small">Room</span></p>
         </button>
       </div>
     </div>
@@ -137,16 +152,28 @@ const HostRoom = () => {
     <!-- create a category bar below the search bar-->
     <div class="category">
       <div class="category-container">
-        <ul>
+        <ul>   
           <li><h5>Gaming</h5></li>
           <li><h5>Gaming</h5></li>
           <li><h5>Gaming</h5></li>
-          <li><h5>Gaming</h5></li>
-          <li><h5>Gaming</h5></li>
-          <li><h5>Gaming</h5></li>
-          <li><h5>Gaming</h5></li>
-          <li><h5>Gaming</h5></li>
-          <li><h5>Gaming</h5></li>
+          <li class="hide-on-small-3">
+            <h5>Gaming</h5>
+          </li>
+          <li class="hide-on-small-3">
+            <h5>Gaming</h5>
+          </li>
+          <li class="hide-on-small-2">
+            <h5>Gaming</h5>
+          </li>
+          <li class="hide-on-small-2">
+            <h5>Gaming</h5>
+          </li>
+          <li class="hide-on-small-1">
+            <h5>Gaming</h5>
+          </li>
+          <li class="hide-on-small-1">
+            <h5>Gaming</h5>
+          </li>
         </ul>
       </div>
     </div>
@@ -163,6 +190,7 @@ const HostRoom = () => {
 }
 
 .nav-bar {
+  position: sticky;
   background: #2d8eff;
   font-family: Calibri, sans-serif;
   align-items: center;
@@ -176,9 +204,8 @@ const HostRoom = () => {
   justify-content: space-between;
 }
 
-.burger {
+.mobile-buttons {
   display: none;
-  cursor: pointer;
 }
 
 .logo-container {
@@ -216,7 +243,7 @@ const HostRoom = () => {
 }
 
 .pages-container li a::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 50%;
   bottom: -2px;
@@ -229,7 +256,7 @@ const HostRoom = () => {
 
 .pages-container li a:hover::after {
   width: 100%;
-  left: 50%; 
+  left: 50%;
   transform: translateX(-50%);
 }
 
@@ -241,18 +268,23 @@ const HostRoom = () => {
   border-radius: 50%;
   justify-content: center;
 }
+.open-sidebar-icon {
+  display: none;
+  margin-right: 20px;
+}
 
 .search-bar {
+  position: relative;
   display: flex;
-  justify-content: center;
-  margin-top: 1em;
+  justify-content: space-evenly;
+  margin-top: 8px;
+
 }
 
 .search {
   --padding: 14px;
-
-  width: max-content;
   display: flex;
+  flex-direction: row;
   align-items: center;
   padding: var(--padding);
   border-radius: 12px;
@@ -273,7 +305,12 @@ const HostRoom = () => {
   flex: 1;
 }
 
-.search-icon, .sort-icon, .filter-icon {
+.search-icon{
+  cursor: none;
+}
+.sort-icon,
+.filter-icon {
+
   cursor: pointer;
 }
 
@@ -286,8 +323,18 @@ const HostRoom = () => {
 .button-container {
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
-  width: 20%;
+  justify-content: flex-start;
+  gap: 20px;
+  width: 18%;
+}
+
+.join-btn-container, .host-btn-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  padding: 5px;
 }
 
 button {
@@ -295,13 +342,17 @@ button {
   color: white;
   border: none;
   border-radius: 12px;
-  width: 123px;
+  width: 40%;
   height: 50px;
+  font-size: 1em;
   font-weight: bold;
+
+  cursor: pointer;
 }
 
 /* category */
 .category {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -309,10 +360,13 @@ button {
   margin-top: 6px;
 }
 
-.category-container{
+.category-container {
+  display: flex;
+  justify-content: flex-start;
   position: relative;
   width: 95%;
   max-width: 100%;
+  height: 2rem;
 }
 
 .category-container ul {
@@ -323,40 +377,87 @@ button {
 }
 
 .category-container li {
-  position: absolute;
+  position: relative;
+  flex: 1 0 10px;
   color: rgb(43, 43, 43);
   font-size: 1.2em;
   font-weight: bold;
-  position: relative;
   text-align: center;
-
+  align-content: center;
+  width: 75px;
   border: 1px solid rgb(122, 122, 122);
-  margin: 2px;
-  padding: 6px;
-  width: 7%;
   border-radius: 6px;
 
   cursor: pointer;
 }
 
-@media (max-width: 1388px) {
+@media (max-width: 1339px) {
+
+  .search-bar{
+    justify-content: space-around
+  }
+  .search-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Ensures space between search and button */
+    width: 100%; /* Adjust as needed */
+    max-width: 600px; /* Adjust as needed */
+    margin: 0 auto; /* Center the container */
+    
+}
+
+.search {
+    border: none;
+    flex-grow: 1; /* Allows the search bar to take up available space */
+    padding: 10px;
+    border-radius: 12px;
+    margin-right: 10px; /* Space between search bar and button */
+}
+
+.button-container {
+    flex-shrink: 0; /* Prevents the button from shrinking */
+}
+
+.search-button {
+    padding: 10px 20px;
+    border-radius: 12px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
   
+}
+@media (max-width: 1320px) {
+
+  .room-text-hide-on-small{
+    display: none;
+  }
   
 }
 
+@media (max-width: 1014px) {
 
 
+  .hide-on-small-1 {
+    display: none;
+  }
+  
+}
+@media (max-width: 940px) {
+  .host-btn-container p, .join-btn-container p{
+    display: none;
+  }
+}
 @media (max-width: 794px) {
-
   .nav-bar {
-  background: #0f1112;
-  font-family: Calibri, sans-serif;
-  align-items: center;
-  height: 70px;
-  padding: 15px 40px 0px 40px;
-}
-
-  .logo-container img{
+    background: #2d8eff;
+    font-family: Calibri, sans-serif;
+    align-items: center;
+    height: 70px;
+    padding: 15px 40px 0px 40px;
+  }
+  .logo-container img {
     display: none;
   }
   .logo-container {
@@ -367,29 +468,189 @@ button {
     color: white;
   }
 
+
+  
+
 }
-@media (max-width: 375px) {
-  .logo-container {
+@media (max-width: 725px) {
+  .nav-bar {
+    padding: 0px 0px 0px 0px;
     display: flex;
-    align-items: center;
-    font-size: clamp(19px, 0.02em, 100px);
-    font-weight: 600;
-    color: white;
   }
-  .nav-links-and-buttons, .pages-container{
-    background-color: red;
-    display: flex;
+  .nav-div {
+    width: 100%;
+    padding: 0px 0px 0px 20px;
+  }
+  .nav-links-and-buttons {
+    display: none;
+    z-index: 99;
     flex-direction: column;
-    width: 100vw;
-    height: 70vh;
-    z-index: 10;
+    background-color: rebeccapurple;
+    height: 100vh;
+    justify-content: center;
+    width: 30%;
+    padding: 100px 0px 0px 0px;
   }
-  .logo-container{
+  .pages-container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    gap: 20px;
+  }
+  .pages-container li {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    width: 50%;
+  }
+  #user-profile {
     display: none;
   }
-  
+
+  .open-sidebar-icon {
+    display: block;
+  }
+
+  .close-sidebar-btn {
+    display: none;
+  }
+
+  .hide-on-small-2{
+    display: none;
+  }
 }
 
+@media (max-width: 663px) {
+  .nav-bar {
+    background-color: #2d8eff;
+    width: 100%;
+  }
+}
+@media (max-width: 375px) {
 
+  .nav-bar {
+    position: sticky;
+    background: #2d8eff;
+    font-family: Calibri, sans-serif;
+    align-items: center;
+    height: 70px;
 
+  }
+  
+  .nav-div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .mobile-buttons {
+    display: flex;
+  }
+  
+  .logo-container {
+    
+  }
+  
+  .logo-img {
+    
+  }
+  
+  .nav-links-and-buttons {
+    
+  }
+  
+  .pages-container {
+   
+  }
+  
+  .pages-container li a {
+    
+  }
+  
+  .pages-container li a::after {
+  
+  }
+  
+  .pages-container li a:hover::after {
+    
+  }
+  
+  .user-profile {
+    
+  }
+  .open-sidebar-icon {
+    
+  }
+  
+  .search-bar {
+    display: flex;
+    justify-content: flex-start;
+    height: 40px;
+    border-radius: 6px;
+    margin-top: 8px;
+
+  }
+  
+  .search {
+    display: flex;
+    width: 100%;
+    
+    
+  }
+  
+  .search-input {
+    width: 20px;
+    
+  }
+  
+  .search-icon,
+  .sort-icon,
+  .filter-icon {
+  
+    cursor: pointer;
+  }
+  
+  .filter-sort {
+    
+  }
+  
+  .button-container {
+    
+  }
+  .join-btn-container{
+   height: 100%;  
+  }
+  .host-btn-container{
+   display: none;
+  }
+  
+  button {
+    
+  
+    cursor: pointer;
+  }
+  
+  /* category */
+  .category {
+    
+  }
+  
+  .category-container {
+   
+  }
+  
+  .category-container ul {
+   
+  }
+  
+  .category-container li {
+   
+  
+    cursor: pointer;
+  }
+  .hide-on-small-3{
+    display: none;
+  }
+}
 </style>
