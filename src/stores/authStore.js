@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { auth } from '@/firebase/firebaseconfig';
+import { authnow } from '@/firebase/firebaseconfig';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 
 export const useAuthStore = defineStore('auth', {
@@ -26,7 +26,7 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login({ email, password }) {
       try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const userCredential = await signInWithEmailAndPassword(authnow, email, password);
         this.user = userCredential.user;
         
         localStorage.setItem('user', JSON.stringify({
@@ -43,7 +43,7 @@ export const useAuthStore = defineStore('auth', {
 
     async register({ email, password }) {
         try {
-          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          const userCredential = await createUserWithEmailAndPassword(authnow, email, password);
   
           this.user = userCredential.user;
 
@@ -63,7 +63,7 @@ export const useAuthStore = defineStore('auth', {
 
     async logout() {
       try {
-        await signOut(auth);
+        await signOut(authnow);
         this.user = null;
         localStorage.removeItem('user');  
       } catch (error) {
@@ -73,7 +73,7 @@ export const useAuthStore = defineStore('auth', {
     },
 
     checkAuthState() {
-      onAuthStateChanged(auth, (user) => {
+      onAuthStateChanged(authnow, (user) => {
         if (user) {
           this.user = user;
         } else {

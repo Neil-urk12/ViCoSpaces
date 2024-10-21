@@ -3,7 +3,6 @@
     <div class="logo-container">
       <img
         src="../assets/svg/filters-2-svgrepo-com.svg"
-        alt="ViCoSpaces-Logo"
         class="logo-img"
       >
       <span class="logo-name">ViCoSpaces</span>
@@ -32,6 +31,18 @@
       font-size: 35px;
       font-weight: 600;
       color: white;
+    }
+    @media screen and (min-width: 480px) and (max-width: 600px) {
+      .logo-container{
+        height: 50px;
+        font-size: 25px;
+      }
+    }
+    @media screen and (min-width: 600px) and (max-width: 900px)   {
+      .logo-container{
+        height: 50px;
+        font-size: 25px;
+      }
     }
     
 </style>

@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/authStore';
 const authStore = useAuthStore();
 const { isAuthenticated } = authStore;
 </script>
+
 <template>
   <link
     rel="stylesheet"
@@ -16,28 +17,65 @@ const { isAuthenticated } = authStore;
   <div class="container">
     <header>
       <nav>
-        <div class="leftnav">
-          <p class="vicoText">
-            ViCoSpaces
-          </p><hr>
-          <p class="message">
-            The everything app for work
-          </p>
+        <div class="navigations">
+          <!-- <h5>ViCoSpaces</h5> -->
+          <div class="logo">
+            <img
+              src="../images/logo/logo.png"
+              class="logo-img"
+            >
+          </div>
+
+          <div class="roadmap">
+            <RouterLink
+              target="_blank"
+              to="/roadmap"
+            >
+              Road map
+              <!-- <i class="fa-solid fa-angle-down"></i> -->
+            </RouterLink>
+          </div>
+
+          <div class="aboutpage">
+            <RouterLink
+              target="_blank"
+              to="/about"
+            >
+              About
+              <!-- <i class="fa-solid fa-angle-down"></i> -->
+            </RouterLink>
+          </div>
+       
+          <div class="rightnav">
+            <RouterLink
+              v-if="!isAuthenticated"
+              to="/login"
+            >
+              Log in
+            </RouterLink>
+            <RouterLink
+              v-else
+              to="/home"
+            >
+              Home
+            </RouterLink>
+          </div>
+          
+          <div class="signupForFree">
+            <RouterLink to="/register">
+              Sign up free
+            </RouterLink>
+          </div>
         </div>
-        <div class="rightnav">
-          <RouterLink
-            v-if="!isAuthenticated"
-            to="/login"
-          >
-            Log in
-          </RouterLink>
-          <RouterLink
-            v-else
-            to="/home"
-          >
-            Home
-          </RouterLink>
-        </div>
+        <!-- <div class="leftnav">
+                <p class="vicoText">
+                  ViCoSpaces
+                </p><hr>
+                <p class="message">
+                  The everything app for work
+                </p>
+          </div>
+        --> 
       </nav>
     </header>
 
@@ -65,7 +103,10 @@ const { isAuthenticated } = authStore;
           Continue where you left off &nbsp; <span><i class="fa-solid fa-arrow-right" /></span>
         </RouterLink> 
       </button>
-      <p style="font-size: 13px; margin:7px 0 0 3%; color:rgba(0, 0, 0, 0.699);">
+      <p
+        class="buttonMessage"
+        style="font-size: 12px;margin: 7px 0 0 4%;color:rgba(0, 0, 0, 0.699);"
+      >
         Free Forever. No Credit Card.
       </p>
     </main>
@@ -93,6 +134,53 @@ const { isAuthenticated } = authStore;
 </template>
 
 <style scoped>
+
+.roadmap {
+  margin: 17px 20px 0 63%;
+}
+.roadmap a , .aboutpage a{
+  text-decoration: none;
+  color: black;
+}
+.aboutpage{
+  margin: 18px 0 0 0;
+}
+.roadmap a:hover , .aboutpage a:hover{
+  color: blue;
+}
+.navigations{
+  background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
+  width: 80%;
+  margin: 1.2rem 0 0 12%;
+  display: flex;
+  padding: 6px 0;
+  border-radius: 10px;
+}
+.logo{
+  margin: 0 0 0 1.1rem;
+}
+.logo img{
+  width: 55px;
+  height: 50px; 
+  border-radius: 50%;
+}
+.signupForFree{
+  height: 20px;
+  background: linear-gradient(to right, #004cff, #d900ff);
+  padding: 10px 15px;
+  margin: 7px 0 0 -10px;
+  border-radius: 5px;
+  background-size: 200%;
+  background-position: right;
+  transition: background-position 1s;
+}
+.signupForFree a{
+  text-decoration: none;
+  color: white;
+}
+.signupForFree:hover{
+  background-position: left;
+}
 .title{
   font-size: 6rem;
   color: rgb(47, 127, 255);
@@ -104,7 +192,7 @@ const { isAuthenticated } = authStore;
   background-color: white;
 }
 .container h1{
-  margin-top: 8%;
+  margin-top: 3%;
   font-size: 4.6rem;
   text-align: center;
   margin-bottom: 1%;
@@ -163,7 +251,7 @@ const { isAuthenticated } = authStore;
   display: flex;
   gap: 50px;
   justify-content: center;
-  margin-top: 40px;
+  margin-top: 48px;
   width: 100%;
   padding: 38px 0;
   overflow-x:visible;
@@ -174,39 +262,194 @@ const { isAuthenticated } = authStore;
 .icons p {
   font-size: 16px;
 }
-.leftnav{
-  display: flex;
-  box-shadow: 0 0 5px violet;
-  width: 16%;
-  margin: 1.5% 0 -4% 10%;
-  border-radius: 45px;
-}
-.leftnav p {
-  font-size: 13px;
-}
-.vicoText{
-  margin: 20px 20px 0 0;
-}
-.message{
-  margin-right: 10%;
-}
 .rightnav{
-  float: right;
-  margin: 1% 7% 0 0;
-  box-shadow: 0 0 5px violet;
-  padding: 10px 35px;
-  border-radius: 45px;
-  background-image: linear-gradient(35deg , #004cff, #d900ff);
-  background-size: 200%;
-  background-position: right;
-  transition: background-position 1s;
+  margin: 7px 2% 0 2%;
+  box-shadow: 0 0 1px black;
+  padding: 10px 15px;
+  height: 20px;
+  border-radius: 5px;
+  background-color: white;
   cursor: pointer;
+  transition: 0.2s ease-in-out;
 }
 .rightnav a{
-  color: white;
+  color: rgb(0, 0, 0);
   text-decoration: none;
 }
 .rightnav:hover{
-  background-position: left;
+  background-color: rgb(248, 248, 248);
 }
+
+/* @media screen and (max-width: 600px) {
+  .navigations{
+    margin: 0;
+    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
+    width: 100%;
+  }
+  .roadmap{
+    font-size: 13px;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .signupForFree{
+    height: 20px;
+  }
+  .signupForFree a{
+    font-size: 13px;
+  }
+  .rightnav{
+    height: 10px;
+    font-size: 15px;
+    padding: 10px 10px;
+    margin-left: -40%;
+  }
+  .title{
+    font-size: 5rem;
+  }
+  .container h1{
+    margin: 15% 0 5% 0;
+    font-size: 3.5rem;
+  }
+  .container p{
+    font-size: 1px;
+    margin: 0 0 5% 0;
+  }
+  .container ol{
+    margin: 0 0 5% 0;
+  }
+  .container li{
+    font-size: 11.5px;
+  }
+  .signbutton{
+    margin: 0 0 0 34%;
+    padding: 10px;
+  }
+  .signbutton a{
+    font-size: 15px;
+  }
+  .icons{
+    margin-top: 11%;
+    padding: 30px 0;
+    border-top-right-radius: 40%;
+    border-top-left-radius: 40%;
+
+  }
+  .icons p{
+    padding: 40px 0 0 0;
+    font-size: 12px;
+  }
+} */
+@media screen and (min-width: 600px) and (max-width: 900px) {
+  .navigations{
+    width: 100%;
+    margin: 0;
+  }
+  .roadmap{
+    margin: 0 0 0 0;
+  }
+  .signupForFree{
+    margin: 0 0 0 5%;
+    font-size: 10px;
+    padding: 10px 10px;
+  }
+  .rightnav{
+    margin:0 0 0 0%;
+    font-size: 15px;
+    padding: 10px 10px;
+  }
+  .title{
+    font-size: 5rem;
+  }
+  .container h1{
+    margin: 10% 0 5% 0;
+    font-size: 3.5rem;
+  }
+  .container p{
+    font-size: 1px;
+    margin: 0 0 5% 0;
+  }
+  .container ol{
+    margin: 3% 0 10% 0;
+  }
+  .container li{
+    font-size: 13px;
+  }
+  .signbutton{
+    margin: 0 0 0 34%;
+    padding: 10px;
+  }
+  .icons{
+    margin-top: 28.5%;
+    padding: 30px 0;
+    border-top-left-radius: 30%;
+    border-top-right-radius: 30%;
+  }
+  .iconname{
+    padding: 20px 0 0 0;
+    font-size: 5px;
+  }
+}
+
+@media screen and (min-width: 901px) and (max-width:1200px){
+    .rightnav{
+      margin: 0 0 0 51%;
+    }
+    .roadmap{
+      margin: 15px 0 0 43%;
+    }
+    .aboutpage{
+      margin: 15px 15px 0 10px;
+    }
+    .signupForFree{
+      margin: 5px 0 0 1%;
+      font-size: 15px;
+      padding: 8px 10px;
+      width: 80px;
+    }
+    .signupForFree a{
+      font-size: 14px;
+    }
+    .rightnav{
+      width: 50px;
+      padding: 8px 10px;
+      margin:5px 0 0 0;
+    }
+    .container h1{
+    margin: 13% 0 5% 0;
+    font-size: 3.5rem;
+  }
+  .container p{
+    font-size: 1px;
+    margin: 0 0 5% 0;
+  }
+  .container ol{
+    margin: 3% 0 5% -1%;
+  }
+  .container li{
+    font-size: 13px;
+  }
+  .signbutton{
+    margin: 0 0 0 34%;
+    padding: 10px;
+  }
+  .container p{
+    margin: 0 0 0 0;
+    font-size: 18px;
+  }
+  .signbutton{
+    margin: 0 0 0 40%;
+    padding: 10px;
+  }
+  .icons{
+    margin-top: 15%;
+    padding: 30px 0;
+    border-top-left-radius: 30%;
+    border-top-right-radius: 30%;
+  }
+  .iconname{
+    padding: 20px 0 0 0;
+    font-size: 5px;
+  }
+}
+
 </style>
