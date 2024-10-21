@@ -4,7 +4,7 @@ import JoinRoomModal from '@/components/JoinRoomModal.vue';
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { ref as dbRef, onValue, off, push } from 'firebase/database';
 import { realTimeDb as database } from '@/firebase/firebaseconfig';
-import { useRouter } from 'vue-router';
+import { useRouter, RouterLink } from 'vue-router';
 import { useAuthStore } from '../stores/authStore'
 import { useRoomStore } from '../stores/roomStore'
 
@@ -19,6 +19,10 @@ const sortBy = ref('createdAt');
 const sortOrder = ref('desc');
 const privacyFilter = ref('all');
 const categoryFilter = ref('all');
+
+const isCreateRoomVisible = ref(false);
+const isDropdownOpen = ref(false)
+const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value
 
 const uniqueCategories = computed(() => {
   const categories = new Set(
@@ -37,9 +41,8 @@ const createRoomHandler = async (roomData) => {
     router.push(`/room/${roomId}`);
   } catch (error) {
     console.error('Error creating room:', error);
-    // Handle error (e.g., show error message to user)
   }
-};
+}
 
 const joinRoom = async (roomId, privacyType) => {
   console.log(showModal.value)
@@ -53,13 +56,12 @@ const joinRoom = async (roomId, privacyType) => {
         authStore.user.uid,
         authStore.user.email
       );
-      router.push(`/room/${roomId}`);
+      router.push(`/room/${roomId}`)
     } catch (error) {
-      console.error('Error joining room:', error);
-      // Handle error (e.g., show error message to user)
+      console.error('Error joining room:', error)
     }
   }
-};
+}
 
 const joinRoomById = async (roomId, password) => {
   try {
@@ -69,10 +71,9 @@ const joinRoomById = async (roomId, password) => {
       authStore.user.email,
       password
     );
-    router.push(`/room/${roomId}`);
+    router.push(`/room/${roomId}`)
   } catch (error) {
-    console.error('Error joining room:', error);
-    // Handle error (e.g., show error message to user)
+    console.error('Error joining room:', error)
   }
 };
 
@@ -80,27 +81,28 @@ onMounted(async () => {
   if (!authStore.isAuthenticated) router.push('/login')
   else await roomStore.fetchRooms()
 })
-onUnmounted(() => off(roomsRef));
-
+onUnmounted(() => {
+  off(roomsRef)
+})
 
 const filteredAndSortedRooms = computed(() => {
   let filteredRooms = roomStore.rooms.filter(
     (room) => room && typeof room === 'object'
-  );
+  )
   if (searchQuery.value) {
     filteredRooms = filteredRooms.filter((room) =>
       room.id.includes(searchQuery.value)
-    );
+    )
   }
   if (privacyFilter.value !== 'all') {
     filteredRooms = filteredRooms.filter(
       (room) => room.privacyType === privacyFilter.value
-    );
+    )
   }
   if (categoryFilter.value !== 'all') {
     filteredRooms = filteredRooms.filter(
       (room) => room.category === categoryFilter.value
-    );
+    )
   }
   return filteredRooms.sort((a, b) => {
     let comparison = 0;
@@ -109,16 +111,15 @@ const filteredAndSortedRooms = computed(() => {
     } else if (sortBy.value === 'createdAt') {
       comparison = (b.createdAt || 0) - (a.createdAt || 0);
     } else {
-      const aValue = a[sortBy.value] || 0;
-      const bValue = b[sortBy.value] || 0;
-      if (aValue < bValue) comparison = -1;
-      if (aValue > bValue) comparison = 1;
+      const aValue = a[sortBy.value] || 0
+      const bValue = b[sortBy.value] || 0
+      if (aValue < bValue) comparison = -1
+      if (aValue > bValue) comparison = 1
     }
     return sortOrder.value === 'desc' ? comparison * -1 : comparison;
-  });
-});
+  })
+})
 
-const isCreateRoomVisible = ref(false);
 </script>
 
 <template>
@@ -148,33 +149,54 @@ const isCreateRoomVisible = ref(false);
             <ul class="pages-container">
               <ul class="pages-container">
                 <li>
-                  <router-link to="/">
+                  <RouterLink to="/">
                     Home
-                  </router-link>
+                  </RouterLink>
                 </li>
                 <li>
-                  <router-link to="/about">
+                  <RouterLink to="/about">
                     About
-                  </router-link>
+                  </RouterLink>
                 </li>
                 <li>
-                  <router-link to="/contact">
+                  <RouterLink to="/contact">
                     Contact
-                  </router-link>
+                  </RouterLink>
                 </li>
               </ul>
             </ul>
-            <a
-              id="user-profile"
-              href=""
+            <div
+              class="user-profile"
+              @click="toggleDropdown"
             >
-              <div class="user-profile">
-                <img
-                  src="../images/black-default-user-profile-ll(1).webp"
-                  alt="User Profile"
-                >
-              </div>
-            </a>
+              <img
+                src="../images/black-default-user-profile-ll(1).webp"
+                alt="User Profile"
+              >
+            </div>
+            <div
+              v-if="isDropdownOpen"
+              class="dropdown"
+            >
+              <RouterLink
+                to="/settings"
+                class="dropdown-item"
+              >
+                Settings
+              </RouterLink>
+              <RouterLink
+                to="/profile"
+                class="dropdown-item"
+              >
+                Profile
+              </RouterLink>
+              <RouterLink
+                to="/logout"
+                class="dropdown-item"
+              >
+                Log out
+              </RouterLink>
+            </div>
           </div>
         </div>
       </nav>
@@ -190,21 +212,6 @@ const isCreateRoomVisible = ref(false);
             width="30px"
             @click="toggleDropdown"
           >
-          <!-- <div
-            v-show="isDropdownVisible"
-            class="dropdown-menu"
-          >
-            <a
-              v-for="(item, index) in dropdownItems"
-              :key="index"
-              href="#"
-              class="dropdown-item"
-            >
-              {{ item }}
-            </a>
-          </div>
-        </div> -->
-          <!-- search bar input -->
           <input
             v-model="searchQuery"
             type="text"
@@ -563,6 +570,35 @@ button {
   font-weight: bold;
 }
 
+.dropdown {
+  position: absolute;
+  right: 0;
+  top: 15%;
+  margin-top: 0.5rem;
+  width: 12rem;
+  background-color: #ffffff;
+  border-radius: 0.375rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+  z-index: 10;
+}
+
+.dropdown-item {
+  display: block;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  color: #374151;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: #f3f4f6;
+}
+
+.dropdown-item:not(:last-child) {
+  border-bottom: 1px solid #e5e7eb;
+}
 
 @media (max-width: 794px) {
 
