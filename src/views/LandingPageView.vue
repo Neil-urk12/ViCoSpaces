@@ -18,46 +18,54 @@ const { isAuthenticated } = authStore;
     <header>
       <nav>
         <div class="navigations">
-            <!-- <h5>ViCoSpaces</h5> -->
-             <div class="logo">
-                <img src="../images/logo/logo.png" class="logo-img">
-             </div>
+          <!-- <h5>ViCoSpaces</h5> -->
+          <div class="logo">
+            <img
+              src="../images/logo/logo.png"
+              class="logo-img"
+            >
+          </div>
 
-             <div class="roadmap">
-              <RouterLink target="_blank" to="/roadmap">
-                Road map
-                <!-- <i class="fa-solid fa-angle-down"></i> -->
-              </RouterLink>
-             </div>
+          <div class="roadmap">
+            <RouterLink
+              target="_blank"
+              to="/roadmap"
+            >
+              Road map
+              <!-- <i class="fa-solid fa-angle-down"></i> -->
+            </RouterLink>
+          </div>
 
-             <div class="aboutpage">
-              <RouterLink target="_blank" to="/about">
-                About
-                <!-- <i class="fa-solid fa-angle-down"></i> -->
-              </RouterLink>
-             </div>
+          <div class="aboutpage">
+            <RouterLink
+              target="_blank"
+              to="/about"
+            >
+              About
+              <!-- <i class="fa-solid fa-angle-down"></i> -->
+            </RouterLink>
+          </div>
        
-            <div class="rightnav">
-              <RouterLink
-                v-if="!isAuthenticated"
-                to="/login"
-              >
+          <div class="rightnav">
+            <RouterLink
+              v-if="!isAuthenticated"
+              to="/login"
+            >
               Log in
-              </RouterLink>
-                <RouterLink
-                  v-else
-                  to="/home"
-                >
-                  Home
-                </RouterLink>
+            </RouterLink>
+            <RouterLink
+              v-else
+              to="/home"
+            >
+              Home
+            </RouterLink>
           </div>
           
           <div class="signupForFree">
-                <RouterLink to="/register">
-                  Sign up free
-                </RouterLink>
-            </div>
-          
+            <RouterLink to="/register">
+              Sign up free
+            </RouterLink>
+          </div>
         </div>
         <!-- <div class="leftnav">
                 <p class="vicoText">
@@ -95,7 +103,10 @@ const { isAuthenticated } = authStore;
           Continue where you left off &nbsp; <span><i class="fa-solid fa-arrow-right" /></span>
         </RouterLink> 
       </button>
-      <p class="buttonMessage" style="font-size: 12px;margin: 7px 0 0 4%;color:rgba(0, 0, 0, 0.699);">
+      <p
+        class="buttonMessage"
+        style="font-size: 12px;margin: 7px 0 0 4%;color:rgba(0, 0, 0, 0.699);"
+      >
         Free Forever. No Credit Card.
       </p>
     </main>

@@ -13,6 +13,7 @@ const router = useRouter()
 const errorMessage = ref()
 const authStore = useAuthStore()
 
+if(authStore.isAuthenticated) router.push('/home')
 
 const register = async () => {
   try {
@@ -115,8 +116,16 @@ const hidepass = () => {
         placeholder="Enter password"
       ><br>
 
-      <i id="hidepass" class="fa-solid fa-eye-slash" @click="showpass"></i>
-      <i id="showpass" class="fa-solid fa-eye" @click="hidepass"></i><br>
+      <i
+        id="hidepass"
+        class="fa-solid fa-eye-slash"
+        @click="showpass"
+      />
+      <i
+        id="showpass"
+        class="fa-solid fa-eye"
+        @click="hidepass"
+      /><br>
       
       <p
         v-if="errorMessage"
@@ -136,7 +145,11 @@ const hidepass = () => {
         class="btn-secondary"
         @click="signInWithGoogle"
       >
-        <img class="imagelogo" src="../images/google.png" alt="google logo">
+        <img
+          class="imagelogo"
+          src="../images/google.png"
+          alt="google logo"
+        >
         Sign Up with Google
       </button>
       <button

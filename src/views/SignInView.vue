@@ -12,6 +12,8 @@ import { useAuthStore } from '@/stores/authStore';
   const errorMessage = ref()
   const auth = useAuthStore()
 
+  if(auth.isAuthenticated) router.push('/home')
+
   const login = async () => {
     try {
       await auth.login({ email: email.value, password: password.value });
@@ -98,19 +100,27 @@ import { useAuthStore } from '@/stores/authStore';
         placeholder="Enter password" 
       ><br>
 
-      <i id="hidepass" class="fa-solid fa-eye-slash" @click="showpass"></i>
-      <i id="showpass" class="fa-solid fa-eye" @click="hidepass"></i><br>
+      <i
+        id="hidepass"
+        class="fa-solid fa-eye-slash"
+        @click="showpass"
+      />
+      <i
+        id="showpass"
+        class="fa-solid fa-eye"
+        @click="hidepass"
+      /><br>
   
-        <p
-          v-if="errorMessage"
-          class="erroMessage"
-        >
-          {{ errorMessage }}
-        </p>
+      <p
+        v-if="errorMessage"
+        class="erroMessage"
+      >
+        {{ errorMessage }}
+      </p>
 
-        <span class="forgotpass">
-          Forgot Password
-        </span>
+      <span class="forgotpass">
+        Forgot Password
+      </span>
       
       <button
         class="btn-primary"
@@ -123,7 +133,11 @@ import { useAuthStore } from '@/stores/authStore';
         class="btn-secondary"
         @click="signInWithGoogle"
       >
-        <img class="imagelogo" src="../images/google.png" alt="google logo" />
+        <img
+          class="imagelogo"
+          src="../images/google.png"
+          alt="google logo"
+        >
         Sign In with Google
       </button>
 
