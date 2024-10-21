@@ -92,7 +92,7 @@
   .search-bar {
     position: relative;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     margin-top: 8px;
   
   }
@@ -159,7 +159,7 @@
   .button-container {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     gap: 20px;
     width: 18%;
   }

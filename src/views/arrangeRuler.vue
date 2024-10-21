@@ -11,18 +11,6 @@ import { realTimeDb as database } from '@/firebase/firebaseconfig';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/authStore'
 import { useRoomStore } from '../stores/roomStore'
-//test filter modal
-import Modal from '@/components/test-modal.vue';
-const isModalVisible = ref(false);
-
-const openModal = () => {
-  isModalVisible.value = true;
-};
-
-const closeModal = () => {
-  isModalVisible.value = false;
-};
- // Import Modal component
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -265,16 +253,11 @@ const filteredAndSortedRooms = computed(() => {
         >
           <img
             class="filter-icon"
-            src="../assets/images/SVG/filters-2-svgrepo-com.svg"
+            src="../images/SVG/filters-2-svgrepo-com.svg"
             alt="filter-icon"
             width="30px"
-            @click="openModal"
           >
         </a>
-        <Modal
-          v-if="isModalVisible"
-          @close="closeModal"
-        />
   
         <a
           href="#"
@@ -282,7 +265,7 @@ const filteredAndSortedRooms = computed(() => {
         >
           <img
             class="sort-icon"
-            src="../assets/images/SVG/sort-vertical-svgrepo-com.svg"
+            src="../images/SVG/sort-vertical-svgrepo-com.svg"
             alt="sort-icon"
             width="30px"
             @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"
@@ -291,10 +274,7 @@ const filteredAndSortedRooms = computed(() => {
       </div>
     </div>
     <div class="button-container">
-      <button
-        class="join-btn-container"
-        @click="showModal = true"
-      >
+      <button @click="showModal = true">
         <img
           class="join-icon"
           src="../assets/images/SVG/session-join-svgrepo-com white.svg"
@@ -305,10 +285,7 @@ const filteredAndSortedRooms = computed(() => {
           Join <span class="room-text-hide-on-small">Room</span>
         </p>
       </button>
-      <button
-        class="host-btn-container"
-        @click="isCreateRoomVisible = true"
-      >
+      <button @click="isCreateRoomVisible = true">
         <img
           src="../assets/images/SVG/add-square-svgrepo-com white.svg"
           alt="host-icon"
@@ -317,11 +294,45 @@ const filteredAndSortedRooms = computed(() => {
         <p>Host <span class="room-text-hide-on-small">Room</span></p>
       </button>
     </div>
+    <div class="search-sort">
+      <select v-model="sortBy">
+        <option value="capacity">
+          Capacity
+        </option>
+        <option value="createdAt">
+          Latest
+        </option>
+        <option value="createdAtOldest">
+          Oldest
+        </option>
+      </select>
+    </div>
+    <div class="filters">
+      <select v-model="privacyFilter">
+        <option value="all">
+          All Privacy
+        </option>
+        <option value="public">
+          Public
+        </option>
+        <option value="private">
+          Private
+        </option>
+      </select>
+      <select v-model="categoryFilter">
+        <option value="all">
+          All Categories
+        </option>
+        <option
+          v-for="category in uniqueCategories"
+          :key="category"
+          :value="category"
+        >
+          {{ category }}
+        </option>
+      </select>
+    </div>
   </div>
-
-
-  
-    
   <!-- <main class="room-view-container">
     <div
       v-for="room in filteredAndSortedRooms"
@@ -416,7 +427,7 @@ const filteredAndSortedRooms = computed(() => {
     </div>
   </nav> -->
 
-  <main class="room-view-container">
+  <!-- <main class="room-view-container">
     <div class="room-form">
       <div
         v-for="room in filteredAndSortedRooms"
@@ -432,42 +443,64 @@ const filteredAndSortedRooms = computed(() => {
           <div class="room-name-container">
             <h2>{{ room.name }}</h2>
           </div>
-          <div class="bottom-content">
-            <p>Host: {{ room.host?.name || 'Unknown' }}</p>
-            <p>Privacy: {{ room.privacyType }}</p>
-            <div class="joined-users">
-              <i class="icon" />
-            </div>
-            <div class="room-join-wrapper">  
-              <div class="counter">
-                <h4>{{ room.currentUsers }} / {{ room.maxCapacity }}</h4>
+          <p>Host: {{ room.host?.name || 'Unknown' }}</p>
+          <p>Privacy: {{ room.privacyType }}</p>
+          <div class="joined-users">
+            <div class="user-wrapper">
+              <div id="user-1-container ">
+                <img
+                  class="user-1"
+                  src="../assets/images/UserProfileStocks/megan.jpg"
+                  alt=""
+                >
               </div>
-              <button
-                class="join-btn"
-                :disabled="room.currentUsers >= room.maxCapacity"
-                @click="joinRoom(room.id, room.privacyType)"
-              >
-                {{ room.currentUsers >= room.maxCapacity ? 'Full' : 'Join' }}
-              </button>           
+              <div id="user-2-container ">
+                <img
+                  class="user-2"
+                  src="../assets/images/UserProfileStocks/megan.jpg"
+                  alt=""
+                >
+              </div>
+              <div id="user-3-container ">
+                <img
+                  class="user-3"
+                  src="../assets/images/UserProfileStocks/megan.jpg"
+                  alt=""
+                >
+              </div>
+              <div id="user-count-container">
+                <div class="user-count">
+                  <p class="number-count" /><h4>{{ room.currentUsers }} / {{ room.maxCapacity }}</h4>
+                  </p>
+                </div>
+              </div>
             </div>
+          </div>
+          <div class="join-btn-container">  
+            <button
+              class="join-btn"
+              :disabled="room.currentUsers >= room.maxCapacity"
+              @click="joinRoom(room.id, room.privacyType)"
+            >
+              {{ room.currentUsers >= room.maxCapacity ? 'Full' : 'Join' }}
+            </button>           
           </div>
         </div>
       </div>
-    </div>
-  </main>
-  <JoinRoomModal
-    v-if="showModal"
-    @close="showModal = false"
-    @join="joinRoomById"
-  />
-  <HostRoomModal
-    :is-visible="isCreateRoomVisible"
-    @close-room="isCreateRoomVisible = false"
-    @close="close"
-    @create="createRoomHandler"
-  />
+      <JoinRoomModal
+        v-if="showModal"
+        @close="showModal = false"
+        @join="joinRoomById"
+      />
+      <HostRoomModal
+        :is-visible="isCreateRoomVisible"
+        @close-room="isCreateRoomVisible = false"
+        @close="close"
+        @create="createRoomHandler"
+      />
+    </div> -->
+    
 
-  <!-- my code for sure -->
   <!-- <div class="search-bar">
       <div class="search">
         <img
@@ -510,8 +543,6 @@ const filteredAndSortedRooms = computed(() => {
           </a>
         </div>
       </div> -->
-
-  <!-- my code for sure -->
 
   <!-- <div class="button-container">
         <div
@@ -560,19 +591,12 @@ const filteredAndSortedRooms = computed(() => {
       </div>
     </div> -->
 
-
-  <!-- my code for sure -->
-
   <!-- <myHome @open-room="isCreateRoomVisible = true" />
     <categoryBar @changetitle="update" /> -->
   <main>
     <div class="room-view-container">
       <div class="room-form">
-        <div
-          v-for="room in filteredAndSortedRooms"
-          :key="room.id"
-          class="room"
-        >
+        <div class="room">
           <div class="image-content">
             <div class="hosting-container">
               <div class="host-profile" />
@@ -580,7 +604,7 @@ const filteredAndSortedRooms = computed(() => {
           </div>
           <div class="text-content">
             <div class="room-name-container">
-              <h2>{{ room.name }}</h2>
+              <h2>Production Design</h2>
             </div>
             <div class="joined-and-button-container">
               <div class="joined-users">
@@ -608,9 +632,9 @@ const filteredAndSortedRooms = computed(() => {
                   </div>
                   <div id="user-count-container">
                     <div class="user-count">
-                      <h6 class="number-count">
-                        {{ room.currentUsers }}+
-                      </h6>
+                      <p class="number-count">
+                        10+
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -618,11 +642,10 @@ const filteredAndSortedRooms = computed(() => {
               <div class="join-btn-container">
                 <button
                   class="join-btn"
-                  :disabled="room.currentUsers >= room.maxCapacity"
-                  @click="joinRoom(room.id, room.privacyType)"
+                  @:click="join"
                 >
-                  {{ room.currentUsers >= room.maxCapacity ? 'Full' : 'Join' }}
-                </button> 
+                  Join
+                </button>
               </div>
             </div>
           </div>
