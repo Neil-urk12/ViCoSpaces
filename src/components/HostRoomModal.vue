@@ -4,8 +4,6 @@ import invisible from '@/assets/images/SVG/eye-closed-svgrepo-com.svg';
 import { computed, ref } from 'vue'
 
 const emit = defineEmits(['close-room', 'create', 'close'])
-const privacy = ref('private')
-const isPrivate = computed(() => privacy.value === 'private')
 const props = defineProps({isVisible: Boolean})
 
 const roomName = ref('')
@@ -14,7 +12,8 @@ const password = ref('')
 const confirmPassword = ref('')
 const roomCapacity = ref(1)
 const category = ref('')
-const showPassword = ref(false);
+const showPassword = ref(false)
+const isPrivate = computed(() => privacyType.value === 'private')
 
 const handleSubmit = () => {
   if (privacyType.value === 'private' && password.value !== confirmPassword.value) {
@@ -158,7 +157,7 @@ console.log(props);
         <div class="room-info">
           <select
             id="status"
-            v-model="privacy"
+            v-model="privacyType"
             name="status"
             class="status"
           >
