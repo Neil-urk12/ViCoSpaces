@@ -45,31 +45,41 @@
   .image-content {
     position: relative;
     background-image: url(../images/SVG/room-background_2.svg);
-    display: grid;
-    grid-template-columns: 28% 1fr 1fr;
-    grid-template-rows: auto auto;
+    display: flex;
     border-radius: 12px 12px 0px 0px;
     height: 60%;
     box-sizing: border-box;
     background-color: #2d8eff;
   }
+  .room-name-container{
+    position: absolute; /* Position text-wrapper relative to container */
+    bottom: 0; /* Align to the bottom */
+    left: 0;   /* Align to the left */
+    padding: 10px; /* Optional padding for spacing */
+    color: white; /* Text color */
+
+  }
+  .room-name{
+    width: 100%;
+    align-self: center;
+  }
+
   .status-icon-wrapper{
     position: absolute;
     display: flex;
     justify-content: flex-end;
-    height: 50%;
-    width:60%;
+    height: 80%;
+    width:50%;
     background-color: rgb(255, 255, 255);
+    border-radius: 50%;
     align-items: center;  
     grid-column: 3;
     grid-row: 2;  
-    left: 40px;
-    border-radius: 10rem 10rem 0 0;
-    transform: translateY(140%);
+    right: 10%;    
+    border: 1px solid #2d8eff;
   }.status-icon{
     width: 100%;
-    margin-top: 20%;
-    align-self: baseline;
+    align-self: center;
   }
   .status-icon img {
     margin-right: 0;
@@ -91,28 +101,61 @@
   .text-content {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     height: 40%;
     max-height: 100%;
     max-width: 100%;
+    gap: 6px;
     border-radius: 0px 0px 12px 12px;
     background-color: rgb(255, 255, 255);
     padding: 10px 20px 10px 20px;
     align-items: center;
     box-sizing: border-box;
   
-  }.room-name-container{
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
   }
-  .room-name-container h2 {
-    width: auto;
-  }
+  
   .bottom-content{
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 80%;
+    height: 100%;
+    
+  }
+  .host-wrapper{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    height: 20%;
+  }
+  .host-wrapper p{
+    font-weight: bold;
+  }
+  .privacy-wrapper{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 30%;
+    gap: 6px;
+  }
+  /* just the icon container */
+  .sip{ 
+    display: flex;
+    justify-content: center;  
+  }
+
+  .status-background {
+    align-content: center;
+    height: 28px;
+    width: 70px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .p-text {
+
+    font-size: 0.9rem;
+    color: white; /* You can change the text color if needed */
   }
   /* .joined-and-button-container{
     display: flex;
@@ -223,9 +266,30 @@
     width: 100%; /* Adjust width as needed */
   }
   .counter{
+    display: flex;
+    flex-direction: row;
     align-self: center;
-    width: 10%;
+    align-items: center;
+    justify-content: center;
+    width: 35%;
+    height: 100%;
+    padding-top: 1px;
+    gap: 4px;
+    margin-right: 0;
+  }
+  .user-counter{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    height: 50%;
+    border-radius: 6px;
+    background-color: #D9D9D9;
+    box-shadow: 3px 3px 5px #5f5f5f inset;
     margin-left: 0;
+  }
+  .user-counter h4{
+    align-self: center;
   }
   .join-btn {
     font-weight: bolder;
@@ -240,6 +304,30 @@
   button {
     cursor: pointer;
   }
+  
+  @media (max-width: 1925px) {
+    .status-icon-wrapper{
+      position: absolute;
+      display: flex;
+      justify-content: flex-end;
+      height: 50%;
+      width:20%;
+      background-color: rgb(255, 255, 255);
+      border-radius: 50%;
+      align-items: center;  
+      grid-column: 3;
+      grid-row: 2;  
+      right: 4%;    
+      border: 1px solid #2d8eff;
+      transform: translateY(20%);
+    }.status-icon{
+      width: 100%;
+      align-self: center;
+    }
+    .status-icon img {
+      margin-right: 0;
+    }
+  }
   @media (max-width: 1386px) {
     .image-content {
     position: relative;
@@ -250,9 +338,10 @@
     border-radius: 12px 12px 0px 0px;
     height: 60%;
     background-color: #2d8eff;
+    
   }
   
-  .hosting-container {
+  /* .hosting-container {
     position: absolute;
     top: 35px;
     right: 120px;
@@ -264,8 +353,29 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-  }
+  } */
   
+  .status-icon-wrapper{
+    position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    height: 70%;
+    width:50%;
+    background-color: rgb(255, 255, 255);
+    border-radius: 50%;
+    align-items: center;  
+    grid-column: 3;
+    grid-row: 2;  
+    right: 10%;    
+    border: 1px solid #2d8eff;
+    transform: translateY(-120%);
+  }.status-icon{
+    width: 100%;
+    align-self: center;
+  }
+  .status-icon img {
+    margin-right: 0;
+  }
   }
   
   @media (max-width: 1228px) {
@@ -273,23 +383,81 @@
       grid-template-columns: repeat(2, 1fr); /* Two columns for smaller screens */
     }
   }
+  @media (max-width: 1100px) {
+    .status-icon-wrapper{
+      position: absolute;
+      display: flex;
+      justify-content: flex-end;
+      height: 80%;
+      width:50%;
+      background-color: rgb(255, 255, 255);
+      border-radius: 50%;
+      align-items: center;  
+      grid-column: 3;
+      grid-row: 2;  
+      right: 10%;    
+      border: 1px solid #2d8eff;
+      transform: translateY(-110%);
+    }.status-icon{
+      width: 100%;
+      align-self: center;
+    }
+    .status-icon img {
+      margin-right: 0;
+    }
+    
+  }
   
   @media (max-width: 820px) {
   }
  
   @media (max-width: 794px){
-    main {
-      height: 100vh;
-      padding: 20px 20px 0px 20px;
-      overflow-y: auto ;
     
-    }
     .room-form {
       grid-template-columns: 1fr; /* One column for even smaller screens */
     }
+    .status-icon-wrapper{
+      position: absolute;
+      display: flex;
+      justify-content: flex-end;
+      height: 80%;
+      width:30%;
+      background-color: rgb(255, 255, 255);
+      border-radius: 50%;
+      align-items: center;  
+      grid-column: 3;
+      grid-row: 2;  
+      right: 10%;    
+      border: 1px solid #2d8eff;
+      transform: translateY(-110%);
+    }.status-icon{
+      width: 100%;
+      align-self: center;
+    }
+    .status-icon img {
+      margin-right: 0;
+    }
+
+    .mobile-content{
+      position: absolute;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      top: 29%;
+      left: 20px;
+    }
+    .mobile-host-container{
+      position: fixed;
+      background-color: rgb(15, 253, 246);
+      width: 10%;
+      border-radius: 50%;
+    }
+    .mobile-host-container img{
+      align-self: center;
+    }
   }
   @media (max-width: 768px) {
-    
+
   }
   
   @media (max-width: 600px) {
@@ -302,30 +470,28 @@
   }
  
   @media (max-width: 375px) {
-    main{
-      padding: 20px;
-    }
+    
     .status-icon-wrapper{
       position: absolute;
       display: flex;
       justify-content: flex-end;
-      height: 50%;
-      width:60%;
+      height: 60%;
+      width:50%;
       background-color: rgb(255, 255, 255);
+      border-radius: 50%;
       align-items: center;  
       grid-column: 3;
       grid-row: 2;  
-      left: 30px;
-      border-radius: 10rem 10rem 0 0;
-      transform: translateY(140%);
-    }
-    .status-icon{
+      right: 10%;    
+      border: 1px solid #2d8eff;
+      transform: translateY(-140%);
+    }.status-icon{
       width: 100%;
-      margin-top: 20%;
-      align-self: baseline;
+      align-self: center;
     }
     .status-icon img {
       margin-right: 0;
     }
-  
+
+    
   }

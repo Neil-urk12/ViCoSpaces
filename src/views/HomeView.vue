@@ -5,6 +5,8 @@ import '@/assets/styles/home-components.css';
 //imported icon
 import LockIcon from '@/assets/images/SVG/lock-password-svgrepo-com-blue.svg';
 import UnlockIcon from  '@/assets/images/SVG/lock-unlocked-svgrepo-com-blue.svg';
+import lockStatusIcon from '@/assets/images/SVG/lock-svgrepo-com-black.svg';
+import hostIcon from '@/assets/images/SVG/user-svgrepo-com-black.svg';
 
 import HostRoomModal from '@/components/HostRoomModal.vue';
 import JoinRoomModal from '@/components/JoinRoomModal.vue';
@@ -178,6 +180,11 @@ const logout = async () => {
 //function update(newTitle) {
   //title.value = newTitle;
 //}
+//test condition of the color background change in the private or public
+//create a condition that will check if privacy is private and if it is change ref(true);
+const isPrivate = ref(false);
+
+
 </script>
 
 
@@ -206,6 +213,18 @@ const logout = async () => {
             >
           </div>
           <div class="nav-links-and-buttons">
+            <div class="mobile-content">
+              <button
+                class="mobile-host-container"
+                @click="isCreateRoomVisible = true"
+              >
+                <img
+                  src="../assets/images/SVG/add-square-svgrepo-com white.svg"
+                  alt="host-icon"
+                  width="30px"
+                >
+              </button>
+            </div>
             <ul class="pages-container">
               <ul class="pages-container">
                 <li>
@@ -463,6 +482,11 @@ const logout = async () => {
           class="room"
         >
           <div class="image-content">
+            <div class="room-name-container">
+              <h2 class="room-name">
+                {{ room.name }}
+              </h2>
+            </div>
             <div class="status-icon-wrapper">
               <img
                 :src="room.privacyType === 'public' ? UnlockIcon : LockIcon"
@@ -472,25 +496,60 @@ const logout = async () => {
                 height="32"
               >
               <!-- privacy checker lang -->
-              <span>{{ room.privacyType === 'public' ? 'Unlocked' : 'Locked' }}</span>
+              <!-- <span>{{ room.privacyType === 'public' ? 'Unlocked' : 'Locked' }}</span> -->
             </div>
             <!-- <div class="hosting-container">
               <div class="host-profile" />
             </div> -->
           </div>
           <div class="text-content">
-            <div class="room-name-container">
-              <h2>{{ room.name }}</h2>
-            </div>
             <div class="bottom-content">
-              <p>Host: {{ room.host?.name || 'Unknown' }}</p>
-              <p>Privacy: {{ room.privacyType }}</p>
+              <div class="host-wrapper">
+                <div class="hiw">
+                  <img
+                    :src="hostIcon"
+                    alt="status icon"
+                    class="status-icon-privacy"
+                    width="26"
+                    height="26"
+                  >
+                </div>
+                <p>{{ room.host?.name || 'Unknown' }}</p>
+              </div>
+              <div class="privacy-wrapper">
+                <div class="sip">
+                  <img
+                    :src="lockStatusIcon"
+                    alt="status icon"
+                    class="status-icon-privacy"
+                    width="26"
+                    height="26"
+                  >
+                </div>
+                <div class="status-backgroun">
+                  <!-- The container's background color changes based on isPrivate -->
+                  <div
+                    class="status-background"
+                    :style="{ backgroundColor: isPrivate ? 'red' : 'lightgreen' }"
+                  >
+                    <p class="p-text">
+                      {{ isPrivate ? 'Private' : 'Public' }}
+                    </p>
+                  </div>
+                </div>
+                <!-- <p>privacy:{{ room.privacyType }}</p> -->
+              </div>
               <div class="joined-users">
                 <i class="icon" />
               </div>
               <div class="room-join-wrapper">  
                 <div class="counter">
-                  <h4>{{ room.currentUsers }} / {{ room.maxCapacity }}</h4>
+                  <div class="capaticy-txt">
+                    Capacity:
+                  </div>
+                  <div class="user-counter">
+                    <h4>{{ room.currentUsers }} / {{ room.maxCapacity }}2</h4>
+                  </div>
                 </div>
                 <button
                   class="join-btn"

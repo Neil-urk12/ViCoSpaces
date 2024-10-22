@@ -14,10 +14,20 @@
     justify-content: space-between;
   }
   
-  .mobile-buttons {
-    display: none;
+  /* .mobile-content {
+    z-index: 30;
+    position: absolute;
+    align-content: center;
+    right: 20%;
+    top: 100px;
+    width: 200px;
+    height: 100%;
+    border: solid 1px black;
   }
-  
+  .mobile-host-container{
+    align-self: center;
+    background-color: #2dff37;
+  } */
   .logo-container {
     display: flex;
     align-items: center;
@@ -94,9 +104,7 @@
     display: flex;
     justify-content: center;
     margin-top: 8px;
-  
   }
-  
   .search {
     --padding: 14px;
     display: flex;
@@ -146,16 +154,13 @@
   .link-align{
     display: flex;
     width: 100%;
-  
   }
   .link-align input{
   
     border: #007BFF;
     background: #f6f6f6 ;
     outline: none;
-  
   }
-  
   .button-container {
     display: flex;
     align-items: center;
@@ -163,10 +168,7 @@
     gap: 20px;
     width: 18%;
   }
-
-  
-  
-  .join-btn-container, .host-btn-container{
+  .join-btn-container{
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -175,7 +177,15 @@
     padding: 5px;
     height: 100%;
   }
-  
+  .host-btn-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    padding: 5px;
+    height: 100%;
+  }
   button {
     background-color: #2d8eff;
     color: white;
@@ -188,7 +198,6 @@
   
     cursor: pointer;
   }
-  
   /* category */
   .category {
     position: relative;
@@ -198,7 +207,6 @@
     margin-bottom: 6px;
     margin-top: 6px;
   }
-  
   .category-container {
     display: flex;
     justify-content: flex-start;
@@ -207,14 +215,12 @@
     max-width: 100%;
     height: 2rem;
   }
-  
   .category-container ul {
     position: relative;
     display: flex;
     list-style: none;
     gap: 23px;
   }
-  
   .category-container li {
     position: relative;
     flex: 1 0 10px;
@@ -575,14 +581,17 @@
      height: 100%;
      width: 100%;  
     }
-    .host-btn-container{
+    .host-btn-container {
       display: block;
-      z-index: 30;
-      position: absolute;
-      /* transform: translateY(1000%); */
-      width: 5%;
-      min-height: 3%;
+      
+      z-index: 20;
+      position: fixed;
+      right: 10px; /* Move to the right */
+      bottom: -1300%; /* Move to the bottom */
+      width: 50px; /* Adjust the size for the button */
+      height: 50px;
       border-radius: 50%;
+      border: solid 1px #ffffff; /* Make it circular */
       align-items: center;
 
     }
@@ -613,4 +622,6 @@
     .hide-on-small-3{
       display: none;
     }
+
+     
   }

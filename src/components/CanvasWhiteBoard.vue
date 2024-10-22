@@ -935,17 +935,21 @@ const downloadCanvasAsImage = () => {//Exporting Canvas into IMG Feature
 }
 
 .color-picker-wrapper {
-  margin: 10px 0;
+  overflow: hidden;
+  width: 2em;
+  height: 2em;
+  /* optional formatting below here */
+  border-radius: 50%;
+  border: solid 1px white;
+  margin: 1em;
+  
 }
 
 .color-picker-wrapper input[type="color"] {
-  width: 40px;
-  height: 40px;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  background-color: transparent;
   padding: 0;
+  width: 150%;
+  height: 150%;
+  margin: -25%;
 }
 
 .canvas-container {

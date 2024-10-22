@@ -1,4 +1,6 @@
 <script setup>
+import visible from '@/assets/images/SVG/eye-open-svgrepo-com.svg';
+import invisible from '@/assets/images/SVG/eye-closed-svgrepo-com.svg';
 import { computed, ref } from 'vue'
 
 const emit = defineEmits(['close-room', 'create', 'close'])
@@ -102,6 +104,7 @@ console.log(props);
               class="input-room-name"
               type="text"
               placeholder="Room Name"
+              maxlength="30"
               required
             >
           </div>
@@ -118,8 +121,14 @@ console.log(props);
             <span
               class="password-toggle-icon"
               @click="togglePasswordVisibility"
+            ><img 
+              :src="showPassword ? invisible : visible" 
+              alt="Toggle Password Visibility"
+              class="icon"
+              width="20"
+              height="20"
             >
-              <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" />
+              <!-- <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" /> -->
             </span>
           </div>
           <div
@@ -135,8 +144,14 @@ console.log(props);
             >          <span
               class="password-toggle-icon"
               @click="togglePasswordVisibility"
+            ><img 
+              :src="showPassword ? invisible : visible" 
+              alt="Toggle Password Visibility"
+              class="icon"
+              width="20"
+              height="20"
             >
-              <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" />
+              <!-- <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" /> -->
             </span>
           </div>
         </div>
@@ -257,13 +272,22 @@ button {
   height: 30px;
   width: 30px;
 }
-.name-container, .password-container, .c-password-container {
+.name-container{
   width: 100%;
   padding: 14px;
   border-radius: 12px;
   background: #f6f6f6;
   box-sizing: border-box;
 }
+.password-container, .c-password-container{
+  display: flex;
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  background: #f6f6f6;
+  box-sizing: border-box;
+}
+
 .input-room-name, .input-room-password, .input-confirm-password {
   width: 100%;
   font-size: 16px;
