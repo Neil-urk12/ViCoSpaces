@@ -139,6 +139,14 @@ const filteredAndSortedRooms = computed(() => {
   })
 })
 
+const logout = async () => {
+  try {
+    await authStore.logout()
+    router.push('/')
+  } catch (error) {
+    console.error('Logout error:', error)
+  }
+}
 // const isDisplayed = ref(false);
 
 // const toggleInput = () => {
@@ -247,6 +255,7 @@ const filteredAndSortedRooms = computed(() => {
                 <RouterLink
                   to="/logout"
                   class="dropdown-item"
+                  @click.prevent="logout"
                 >
                   Log out
                 </RouterLink>
