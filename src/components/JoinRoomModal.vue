@@ -2,15 +2,12 @@
   <div class="modal">
     <h2>Join a Room</h2>
     <form @submit.prevent="handleSubmit">
-      <template v-if="isPrivate == 'public'">
-        <input
-          v-model="roomId"
-          placeholder="Room ID"
-          required
-        >
-      </template>
-      
-      <template v-if="props.isPrivate !== undefined">
+      <input
+        v-model="roomId"
+        placeholder="Room ID"
+        required
+      >
+      <template v-if="props.isPrivate === 'private'">
         <input
           v-model="password"
           type="password"
@@ -60,7 +57,7 @@
   
 <script setup>
 import { ref } from 'vue';
-  
+const privacyType = ref('public')
 const props = defineProps({
   roomIdToJoin: {
     type: String,
@@ -73,8 +70,6 @@ const props = defineProps({
 })
   
 const emit = defineEmits(['close', 'join']);
-  
-const privacyType = ref('public')
 const roomId = ref(props.roomIdToJoin);
 const password = ref('');
 const confirmPassword = ref('');
