@@ -93,14 +93,14 @@ onMounted(async () => {
   <div class="room-header">
     <div class="top-left-buttons">
       <button
-        class="rect-button leave-btn"
+        class="rect-button-leave-btn"
         @click="leaveRoom"
       >
         <font-awesome-icon :icon="['fas', 'door-open']" /> Leave Room
       </button>
       <button 
         v-if="isHost" 
-        class="rect-button delete-btn" 
+        class="rect-button-delete-btn" 
         @click="confirmDeleteRoom"
       >
         <font-awesome-icon :icon="['fas', 'trash']" /> Delete Room
@@ -108,12 +108,12 @@ onMounted(async () => {
     </div>
 
     <div class="center-room-name">
-      Room Name: <span class="room-name">{{ roomName }}</span>
+      <span class="room-name">{{ roomName }}</span>
     </div>
 
     <div class="top-right-info">
       <div class="room-id">
-        <span class="info-label">Room Id:</span> {{ roomId }}
+        <span class="info-label">Room ID:</span> {{ roomId }}
       </div>
       <div class="host-name">
         <span class="info-label">Host:</span> {{ host }}
@@ -125,32 +125,22 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.room-header {
+.room-header{
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px 30px;
-  background-color: #f8f9fa;
-  border-bottom: 2px solid #ccc;
-  position: relative;
-  height: 75px; 
-  flex-wrap: wrap;
-}
+  height: 75px;
+  justify-content: space-between;
+  align-content: center;
+  margin: 0;
+  padding: 0px 10px 0px 10px;
 
-.top-left-buttons {
+}
+.top-left-buttons{
   display: flex;
   flex-direction: column;
-  gap: 5px; 
-  position: absolute;
-  top: 15px;
-  left: 20px; 
+  justify-content: space-around;
+  
 }
-
-.rect-button {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 15px;
+.top-left-buttons button{
   border: 2px solid #3498db; 
   border-radius: 8px;
   font-size: 16px; 
@@ -161,27 +151,23 @@ onMounted(async () => {
   transition: all 0.3s;
 }
 
-.leave-btn {
-  border-color: #3498db; 
-  color: #3498db;
-}
-
-.delete-btn {
-  border-color: #2980b9; 
-  color: #2980b9;
-}
-
-.rect-button:hover {
+.rect-button-leave-btn:hover {
   background-color: rgba(52, 152, 219, 0.1); 
-  color: #21618c; 
-  border-color: #21618c;
+  color: #d01800; 
+  border-color: #ce0000;
+}
+.rect-button-delete-btn:hover {
+  background-color: rgba(52, 152, 219, 0.1); 
+  color: #d01800; 
+  border-color: #ce0000;
 }
 
 .center-room-name {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 20px; 
+  width: 20%;
+  height: 90%;
   border: 2px solid #ccc;
   border-radius: 8px;
   background-color: #fff;
@@ -189,28 +175,26 @@ onMounted(async () => {
   font-size: 20px;
   font-weight: bold;
   color: red;
-  margin: 0 20px;
-  flex-shrink: 0;
 }
 
-.top-right-info {
+.room-name{
+  align-self: center;
+}
+.top-right-info{
+  align-self: center;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  font-size: 18px;
-  padding: 10px 15px;
-  border: 2px solid #ccc;
-  border-radius: 8px;
+  height: 80%;
+  justify-content: space-around;
   background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  padding: 3px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  
 
+}
 .room-id, .host-name {
-  margin: 3px 0;
-  color: red;
+  color: #3498db;
   font-weight: bold;
 }
 
@@ -219,6 +203,10 @@ onMounted(async () => {
   color: black;
 }
 
+/* Media Queries for Responsiveness */
+@media (max-width: 959px) {
+  
+}
 @media (max-width: 768px) {
   .room-header {
     flex-direction: column;
@@ -228,9 +216,9 @@ onMounted(async () => {
   }
 
   .top-left-buttons {
-    position: static;
+    position: static; /* Reset position to flow naturally */
     margin-bottom: 10px;
-    flex-direction: row;
+    flex-direction: row; /* Change to row for better layout */
   }
 
   .rect-button {
@@ -245,7 +233,7 @@ onMounted(async () => {
   }
 
   .top-right-info {
-    position: static;
+    position: static; /* Reset position for better responsiveness */
     margin-top: 10px;
     width: 80%;
     align-items: center;
@@ -260,7 +248,7 @@ onMounted(async () => {
 
   .top-left-buttons {
     flex-direction: row;
-    gap: 3px;
+    gap: 3px; /* Smaller gap for smaller screens */
   }
 
   .rect-button {

@@ -18,17 +18,18 @@ const { isAuthenticated } = authStore;
     <header>
       <nav>
         <div class="navigations">
-          <!-- <h5>ViCoSpaces</h5> -->
           <div class="logo">
             <img
               src="../images/logo/logo.png"
               class="logo-img"
             >
+            <p class="vico">
+              ViCo
+            </p>
           </div>
 
           <div class="roadmap">
             <RouterLink
-              target="_blank"
               to="/roadmap"
             >
               Road map
@@ -38,7 +39,6 @@ const { isAuthenticated } = authStore;
 
           <div class="aboutpage">
             <RouterLink
-              target="_blank"
               to="/about"
             >
               About
@@ -61,21 +61,15 @@ const { isAuthenticated } = authStore;
             </RouterLink>
           </div>
           
-          <div class="signupForFree">
+          <div
+            v-if="!isAuthenticated"
+            class="signupForFree"
+          >
             <RouterLink to="/register">
               Sign up free
             </RouterLink>
           </div>
         </div>
-        <!-- <div class="leftnav">
-                <p class="vicoText">
-                  ViCoSpaces
-                </p><hr>
-                <p class="message">
-                  The everything app for work
-                </p>
-          </div>
-        --> 
       </nav>
     </header>
 
@@ -158,11 +152,17 @@ const { isAuthenticated } = authStore;
 }
 .logo{
   margin: 0 0 0 1.1rem;
+  display: flex;
+  align-items: center;
 }
 .logo img{
   width: 55px;
   height: 50px; 
   border-radius: 50%;
+}
+.vico{
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 .signupForFree{
   height: 20px;
@@ -223,7 +223,8 @@ const { isAuthenticated } = authStore;
   border-radius: 5px;
   padding: 15px 35px;
   font-size: 1rem;
-  margin-left: 43%;
+  margin: 0 auto;
+  display: block;
   background-image: linear-gradient(35deg , #004cff, #d900ff);
   background-size: 200%;
   background-position: left;
@@ -232,7 +233,6 @@ const { isAuthenticated } = authStore;
   border: 0;
   cursor: pointer;
   transition: 0.4s ease-in-out;
-  margin-right: 2%;
   animation: changeColor 2.5s ease-in-out infinite;
 }
 .signbutton a{
