@@ -1,9 +1,9 @@
 <script setup>
-import HostRoomModal from '@/components/HostRoomModal.vue';
-import JoinRoomModal from '@/components/JoinRoomModal.vue';
+import HostRoomModal from '../components/HostRoomModal.vue'
+import JoinRoomModal from '../components/JoinRoomModal.vue'
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { ref as dbRef, onValue, off, push } from 'firebase/database';
-import { realTimeDb as database } from '@/firebase/firebaseconfig';
+import { realTimeDb as database } from '../firebase/firebaseconfig.js'
 import { useRouter, RouterLink } from 'vue-router';
 import { useAuthStore } from '../stores/authStore'
 import { useRoomStore } from '../stores/roomStore'
@@ -19,6 +19,8 @@ const sortBy = ref('createdAt');
 const sortOrder = ref('desc');
 const privacyFilter = ref('all');
 const categoryFilter = ref('all');
+const privacyCondition = ref('public')
+const roomIdToJoin = ref(null)
 
 const isCreateRoomVisible = ref(false);
 const isDropdownOpen = ref(false)
@@ -45,10 +47,10 @@ const createRoomHandler = async (roomData) => {
 }
 
 const joinRoom = async (roomId, privacyType) => {
-  console.log(showModal.value)
   if (privacyType === 'private') {
     showModal.value = true;
-    console.log(showModal.value)
+    privacyCondition.value = privacyType
+    roomIdToJoin.value = roomId
   } else {
     try {
       await roomStore.joinRoom(
@@ -218,7 +220,6 @@ const logout = async () => {
             src="../images/SVG/search-svgrepo-com.svg"
             alt="search-icon"
             width="30px"
-            @click="toggleDropdown"
           >
           <input
             v-model="searchQuery"
@@ -337,6 +338,8 @@ const logout = async () => {
     </div>
     <JoinRoomModal
       v-if="showModal"
+      :room-id-to-join="roomIdToJoin"
+      :is-private="privacyCondition"
       @close="showModal = false"
       @join="joinRoomById"
     />

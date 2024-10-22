@@ -1,14 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { ref as dbRef, push, set } from 'firebase/database'
-import { realTimeDb as database } from '@/firebase/firebaseconfig'
-import { useRouter } from 'vue-router'
-import { useRoomStore } from '../stores/roomStore'
-import { useAuthStore } from '@/stores/authStore'
 
 const emit = defineEmits(['close-room', 'create', 'close'])
-const privacy = ref('private')
-const isPrivate = computed(() => privacy.value === 'private')
 const props = defineProps({isVisible: Boolean})
 
 const roomName = ref('')
@@ -17,7 +10,8 @@ const password = ref('')
 const confirmPassword = ref('')
 const roomCapacity = ref(1)
 const category = ref('')
-const showPassword = ref(false);
+const showPassword = ref(false)
+const isPrivate = computed(() => privacyType.value === 'private')
 
 const handleSubmit = () => {
   if (privacyType.value === 'private' && password.value !== confirmPassword.value) {
@@ -36,45 +30,7 @@ const handleSubmit = () => {
   emit('close')
 }
 
-const togglePasswordVisibility = () => {
-  showPassword.value = !showPassword.value;
-}
-
-// const createRoom = async () => {
-//   try {
-//     isLoading.value = true
-//     error.value = ''
-
-//     if (!roomName.value.trim()) 
-//       throw new Error('Room name is required')
-//     if (isPrivate.value && !password.value.trim()) 
-//       throw new Error('Password is required for private rooms')
-
-//     const room = { 
-//       name: roomName.value,
-//       isPrivate: isPrivate.value,
-//       password: isPrivate.value ? password.value : null,
-//       capacity: roomCapacity.value,
-//       createdAt: Date.now(),
-//     }
-
-//     const roomsRef = dbRef(database, 'rooms')
-//     const newRoomRef = push(roomsRef)
-//     await set(newRoomRef, room)
-
-//     console.log('Room created:', newRoomRef.key)
-//     router.push({ 
-//       name: 'Room', 
-//       params: { id: newRoomRef.key },
-//       query: { name: room.name } 
-//     });
-//   } catch (err) {
-//     console.error('Error creating room:', err)
-//     error.value = err.message
-//   } finally {
-//     isLoading.value = false
-//   }
-// }
+const togglePasswordVisibility = () => showPassword.value = !showPassword.value;
 </script>
 
 <template>
@@ -145,7 +101,7 @@ const togglePasswordVisibility = () => {
         <div class="room-info">
           <select
             id="status"
-            v-model="privacy"
+            v-model="privacyType"
             name="status"
             class="status"
           >
