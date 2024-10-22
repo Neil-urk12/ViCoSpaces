@@ -5,6 +5,12 @@ import * as fabric from 'fabric'
 import { ref as dbRef, onValue, set, off, get } from 'firebase/database'
 import { realTimeDb as db } from '@/firebase/firebaseconfig'
 import { useAuthStore } from '@/stores/authStore'
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faT, faShapes, faPencil, faTrash, faDeleteLeft, faFileImport } from '@fortawesome/free-solid-svg-icons';
+import { faImage } from '@fortawesome/free-regular-svg-icons';
+
+library.add(faT, faShapes, faPencil, faTrash, faImage, faDeleteLeft, faFileImport);
 
 const authStore = useAuthStore()
 const localCursor = ref({ x: 0, y: 0, username: '' })
@@ -434,13 +440,13 @@ const downloadCanvasAsImage = () => {//Exporting Canvas into IMG Feature
         title="Add Text"
         @click="addTextToCanvas"
       >
-        📝
+        <font-awesome-icon :icon="['fas', 't']" />
       </button>
       <button
         title="Shape Library"
         @click="showShapeLibrary = !showShapeLibrary"
       >
-        🧩
+        <font-awesome-icon :icon="['fas', 'shapes']" />
       </button>
       <div
         v-if="showShapeLibrary"
@@ -746,7 +752,7 @@ const downloadCanvasAsImage = () => {//Exporting Canvas into IMG Feature
         title="Enable/Disable Drawing"
         @click="toggleDrawMode"
       >
-        {{ isDrawingMode ? '✏️' : '🖊️' }}
+        <font-awesome-icon :icon="['fas', 'pencil']" />
       </button>
       <div
         v-if="showBrushOptions"
@@ -781,7 +787,7 @@ const downloadCanvasAsImage = () => {//Exporting Canvas into IMG Feature
             v-model="brushThickness"
             type="range"
             min="1"
-            max="30"
+            max="20"
           >
         </div>
       </div>
@@ -789,13 +795,13 @@ const downloadCanvasAsImage = () => {//Exporting Canvas into IMG Feature
         title="Clear Canvas"
         @click="clearCanvas"
       >
-        🗑️
+        <font-awesome-icon :icon="['fas', 'trash']" />
       </button>
       <button
         title="Insert Image"
         @click="triggerFileSelect"
       >
-        🖼️
+        <font-awesome-icon :icon="['far', 'image']" />
       </button>
       <input
         ref="imageInput"
@@ -807,13 +813,13 @@ const downloadCanvasAsImage = () => {//Exporting Canvas into IMG Feature
         title="Remove Selected"
         @click="removeSelected"
       >
-        ❌
+        <font-awesome-icon :icon="['fas', 'delete-left']" />
       </button>
       <button
         title="Download Image"
         @click="downloadCanvasAsImage"
       >
-        ⬇️
+        <font-awesome-icon :icon="['fas', 'file-import']" />
       </button>
     </div>
     <div class="canvas-container">
@@ -927,17 +933,20 @@ const downloadCanvasAsImage = () => {//Exporting Canvas into IMG Feature
 }
 
 .color-picker-wrapper {
-  margin: 10px 0;
+  overflow: hidden;
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  border: solid 1px white;
+  margin: 1em;
+
 }
 
 .color-picker-wrapper input[type="color"] {
-  width: 40px;
-  height: 40px;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  background-color: transparent;
   padding: 0;
+  width: 150%;
+  height: 150%;
+  margin: -25%;
 }
 
 .canvas-container {
@@ -992,4 +1001,60 @@ canvas {
   transform: translateX(-50%);
   margin-top: 5px;
 }
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 5%;
+  }
+
+  .shape-library-popup,
+  .brush-options-popup {
+    left: 60px;
+    max-height: 70vh;
+    padding: 8px;
+  }
+
+  .brush-options-popup {
+    width: 150px;
+  }
+
+  .sidebar button {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 6%;
+  }
+
+  .shape-library-popup,
+  .brush-options-popup {
+    left: 50px;
+    top: 0;
+    max-height: 60vh;
+    padding: 5px;
+  }
+
+  .brush-options-popup {
+    width: 130px;
+  }
+
+  .sidebar button {
+    font-size: 18px;
+  }
+
+  .shape-option {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-height: 500px) {
+  .shape-library-popup,
+  .brush-options-popup {
+    max-height: 50vh;
+  }
+}
+
 </style>

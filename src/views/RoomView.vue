@@ -127,13 +127,14 @@ onMounted(async () => {
 <style scoped>
 .room-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 20px 30px;
   background-color: #f8f9fa;
   border-bottom: 2px solid #ccc;
   position: relative;
   height: 75px; 
+  flex-wrap: wrap;
 }
 
 .top-left-buttons {
@@ -177,15 +178,19 @@ onMounted(async () => {
 }
 
 .center-room-name {
-  font-size: 28px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px; 
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 20px;
   font-weight: bold;
-  color: #34495e;
-  text-align: center;
-  flex-grow: 1;
-}
-
-.room-name {
-  color: #e74c3c;
+  color: red;
+  margin: 0 20px;
+  flex-shrink: 0;
 }
 
 .top-right-info {
@@ -212,5 +217,70 @@ onMounted(async () => {
 .info-label {
   font-weight: normal;
   color: black;
+}
+
+@media (max-width: 768px) {
+  .room-header {
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    padding: 10px 15px;
+  }
+
+  .top-left-buttons {
+    position: static;
+    margin-bottom: 10px;
+    flex-direction: row;
+  }
+
+  .rect-button {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+
+  .center-room-name {
+    font-size: 16px;
+    padding: 8px 12px;
+    margin: 10px 0;
+  }
+
+  .top-right-info {
+    position: static;
+    margin-top: 10px;
+    width: 80%;
+    align-items: center;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .room-header {
+    padding: 10px;
+  }
+
+  .top-left-buttons {
+    flex-direction: row;
+    gap: 3px;
+  }
+
+  .rect-button {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  .center-room-name {
+    font-size: 14px;
+    padding: 6px 10px;
+    margin: 5px 0;
+  }
+
+  .top-right-info {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  .room-id, .host-name {
+    font-size: 14px;
+  }
 }
 </style>
