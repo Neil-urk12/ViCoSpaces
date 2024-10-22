@@ -120,6 +120,14 @@ const filteredAndSortedRooms = computed(() => {
   })
 })
 
+const logout = async () => {
+  try {
+    await authStore.logout()
+    router.push('/')
+  } catch (error) {
+    console.error('Logout error:', error)
+  }
+}
 </script>
 
 <template>
@@ -190,12 +198,12 @@ const filteredAndSortedRooms = computed(() => {
               >
                 Profile
               </RouterLink>
-              <RouterLink
-                to="/logout"
+              <a
                 class="dropdown-item"
+                @click.prevent="logout"
               >
                 Log out
-              </RouterLink>
+              </a>
             </div>
           </div>
         </div>
