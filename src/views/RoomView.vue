@@ -1,11 +1,17 @@
 <script setup>
 import CanvasWhiteBoard from '/src/components/CanvasWhiteBoard.vue';
+import ChatBox from '/src/components/chat-box-feature.vue';
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { ref as dbRef, get, onValue, off } from 'firebase/database';
 import { realTimeDb as db } from '@/firebase/firebaseconfig';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useRoomStore } from '@/stores/roomStore';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faDoorOpen, faTrash } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faDoorOpen, faTrash);
 
 const route = useRoute()
 const router = useRouter()
@@ -84,32 +90,127 @@ onMounted(async () => {
 </script>
 
 <template>
-  <button @click="leaveRoom">
-    Leave Room
-  </button>
-  <button
-    v-if="isHost"
-    @click="confirmDeleteRoom"
-  >
-    Delete Room
-  </button>
-  <p>Host: {{ host }}</p>
-  <div class="room">
-    <h1>Room Name : {{ roomName }}</h1>
-    <h2>Room Id : {{ roomId }}</h2>
+  <div class="room-header">
+    <div class="top-left-buttons">
+      <button
+        class="rect-button leave-btn"
+        @click="leaveRoom"
+      >
+        <font-awesome-icon :icon="['fas', 'door-open']" /> Leave Room
+      </button>
+      <button 
+        v-if="isHost" 
+        class="rect-button delete-btn" 
+        @click="confirmDeleteRoom"
+      >
+        <font-awesome-icon :icon="['fas', 'trash']" /> Delete Room
+      </button>
+    </div>
+
+    <div class="center-room-name">
+      Room Name: <span class="room-name">{{ roomName }}</span>
+    </div>
+
+    <div class="top-right-info">
+      <div class="room-id">
+        <span class="info-label">Room Id:</span> {{ roomId }}
+      </div>
+      <div class="host-name">
+        <span class="info-label">Host:</span> {{ host }}
+      </div>
+    </div>
   </div>
   <CanvasWhiteBoard />
+  <ChatBox />
 </template>
 
 <style scoped>
-.room {
+.room-header {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  font-size: 10px;
+  padding: 20px 30px;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #ccc;
+  position: relative;
+  height: 75px; 
+}
+
+.top-left-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 5px; 
+  position: absolute;
+  top: 15px;
+  left: 20px; 
+}
+
+.rect-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 15px;
+  border: 2px solid #3498db; 
+  border-radius: 8px;
+  font-size: 16px; 
+  color: #3498db; 
+  background-color: transparent; 
+  cursor: pointer;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+}
+
+.leave-btn {
+  border-color: #3498db; 
+  color: #3498db;
+}
+
+.delete-btn {
+  border-color: #2980b9; 
+  color: #2980b9;
+}
+
+.rect-button:hover {
+  background-color: rgba(52, 152, 219, 0.1); 
+  color: #21618c; 
+  border-color: #21618c;
+}
+
+.center-room-name {
+  font-size: 28px; 
+  font-weight: bold;
+  color: #34495e;
+  text-align: center;
+  flex-grow: 1;
+}
+
+.room-name {
+  color: #e74c3c;
+}
+
+.top-right-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 18px;
+  padding: 10px 15px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.room-id, .host-name {
+  margin: 3px 0;
+  color: red;
   font-weight: bold;
 }
-h2{
-  text-align: right;
+
+.info-label {
+  font-weight: normal;
+  color: black;
 }
 </style>
