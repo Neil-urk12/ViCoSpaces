@@ -2,6 +2,9 @@
 //Styles
 import '@/assets/styles/homeView.css';
 import '@/assets/styles/home-components.css';
+//imported icon
+import LockIcon from '@/assets/images/SVG/lock-password-svgrepo-com-blue.svg';
+import UnlockIcon from  '@/assets/images/SVG/lock-unlocked-svgrepo-com-blue.svg';
 
 import HostRoomModal from '@/components/HostRoomModal.vue';
 import JoinRoomModal from '@/components/JoinRoomModal.vue';
@@ -40,12 +43,12 @@ const isCreateRoomVisible = ref(false);
 const isDropdownOpen = ref(false)
 const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value
 
-const uniqueCategories = computed(() => {
-  const categories = new Set(
-    roomStore.rooms.map((room) => room.category).filter(Boolean)
-  );
-  return Array.from(categories);
-})
+// const uniqueCategories = computed(() => {
+//   const categories = new Set(
+//     roomStore.rooms.map((room) => room.category).filter(Boolean)
+//   );
+//   return Array.from(categories);
+// })
 
 const createRoomHandler = async (roomData) => {
   try {
@@ -220,8 +223,9 @@ const filteredAndSortedRooms = computed(() => {
             >
               <div class="user-profile">
                 <img
-                  src="../images/black-default-user-profile-ll(1).webp"
+                  src="../assets/images/SVG/user-svgrepo-com.svg"
                   alt="User Profile"
+                  width="30px"
                 >
               </div>
               <div
@@ -259,25 +263,25 @@ const filteredAndSortedRooms = computed(() => {
       <div class="search">
         <img
           class="search-icon"
-          src="../images/SVG/search-svgrepo-com.svg"
+          src="../assets/images/SVG/search-svgrepo-com.svg"
           alt="search-icon"
           width="30px"
           @click="toggleDropdown"
         >
-        <!-- <div
-            v-show="isDropdownVisible"
-            class="dropdown-menu"
+        <div
+          v-show="isDropdownVisible"
+          class="dropdown-menu"
+        >
+          <a
+            v-for="(item, index) in dropdownItems"
+            :key="index"
+            href="#"
+            class="dropdown-item"
           >
-            <a
-              v-for="(item, index) in dropdownItems"
-              :key="index"
-              href="#"
-              class="dropdown-item"
-            >
-              {{ item }}
-            </a>
-          </div>
-        </div> -->
+            {{ item }}
+          </a>
+        </div>
+        <!-- </div> -->
         <!-- search bar input -->
         <input
           v-model="searchQuery"
@@ -348,9 +352,6 @@ const filteredAndSortedRooms = computed(() => {
       </div>
     </div>
 
-
-  
-    
     <!-- <main class="room-view-container">
     <div
       v-for="room in filteredAndSortedRooms"
@@ -453,9 +454,20 @@ const filteredAndSortedRooms = computed(() => {
           class="room"
         >
           <div class="image-content">
-            <div class="hosting-container">
-              <div class="host-profile" />
+            <div class="status-icon-wrapper">
+              <img
+                :src="room.privacyType === 'public' ? UnlockIcon : LockIcon"
+                alt="status icon"
+                class="status-icon"
+                width="32"
+                height="32"
+              >
+              <!-- privacy checker lang -->
+              <span>{{ room.privacyType === 'public' ? 'Unlocked' : 'Locked' }}</span>
             </div>
+            <!-- <div class="hosting-container">
+              <div class="host-profile" />
+            </div> -->
           </div>
           <div class="text-content">
             <div class="room-name-container">
@@ -594,7 +606,7 @@ const filteredAndSortedRooms = computed(() => {
 
     <!-- <myHome @open-room="isCreateRoomVisible = true" />
     <categoryBar @changetitle="update" /> -->
-    <main>
+    <!-- <main>
       <div class="room-view-container">
         <div class="room-form">
           <div
@@ -658,7 +670,7 @@ const filteredAndSortedRooms = computed(() => {
           </div>
         </div>
       </div>
-    </main>
+    </main> -->
   </main>
 </template>
 <style scope>

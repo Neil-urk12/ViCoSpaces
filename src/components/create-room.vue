@@ -201,14 +201,14 @@ button {
   height: 30px;
   width: 30px;
 }
-.name-container, .password-container {
+.name-container, .password-container, .c-password-container{
   width: 100%;
   padding: 14px;
   border-radius: 12px;
   background: #f6f6f6;
   box-sizing: border-box;
 }
-.input-room-name, .input-room-password {
+.input-room-name, .input-room-password, .input-room-password {
   width: 100%;
   font-size: 16px;
   color: black;

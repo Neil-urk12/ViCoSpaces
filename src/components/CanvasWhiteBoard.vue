@@ -6,6 +6,14 @@ import { ref as dbRef, onValue, set, off, get } from 'firebase/database'
 import { realTimeDb as db } from '@/firebase/firebaseconfig'
 import { useAuthStore } from '@/stores/authStore'
 
+
+
+//SVG Imports
+
+
+
+
+
 const authStore = useAuthStore()
 const localCursor = ref({ x: 0, y: 0, username: '' })
 const otherCursors = ref({})
@@ -37,7 +45,7 @@ const updateFirebaseCursor = throttle((x, y) => {
 const updateCursorPosition = (event) => {
   if (canvasEl.value) {
     const rect = canvasEl.value.getBoundingClientRect();
-    const offsetX = 140;
+    const offsetX = 10;
     const offsetY = 10;
     const x = event.clientX - rect.left + offsetX;
     const y = event.clientY - rect.top + offsetY;
@@ -69,6 +77,7 @@ onMounted(async () => {
 onUnmounted(() => {
   off(cursorsRef);
   set(dbRef(db, `cursors/${userId.value}`), null);
+  window.removeEventListener('resize', resizeCanvas);
 })
 
 const canvasEl = ref(null);
@@ -84,11 +93,26 @@ const imageInput = ref(null);
 const showShapeLibrary = ref(false);
 
 onMounted(() => { 
-  canvas = new fabric.Canvas(canvasEl.value, {
-    width: window.innerWidth * 0.8,
-    height: window.innerHeight * 0.85,
-    backgroundColor: '#fff',
+  canvas = new fabric.Canvas(canvasEl.value);
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  canvas.on('object:added', function(e) {
+    if (e.target) {
+      addCustomBorder(e.target);
+    }
   });
+
+  canvas.on('selection:created', function(e) {
+    if (e.selected && e.selected.length > 0) {
+      if (e.selected.length > 1) {
+        e.selected.forEach(addCustomBorder);
+      } else {
+        addCustomBorder(e.selected[0]);
+      }
+    }
+  });
+  
   canvas.defaultCursor = 'none';
   canvas.hoverCursor = 'none';
   canvas.moveCursor = 'none';
@@ -118,7 +142,33 @@ onMounted(() => {
     });
 });
 
-function addGrid() { //Snapping Grid Feature
+function addCustomBorder(obj) {
+  obj.set({
+    borderColor: 'red',
+    cornerColor: 'green',
+    cornerSize: 6,
+    transparentCorners: false
+  });
+}
+
+const resizeCanvas = () => {
+  const width = window.innerWidth * 0.8;
+  const height = window.innerHeight * 0.85;
+
+  canvas.setWidth(width);
+  canvas.setHeight(height);
+  canvas.setZoom(1);
+  canvas.calcOffset();
+  canvas.renderAll();
+};
+
+function addGrid() {//Adding Snapping Grid into the Canvas
+  canvas.getObjects().forEach((obj) => {
+    if (obj.isGrid) {
+      canvas.remove(obj);
+    }
+  });
+
   for (let i = 0; i < (canvas.width / gridSize); i++) {
     const lineX = new fabric.Line([i * gridSize, 0, i * gridSize, canvas.height], {
       stroke: '#ccc',
@@ -137,6 +187,7 @@ function addGrid() { //Snapping Grid Feature
     });
     canvas.add(lineY);
   }
+  canvas.renderAll();
 }
 
 const addTextToCanvas = () => { //Adding text Feature
@@ -149,6 +200,7 @@ const addTextToCanvas = () => { //Adding text Feature
     editable: true, 
   });
   
+  addCustomBorder(text);
   canvas.add(text);
   canvas.setActiveObject(text);
   canvas.renderAll();
@@ -219,7 +271,18 @@ function addShapeToCanvas(shapeType, isFilled) { //Adding Shapes Feature
       console.log('Unknown shape');
       return;
   }
+
+  shape.set({
+    selectable: true,
+    evented: true,
+    hasControls: true,
+    hasBorders: true,
+    perPixelTargetFind: false
+  });
+
+  addCustomBorder(shape);
   canvas.add(shape);
+  canvas.setActiveObject(shape);
   canvas.renderAll();
 }
 
@@ -761,7 +824,7 @@ const downloadCanvasAsImage = () => {//Exporting Canvas into IMG Feature
         ⬇️
       </button>
     </div>
-    <div class="canvas-area">
+    <div class="canvas-container">
       <canvas ref="canvasEl" />
       <div
         class="cursor"
@@ -790,9 +853,6 @@ const downloadCanvasAsImage = () => {//Exporting Canvas into IMG Feature
 </template>
 
 <style scoped>
-* {
-  cursor: none;
-}
 .whiteboard-container {
   display: flex;
   height: 100vh;
@@ -803,7 +863,7 @@ const downloadCanvasAsImage = () => {//Exporting Canvas into IMG Feature
 }
 
 .sidebar {
-  width: 70px;
+  width: 3%;
   background-color: #3a86ff;
   display: flex;
   flex-direction: column;
@@ -888,24 +948,29 @@ const downloadCanvasAsImage = () => {//Exporting Canvas into IMG Feature
   padding: 0;
 }
 
-.canvas-area {
-  flex-grow: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
+.canvas-container {
+  width: 80vw;
+  height: 85vh;
   position: relative;
+  overflow: hidden;
+  margin: auto;
   cursor: none;
 }
 
 canvas {
   border: 2px solid #ccc;
   background-color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   cursor: none;
 }
 
 .cursor {
   position: absolute;
+  pointer-events: none;
   transform: translate(-50%, -50%);
   pointer-events: none;
   transition: all 0.1s ease;

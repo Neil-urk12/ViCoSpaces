@@ -1,10 +1,5 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { ref as dbRef, push, set } from 'firebase/database'
-import { realTimeDb as database } from '@/firebase/firebaseconfig'
-import { useRouter } from 'vue-router'
-import { useRoomStore } from '../stores/roomStore'
-import { useAuthStore } from '@/stores/authStore'
 
 const emit = defineEmits(['close-room', 'create', 'close'])
 const privacy = ref('private')
@@ -39,6 +34,7 @@ const handleSubmit = () => {
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value;
 }
+
 
 // const createRoom = async () => {
 //   try {
@@ -75,6 +71,7 @@ const togglePasswordVisibility = () => {
 //     isLoading.value = false
 //   }
 // }
+console.log(props);
 </script>
 
 <template>
@@ -93,7 +90,7 @@ const togglePasswordVisibility = () => {
             @click="emit('close-room')"
           >
             <img
-              src="../images/SVG/close-bold-svgrepo-com.svg"
+              src="../assets/images/SVG/close-bold-svgrepo-com.svg"
               alt=""
             >
           </button>
@@ -131,6 +128,7 @@ const togglePasswordVisibility = () => {
           >
             <input
               v-model="confirmPassword"
+              class="input-confirm-password"
               type="password"
               placeholder="Confirm Password"
               required
@@ -183,14 +181,18 @@ const togglePasswordVisibility = () => {
                 6
               </option>
             </select>
+          </div>
+        </div>
+        <div class="button-container">
+          <div class="category-container">
             <input
               v-model="category"
+              class="input-catergory"
               placeholder="Category"
               required
             >
           </div>
-        </div>
-        <div class="button-container">
+          
           <button
             class="create-btn"
             @click="createRoom"
@@ -204,6 +206,12 @@ const togglePasswordVisibility = () => {
 </template>
 
 <style scoped>
+header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+}
 .overlay {
   position: fixed;
   top: 0;
@@ -214,6 +222,7 @@ const togglePasswordVisibility = () => {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100;
 }
 .edit-room {
   box-sizing: border-box;
@@ -226,22 +235,21 @@ const togglePasswordVisibility = () => {
   background-color: #2d8eff;
   color: white;
   z-index: 1000;
-  width: 25%;
+  width: 400px;
   max-width: 500px;
+  box-sizing: border-box;
 }
-.edit-room-inputs{
+.edit-room-inputs {
   display: flex;
   flex-direction: column;
   gap: 10px;
   width: 100%;
 }
-header {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  justify-content: space-between;
+button {
+  cursor: pointer;
 }
 .close-btn {
+  width: 40px;
   background-color: #2d8eff;
   border: none;
 }
@@ -249,13 +257,14 @@ header {
   height: 30px;
   width: 30px;
 }
-.name-container {
+.name-container, .password-container, .c-password-container {
   width: 100%;
   padding: 14px;
   border-radius: 12px;
   background: #f6f6f6;
+  box-sizing: border-box;
 }
-.input-room-name {
+.input-room-name, .input-room-password, .input-confirm-password {
   width: 100%;
   font-size: 16px;
   color: black;
@@ -264,13 +273,15 @@ header {
   background: transparent;
   flex: 1;
 }
-.password-container {
-  width: 100%;
-  padding: 14px;
-  border-radius: 12px;
+.category-container{
+  width: 52%;
+
+  border-radius: 6px;
   background: #f6f6f6;
+  box-sizing: border-box;
+  margin-left: 0px;
 }
-.input-room-password {
+.category-container input{
   width: 100%;
   font-size: 16px;
   color: black;
@@ -278,89 +289,98 @@ header {
   border: none;
   background: transparent;
   flex: 1;
+  margin-left: 10px;
 }
-.room-info{
+.room-info {
   display: flex;
   justify-content: flex-start;
   gap: 6px;
   width: 100%;
-
+  height: 30px;
 }
 select {
-  color:#2d8eff;
+  color: #2d8eff;
   border: none;
 }
-.status { 
-  width: 80px;
+
+.status{
   padding: 5px;
   font-size: 16px;
   border-radius: 6px;
   appearance: none;
-  background-size:16px 16px ;
-  background-image: url('../images/SVG/drop-down-minor-svgrepo-com.svg');
+  background-size: 16px 16px;
+  width:20%;
+  background-color: #f9f9f9;
+  background-image: url('../assets/images/SVG/drop-down-minor-svgrepo-com.svg');
   background-repeat: no-repeat;
   background-position-x: 100%;
   background-position-y: 6px;
+  outline: none;
+
 }
 .capacity {
-  width: 40px;
   padding: 5px;
   font-size: 16px;
-  border-radius: 5px;
+  border-radius: 6px;
   appearance: none;
+  background-size: 16px 16px;
+  width: 40px;
   background-color: #f9f9f9;
-  background-size:16px 16px ;
-  background-image: url('../images/SVG/drop-down-minor-svgrepo-com.svg');
+  background-image: url('../assets/images/SVG/drop-down-minor-svgrepo-com.svg');
   background-repeat: no-repeat;
   background-position-x: 100%;
   background-position-y: 6px;
+  outline: none;
 }
-.button-container{
-  width: 100% ;
+.button-container {
+  width: 100%;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  padding: 0;
+  margin: 0;
 }
-.create-btn{        
+.create-btn {
   background-color: #fff;
-  color:#2d8eff;
+  color: #2d8eff;
   border: none;
   border-radius: 6px;
   width: 30%;
   height: 35px;
-  font-weight: bold; 
+  font-weight: bold;
+  margin-right: 0px;
 }
+
 /* Responsive Styles */
-@media (max-width: 768px) {
+
+@media (max-width:375px ) {
   .edit-room {
-    width: 90%;
-    padding: 15px;
-    gap: 15px;
+    box-sizing: border-box;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    background-color: #2d8eff;
+    color: white;
+    z-index: 1000;
+    width: 100%;
+    max-width: 500px;
+    box-sizing: border-box;
   }
-  header {
-    gap: 1em;
-  }
-  .name-container {
-    padding: 10px;
-  }
-  .input-room-name {
-    font-size: 14px;
-  }
-}
-@media (max-width: 480px) {
-  .edit-room {
-    width: 95%;
-    padding: 10px;
-    gap: 10px;
-  }
-  .input-room-name {
-    font-size: 12px;
-  }
-  .room-name {
-    font-size: 18px;
-  }
-  .close-btn img {
-    height: 25px;
-    width: 25px;
+  .status{
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 6px;
+    appearance: none;
+    background-size: 16px 16px;
+    width:30%;
+    background-color: #f9f9f9;
+    background-image: url('../assets/images/SVG/drop-down-minor-svgrepo-com.svg');
+    background-repeat: no-repeat;
+    background-position-x: 100%;
+    background-position-y: 6px;
+    outline: none;
   }
 }
 </style>
