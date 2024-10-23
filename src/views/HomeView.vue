@@ -10,21 +10,21 @@ import hostIcon from '@/assets/images/SVG/user-svgrepo-com-black.svg';
 
 import HostRoomModal from '@/components/HostRoomModal.vue';
 import JoinRoomModal from '@/components/JoinRoomModal.vue';
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed, watch} from 'vue';
 import { ref as dbRef, onValue, off, push } from 'firebase/database';
 import { realTimeDb as database } from '../firebase/firebaseconfig.js'
 import { useRouter, RouterLink } from 'vue-router';
 import { useAuthStore } from '../stores/authStore'
 import { useRoomStore } from '../stores/roomStore'
 //test filter modal
-import Modal from '@/components/test-modal.vue';//this should be FilterModal.vue
+import FilterModal from '@/components/FilterModal.vue';//this should be FilterModal.vue
 const isModalVisible = ref(false);
 
-const openModal = () => {
+const openFilterModal = () => {
   isModalVisible.value = true;
 };
 
-const closeModal = () => {
+const closeFilterModal = () => {
   isModalVisible.value = false;
 };
  // Import Modal component
@@ -43,16 +43,14 @@ const categoryFilter = ref('all');
 const privacyCondition = ref('public')
 const roomIdToJoin = ref(null)
 
+
+
+
 const isCreateRoomVisible = ref(false);
 const isDropdownOpen = ref(false)
 const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value
 
-const uniqueCategories = computed(() => {
-  const categories = new Set(
-    roomStore.rooms.map((room) => room.category).filter(Boolean)
-  );
-  return Array.from(categories);
-})
+
 
 const createRoomHandler = async (roomData) => {
   try {
@@ -107,41 +105,65 @@ onMounted(async () => {
 onUnmounted(() => {
   off(roomsRef)
 })
+//Filters
+const handleFilterChange = (filters) => {
+  searchQuery.value = filters.searchQuery;
+  sortBy.value = filters.sortBy;
+  sortOrder.value = filters.sortOrder;
+  privacyFilter.value = filters.privacyFilter;
+  categoryFilter.value = filters.categoryFilter;
+};
+
+const uniqueCategories = computed(() => {
+  const categories = new Set(roomStore.rooms.map((room) => room.category).filter(Boolean));
+  return Array.from(categories);
+});
 
 const filteredAndSortedRooms = computed(() => {
   let filteredRooms = roomStore.rooms.filter(
     (room) => room && typeof room === 'object'
-  )
+  );
   if (searchQuery.value) {
     filteredRooms = filteredRooms.filter((room) =>
       room.id.includes(searchQuery.value)
-    )
+    );
   }
   if (privacyFilter.value !== 'all') {
     filteredRooms = filteredRooms.filter(
       (room) => room.privacyType === privacyFilter.value
-    )
+    );
   }
   if (categoryFilter.value !== 'all') {
     filteredRooms = filteredRooms.filter(
       (room) => room.category === categoryFilter.value
-    )
+    );
   }
   return filteredRooms.sort((a, b) => {
     let comparison = 0;
-    if (sortBy.value === 'createdAtOldest') {
-      comparison = (a.createdAt || 0) - (b.createdAt || 0);
-    } else if (sortBy.value === 'createdAt') {
+
+    // Sort by creation date or capacity based on user selection
+    if (sortBy.value === 'createdAt') {
+      // Sort by latest (descending)
       comparison = (b.createdAt || 0) - (a.createdAt || 0);
-    } else {
-      const aValue = a[sortBy.value] || 0
-      const bValue = b[sortBy.value] || 0
-      if (aValue < bValue) comparison = -1
-      if (aValue > bValue) comparison = 1
+    } else if (sortBy.value === 'createdAtOldest') {
+      // Sort by oldest (ascending)
+      comparison = (a.createdAt || 0) - (b.createdAt || 0);
+    } else if (sortBy.value === 'capacity') {
+      const aCapacity = a.capacity || 0;
+      const bCapacity = b.capacity || 0;
+      comparison = aCapacity - bCapacity;
     }
-    return sortOrder.value === 'desc' ? comparison * -1 : comparison;
-  })
-})
+
+    return sortOrder.value === 'desc' ? comparison : -comparison;
+  });
+});
+
+// Watch for room creation and update categories
+watch(roomStore.rooms, (newRooms) => {
+  // Update unique categories when new rooms are created
+  const categories = new Set(newRooms.map((room) => room.category).filter(Boolean));
+  categoryFilter.value = 'all'; // Reset category filter to ensure dynamic updates
+});
 
 const logout = async () => {
   try {
@@ -288,7 +310,6 @@ const logout = async () => {
           src="../assets/images/SVG/search-svgrepo-com.svg"
           alt="search-icon"
           width="30px"
-          @click="toggleDropdown"
         >
         <div
           v-show="isDropdownVisible"
@@ -319,7 +340,7 @@ const logout = async () => {
           name="search-input"
           placeholder="Search room ID"
         >
-  
+        <!-- to fix asap -->
         <div class="filter-sort">
           <a
             href="#"
@@ -330,15 +351,17 @@ const logout = async () => {
               src="../assets/images/SVG/filters-2-svgrepo-com.svg"
               alt="filter-icon"
               width="30px"
-              @click="openModal"
+              @click="openFilterModal"
             >
           </a>
-          <Modal
+          <FilterModal
             v-if="isModalVisible"
-            @close="closeModal"
+            :available-categories="uniqueCategories"
+            @close="closeFilterModal"
+            @filter-change="handleFilterChange"
           />
-  
-          <a
+
+          <a 
             href="#"
             @click.prevent="sort"
           >

@@ -1,109 +1,181 @@
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue';
-import { ref as dbRef, onValue, off, push } from 'firebase/database';
-import { realTimeDb as database } from '@/firebase/firebaseconfig';
 
-const router = useRouter();
-const authStore = useAuthStore();
-const roomStore = useRoomStore();
+import { defineEmits, ref, watch, defineProps } from 'vue';
+import { useRoomStore } from '../stores/roomStore';
 
-// Filters and Sorting
+const emit = defineEmits(['close', 'filterChange']);
+
 const searchQuery = ref('');
 const sortBy = ref('createdAt');
 const sortOrder = ref('desc');
 const privacyFilter = ref('all');
 const categoryFilter = ref('all');
 
-// Computed: Unique categories for the dropdown
-const uniqueCategories = computed(() => {
-  const categories = new Set(
-    roomStore.rooms.map((room) => room.category).filter(Boolean)
-  );
-  return Array.from(categories);
+const roomStore = useRoomStore();
+
+const props = defineProps({
+  availableCategories: {
+    type: Array,
+    default: () => [],
+  },
 });
 
-// Computed: Filtered and Sorted Rooms
-const filteredAndSortedRooms = computed(() => {
-  let filteredRooms = roomStore.rooms.filter(
-    (room) => room && typeof room === 'object'
-  );
-
-  // Search query filter
-  if (searchQuery.value) {
-    filteredRooms = filteredRooms.filter((room) =>
-      room.id.includes(searchQuery.value)
-    );
-  }
-
-  // Privacy filter
-  if (privacyFilter.value !== 'all') {
-    filteredRooms = filteredRooms.filter(
-      (room) => room.privacyType === privacyFilter.value
-    );
-  }
-
-  // Category filter
-  if (categoryFilter.value !== 'all') {
-    filteredRooms = filteredRooms.filter(
-      (room) => room.category === categoryFilter.value
-    );
-  }
-
-  // Sorting logic
-  return filteredRooms.sort((a, b) => {
-    let comparison = 0;
-    if (sortBy.value === 'createdAtOldest') {
-      comparison = (a.createdAt || 0) - (b.createdAt || 0);
-    } else if (sortBy.value === 'createdAt') {
-      comparison = (b.createdAt || 0) - (a.createdAt || 0);
-    } else {
-      const aValue = a[sortBy.value] || 0;
-      const bValue = b[sortBy.value] || 0;
-      if (aValue < bValue) comparison = -1;
-      if (aValue > bValue) comparison = 1;
-    }
-    return sortOrder.value === 'desc' ? comparison * -1 : comparison;
+const applyFilters = () => {
+  emit('filterChange', {
+    searchQuery: searchQuery.value,
+    sortBy: sortBy.value,
+    sortOrder: sortOrder.value,
+    privacyFilter: privacyFilter.value,
+    categoryFilter: categoryFilter.value,
   });
-});
+};
+
+
+// Whenever a filter changes, call applyFilters
+watch([searchQuery, sortBy, sortOrder, privacyFilter, categoryFilter], applyFilters);
+
+const closeModal = () => {
+    emit('close');
+  };
 </script>
 
 <template>
-  <!-- Search and Sorting -->
-  <div class="search-sort">
-    <input v-model="searchQuery" placeholder="Search by ID" />
-
-    <select v-model="sortBy">
-      <option value="capacity">Capacity</option>
-      <option value="createdAt">Latest</option>
-      <option value="createdAtOldest">Oldest</option>
-    </select>
-
-    <select v-model="sortOrder">
-      <option value="asc">Ascending</option>
-      <option value="desc">Descending</option>
-    </select>
-  </div>
-
-  <!-- Filters -->
-  <div class="filters">
-    <select v-model="privacyFilter">
-      <option value="all">All Privacy</option>
-      <option value="public">Public</option>
-      <option value="private">Private</option>
-    </select>
-
-    <select v-model="categoryFilter">
-      <option value="all">All Categories</option>
-      <option v-for="category in uniqueCategories" :key="category" :value="category">
-        {{ category }}
-      </option>
-    </select>
-  </div>
-
-  <!-- Display Filtered and Sorted Rooms -->
-  <div class="rooms-list">
-    <div v-for="room in filteredAndSortedRooms" :key="room.id" class="room">
-      <p>{{ room.name }} - {{ room.category }} - {{ room.privacyType }}</p>
+  <!-- Modal Content -->
+  <div
+    class="modal-overlay"
+    @click.self="closeModal"
+  >
+    <div class="modal-content">
+      <!-- Filters -->
+      <div class="wrapper">
+        <div class="filters">
+          <div class="sortby-filter">
+            <select
+              v-model="sortBy"
+              @change="applyFilters"
+            >
+              <option value="capacity">
+                Capacity
+              </option>
+              <option value="createdAt">
+                Latest
+              </option>
+              <option value="createdAtOldest">
+                Oldest
+              </option>
+            </select>
+          </div>
+          <div class="privacy-filter">
+            <select
+              v-model="privacyFilter"
+              @change="applyFilters"
+            >
+              <option value="all">
+                All Privacy
+              </option>
+              <option value="public">
+                Public
+              </option>
+              <option value="private">
+                Private
+              </option>
+            </select>
+          </div>
+          <div class="category-filter">
+            <select
+              v-model="categoryFilter"
+              @change="applyFilters"
+            >
+              <option value="all">
+                All Categories
+              </option>
+              <option
+                v-for="category in availableCategories"
+                :key="category"
+                :value="category"
+              >
+                {{ category }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
+  
+  
+  
+  <style scoped>
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+  }
+  
+  .modal-content {
+    position: absolute;
+    right: 24%;
+    top: 13%;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 12px;
+    border: solid 1px #2d8eff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    width: 250px;
+    padding: 20px;
+    gap: 15px; /* Add spacing between elements */
+  }
+  
+  .filters {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  select {
+    background-color: #f5f5f5;
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+  }
+  
+  select:focus {
+    background-color: #eaeaea;
+    box-shadow: 0 0 0 2px #2d8eff;
+    outline: none;
+  }
+  
+  select:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .sortby-filter, .privacy-filter, .category-filter {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .wrapper {
+    padding: 10px 0;
+  }
+  
+  .option {
+    padding: 8px;
+  }
+  
+  </style>
+  
+
+
+  
