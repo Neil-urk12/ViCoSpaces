@@ -3,7 +3,7 @@
 import '@/assets/styles/homeView.css';
 import '@/assets/styles/home-components.css';
 //imported icon
-import LockIcon from '@/assets/images/SVG/lock-password-svgrepo-com-red.svg';
+import LockIcon from '@/assets/images/SVG/lock-password-svgrepo-com-red-large.svg';
 import UnlockIcon from  '@/assets/images/SVG/lock-unlocked-svgrepo-com-green.svg';
 import lockStatusIcon from '@/assets/images/SVG/lock-svgrepo-com-black.svg';
 import hostIcon from '@/assets/images/SVG/user-svgrepo-com-black.svg';
@@ -17,7 +17,7 @@ import { useRouter, RouterLink } from 'vue-router';
 import { useAuthStore } from '../stores/authStore'
 import { useRoomStore } from '../stores/roomStore'
 //test filter modal
-import Modal from '@/components/test-modal.vue';
+import Modal from '@/components/test-modal.vue';//this should be FilterModal.vue
 const isModalVisible = ref(false);
 
 const openModal = () => {
@@ -47,12 +47,12 @@ const isCreateRoomVisible = ref(false);
 const isDropdownOpen = ref(false)
 const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value
 
-// const uniqueCategories = computed(() => {
-//   const categories = new Set(
-//     roomStore.rooms.map((room) => room.category).filter(Boolean)
-//   );
-//   return Array.from(categories);
-// })
+const uniqueCategories = computed(() => {
+  const categories = new Set(
+    roomStore.rooms.map((room) => room.category).filter(Boolean)
+  );
+  return Array.from(categories);
+})
 
 const createRoomHandler = async (roomData) => {
   try {
@@ -151,42 +151,6 @@ const logout = async () => {
     console.error('Logout error:', error)
   }
 }
-// const isDisplayed = ref(false);
-
-// const toggleInput = () => {
-//   isDisplayed.value = !isDisplayed.value;
-// }
-
-// const filter = () => {
-//   alert("filtered");
-// };
-
-// const sort = () => {
-//   alert("sorted search");
-// };
-
-// const emit = defineEmits(["open-room"]);
-
-// const HostRoom = () => {
-//   console.log("button clicked");
-//   emit("open-room");
-// };
-
-//from homeView
-// const join = () => {
-//   alert("neil joined the program!");
-// };
-
-// //const title = ref("Production Design");
-
-//function update(newTitle) {
-  //title.value = newTitle;
-//}
-//test condition of the color background change in the private or public
-//create a condition that will check if privacy is private and if it is change ref(true);
-const isPrivate = ref(false);
-
-
 </script>
 
 
@@ -246,42 +210,70 @@ const isPrivate = ref(false);
                 </li>
               </ul>
             </ul>
-            <a
-              id="user-profile"
-              href=""
+
+            <div
+              class="user-profile"
+              @click="toggleDropdown"
             >
-              <div class="user-profile">
-                <img
-                  src="../assets/images/SVG/user-svgrepo-com.svg"
-                  alt="User Profile"
-                  width="30px"
-                >
-              </div>
-              <div
-                v-if="isDropdownOpen"
-                class="dropdown"
+              <img
+                src="../assets/images/SVG/user-svgrepo-com.svg"
+                alt="User Profile"
+                width="30px"
               >
-                <RouterLink
-                  to="/settings"
-                  class="dropdown-item"
-                >
-                  Settings
-                </RouterLink>
-                <RouterLink
-                  to="/profile"
-                  class="dropdown-item"
-                >
-                  Profile
-                </RouterLink>
-                <RouterLink
-                  to="/logout"
-                  class="dropdown-item"
-                  @click.prevent="logout"
-                >
-                  Log out
-                </RouterLink>
+            </div>
+            <div
+              v-if="isDropdownOpen"
+              class="dropdown"
+            >
+              <div class="user-option-container">
+                <div class="settings">
+                  <img
+                    src="../assets/images/SVG/settings-svgrepo-com.svg"
+                    alt="status icon"
+                    class="setting-icon"
+                    width="20"
+                    height="20"
+                  >
+                  <RouterLink
+                    to="/settings"
+                    class="dropdown-item 1"
+                  >
+                    Settings
+                  </RouterLink>
+                </div>
+                <div class="profile">
+                  <img
+                    src="../assets/images/SVG/user-svgrepo-com.svg"
+                    alt="status icon"
+                    class="profile-icon"
+                    width="20"
+                    height="20"
+                  >
+                  <RouterLink
+                    to="/profile"
+                    class="dropdown-item 2"
+                  >
+                    Profile
+                  </RouterLink>
+                </div>
+                <div class="logout">
+                  <img
+                    src="../assets/images/SVG/log-out-svgrepo-com.svg"
+                    alt="status icon"
+                    class="logout-icon"
+                    width="20"
+                    height="20"
+                  > 
+                  <RouterLink
+                    to="/logout"
+                    class="dropdown-item 3"
+                    @click.prevent="logout"
+                  >
+                    Log out
+                  </RouterLink>
+                </div>
               </div>
-            </a>
+            </div>
           </div>
         </div>
       </div>
@@ -440,18 +432,18 @@ const isPrivate = ref(false);
                     height="26"
                   >
                 </div>
-                <div class="status-backgroun">
+                <div class="status-bg-container">
                   <!-- The container's background color changes based on isPrivate -->
                   <div
                     class="status-background"
-                    :style="{ backgroundColor: isPrivate ? 'red' : 'lightgreen' }"
+                    :style="{ backgroundColor: room.privacyType === 'private' ? 'red' : 'lightgreen' }"
                   >
                     <p class="p-text">
-                      {{ isPrivate ? 'Private' : 'Public' }}
+                      {{ room.privacyType === 'private' ? 'Private' : 'Public' }}
                     </p>
                   </div>
                 </div>
-                <!-- <p>privacy:{{ room.privacyType }}</p> -->
+                <!-- <p>privacy: {{ room.privacyType }}</p>  -->
               </div>
               <div class="joined-users">
                 <i class="icon" />
@@ -462,7 +454,7 @@ const isPrivate = ref(false);
                     Capacity:
                   </div>
                   <div class="user-counter">
-                    <h4>{{ room.currentUsers }} / {{ room.maxCapacity }}2</h4>
+                    <h4>{{ room.currentUsers }} / {{ room.maxCapacity }}</h4>
                   </div>
                 </div>
                 <button
