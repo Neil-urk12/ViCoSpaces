@@ -3,8 +3,8 @@
 import '@/assets/styles/homeView.css';
 import '@/assets/styles/home-components.css';
 //imported icon
-import LockIcon from '@/assets/images/SVG/lock-password-svgrepo-com-blue.svg';
-import UnlockIcon from  '@/assets/images/SVG/lock-unlocked-svgrepo-com-blue.svg';
+import LockIcon from '@/assets/images/SVG/lock-password-svgrepo-com-red.svg';
+import UnlockIcon from  '@/assets/images/SVG/lock-unlocked-svgrepo-com-green.svg';
 import lockStatusIcon from '@/assets/images/SVG/lock-svgrepo-com-black.svg';
 import hostIcon from '@/assets/images/SVG/user-svgrepo-com-black.svg';
 
@@ -320,6 +320,13 @@ const isPrivate = ref(false);
           name="search-input"
           placeholder="Search rooms by ID"
         >
+        <input
+          v-model="searchQuery"
+          type="text"
+          class="search-input-small"
+          name="search-input"
+          placeholder="Search room ID"
+        >
   
         <div class="filter-sort">
           <a
@@ -382,99 +389,7 @@ const isPrivate = ref(false);
       </div>
     </div>
 
-    <!-- <main class="room-view-container">
-    <div
-      v-for="room in filteredAndSortedRooms"
-      :key="room.id"
-      class="room"
-    >
-      <div class="image-content">
-        <div class="hosting-container">
-          <div class="host-profile" />
-        </div>
-      </div>
-      <div class="text-content">
-        <h2>{{ room.name }}</h2>
-        <h4>{{ room.currentUsers }} / {{ room.maxCapacity }}</h4>
-        <p>Host: {{ room.host?.name || 'Unknown' }}</p>
-        <p>Privacy: {{ room.privacyType }}</p>
-        <div class="joined-users">
-          <i class="icon" />
-        </div>
-        <div class="join-btn-container">  
-          <button
-            class="join-btn"
-            :disabled="room.currentUsers >= room.maxCapacity"
-            @click="joinRoom(room.id, room.privacyType)"
-          >
-            {{ room.currentUsers >= room.maxCapacity ? 'Full' : 'Join' }}
-          </button>           
-        </div>
-      </div>
-    </div>
-    <JoinRoomModal
-      v-if="showModal"
-      @close="showModal = false"
-      @join="joinRoomById"
-    />
-    <HostRoomModal
-      :is-visible="isCreateRoomVisible"
-      @close-room="isCreateRoomVisible = false"
-      @close="close"
-      @create="createRoomHandler"
-    /> -->
-
-    <!-- <categoryBar @changetitle="update" />
-  <nav class="nav-bar">
-    <div class="nav-div">
-      <div class="logo-container">
-        <img
-          src="../assets/images/logo/transparentlogo 1080.png"
-          alt="ViCoSpaces-Logo"
-          class="logo-img"
-          width="100%"
-          height="100%"
-        >
-        <span class="logo-name">ViCoSpaces</span>
-      </div>
-      <div class="open-sidebar">
-        <div class="open-sidebar-icon">
-          <img
-            src="../assets/images/SVG/mobile-menu-bar.svg"
-            alt="side icon"
-            width="40px"
-          >
-        </div>
-      </div>
-      <div class="nav-links-and-buttons">
-        <ul class="pages-container">
-          <li>
-            <router-link to="/">
-              Home
-            </router-link>
-          </li>
-          <li>
-            <router-link to="/about">
-              About
-            </router-link>
-          </li>
-          <li>
-            <router-link to="/contact">
-              Contact
-            </router-link>
-          </li>
-        </ul>
-        <div class="user-dropdown">
-          <div class="user-profile">
-            <img
-              src="../assets/images/UserProfileStocks/megan.jpg"
-              alt="User Profile"
-            >
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav> -->
+    <!-- ROOM -->
 
     <main class="room-view-container">
       <div class="room-form">
@@ -484,25 +399,22 @@ const isPrivate = ref(false);
           class="room"
         >
           <div class="image-content">
+            <div class="status-icon-wrapper">
+              <div class="status-icon">
+                <img
+                  :src="room.privacyType === 'public' ? UnlockIcon : LockIcon"
+                  alt="status icon"
+                  width="32"
+                  height="32"
+                >
+              </div>
+            </div>
+
             <div class="room-name-container">
               <h2 class="room-name">
                 {{ room.name }}
               </h2>
             </div>
-            <div class="status-icon-wrapper">
-              <img
-                :src="room.privacyType === 'public' ? UnlockIcon : LockIcon"
-                alt="status icon"
-                class="status-icon"
-                width="32"
-                height="32"
-              >
-              <!-- privacy checker lang -->
-              <!-- <span>{{ room.privacyType === 'public' ? 'Unlocked' : 'Locked' }}</span> -->
-            </div>
-            <!-- <div class="hosting-container">
-              <div class="host-profile" />
-            </div> -->
           </div>
           <div class="text-content">
             <div class="bottom-content">
@@ -554,7 +466,7 @@ const isPrivate = ref(false);
                   </div>
                 </div>
                 <button
-                  class="join-btn"
+                  class="join-a-room-btn"
                   :disabled="room.currentUsers >= room.maxCapacity"
                   @click="joinRoom(room.id, room.privacyType)"
                 >
@@ -576,327 +488,7 @@ const isPrivate = ref(false);
       @close-room="isCreateRoomVisible = false"
       @close="close"
       @create="createRoomHandler"
-    /> -->
-
-    <!-- <categoryBar @changetitle="update" />
-  <nav class="nav-bar">
-    <div class="nav-div">
-      <div class="logo-container">
-        <img
-          src="../assets/images/logo/transparentlogo 1080.png"
-          alt="ViCoSpaces-Logo"
-          class="logo-img"
-          width="100%"
-          height="100%"
-        >
-        <span class="logo-name">ViCoSpaces</span>
-      </div>
-      <div class="open-sidebar">
-        <div class="open-sidebar-icon">
-          <img
-            src="../assets/images/SVG/mobile-menu-bar.svg"
-            alt="side icon"
-            width="40px"
-          >
-        </div>
-      </div>
-      <div class="nav-links-and-buttons">
-        <ul class="pages-container">
-          <li>
-            <router-link to="/">
-              Home
-            </router-link>
-          </li>
-          <li>
-            <router-link to="/about">
-              About
-            </router-link>
-          </li>
-          <li>
-            <router-link to="/contact">
-              Contact
-            </router-link>
-          </li>
-        </ul>
-        <div class="user-dropdown">
-          <div class="user-profile">
-            <img
-              src="../assets/images/UserProfileStocks/megan.jpg"
-              alt="User Profile"
-            >
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav> -->
-
-    <main class="room-view-container">
-      <div class="room-form">
-        <div
-          v-for="room in filteredAndSortedRooms"
-          :key="room.id"
-          class="room"
-        >
-          <div class="image-content">
-            <div class="room-name-container">
-              <h2 class="room-name">
-                {{ room.name }}
-              </h2>
-            </div>
-            <div class="status-icon-wrapper">
-              <img
-                :src="room.privacyType === 'public' ? UnlockIcon : LockIcon"
-                alt="status icon"
-                class="status-icon"
-                width="32"
-                height="32"
-              >
-              <!-- privacy checker lang -->
-              <!-- <span>{{ room.privacyType === 'public' ? 'Unlocked' : 'Locked' }}</span> -->
-            </div>
-            <!-- <div class="hosting-container">
-              <div class="host-profile" />
-            </div> -->
-          </div>
-          <div class="text-content">
-            <div class="bottom-content">
-              <div class="host-wrapper">
-                <div class="hiw">
-                  <img
-                    :src="hostIcon"
-                    alt="status icon"
-                    class="status-icon-privacy"
-                    width="26"
-                    height="26"
-                  >
-                </div>
-                <p>{{ room.host?.name || 'Unknown' }}</p>
-              </div>
-              <div class="privacy-wrapper">
-                <div class="sip">
-                  <img
-                    :src="lockStatusIcon"
-                    alt="status icon"
-                    class="status-icon-privacy"
-                    width="26"
-                    height="26"
-                  >
-                </div>
-                <div class="status-backgroun">
-                  <!-- The container's background color changes based on isPrivate -->
-                  <div
-                    class="status-background"
-                    :style="{ backgroundColor: isPrivate ? 'red' : 'lightgreen' }"
-                  >
-                    <p class="p-text">
-                      {{ isPrivate ? 'Private' : 'Public' }}
-                    </p>
-                  </div>
-                </div>
-                <!-- <p>privacy:{{ room.privacyType }}</p> -->
-              </div>
-              <div class="joined-users">
-                <i class="icon" />
-              </div>
-              <div class="room-join-wrapper">  
-                <div class="counter">
-                  <div class="capaticy-txt">
-                    Capacity:
-                  </div>
-                  <div class="user-counter">
-                    <h4>{{ room.currentUsers }} / {{ room.maxCapacity }}2</h4>
-                  </div>
-                </div>
-                <button
-                  class="join-btn"
-                  :disabled="room.currentUsers >= room.maxCapacity"
-                  @click="joinRoom(room.id, room.privacyType)"
-                >
-                  {{ room.currentUsers >= room.maxCapacity ? 'Full' : 'Join' }}
-                </button>           
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-    <JoinRoomModal
-      v-if="showModal"
-      :room-id-to-join="roomIdToJoin"
-      :is-private="privacyCondition"
-      @close="showModal = false"
-      @join="joinRoomById"
     />
-    <HostRoomModal
-      :is-visible="isCreateRoomVisible"
-      @close-room="isCreateRoomVisible = false"
-      @close="close"
-      @create="createRoomHandler"
-    />
-
-    <!-- my code for sure -->
-    <!-- <div class="search-bar">
-      <div class="search">
-        <img
-          class="search-icon"
-          src="../assets/images/SVG/search-svgrepo-com.svg"
-          alt="search-icon"
-          width="30px"
-        > -->
-    <!-- search bar input -->
-    <!-- <input
-          type="text"
-          class="search-input"
-          name="search-input"
-          placeholder="Search here..."
-        > -->
-
-    <!-- <div class="filter-sort">
-          <a
-            href="#"
-            @click.prevent="filter"
-          >
-            <img
-              class="filter-icon"
-              src="../assets/images/SVG/filters-2-svgrepo-com.svg"
-              alt="filter-icon"
-              width="30px"
-            >
-          </a> -->
-
-    <!-- <a
-            href="#"
-            @click.prevent="sort"
-          >
-            <img
-              class="sort-icon"
-              src="../assets/images/SVG/sort-vertical-svgrepo-com.svg"
-              alt="sort-icon"
-              width="30px"
-            >
-          </a>
-        </div>
-      </div> -->
-
-    <!-- my code for sure -->
-
-    <!-- <div class="button-container">
-        <div
-          class="link-container"
-          :style="{display: isDisplayed ? 'block' : 'none' }"
-        >
-          <div class="link-align">
-            <img
-              src="../assets/images/SVG/add-link-alt-1-svgrepo-com.svg"
-              alt="add-link-icon"
-              width="20px"
-            >
-            <input
-              id="link-input"
-              type="text"
-              placeholder="Enter Link"
-            >
-          </div>
-        </div>
-
-        <button
-          class="join-btn-container"
-          @click="toggleInput"
-        >
-          <img
-            class="join-icon"
-            src="../assets/images/SVG/session-join-svgrepo-com white.svg"
-            alt="join-icon"
-            width="30px"
-          >
-          <p class="join-text-hide">
-            Join <span class="room-text-hide-on-small">Room</span>
-          </p>
-        </button>
-        <button
-          class="host-btn-container"
-          @click="HostRoom"
-        >
-          <img
-            src="../assets/images/SVG/add-square-svgrepo-com white.svg"
-            alt="host-icon"
-            width="30px"
-          >
-          <p>Host <span class="room-text-hide-on-small">Room</span></p>
-        </button>
-      </div>
-    </div> -->
-
-
-    <!-- my code for sure -->
-
-    <!-- <myHome @open-room="isCreateRoomVisible = true" />
-    <categoryBar @changetitle="update" /> -->
-    <!-- <main>
-      <div class="room-view-container">
-        <div class="room-form">
-          <div
-            v-for="room in filteredAndSortedRooms"
-            :key="room.id"
-            class="room"
-          >
-            <div class="image-content">
-              <div class="hosting-container">
-                <div class="host-profile" />
-              </div>
-            </div>
-            <div class="text-content">
-              <div class="room-name-container">
-                <h2>{{ room.name }}</h2>
-              </div>
-              <div class="joined-and-button-container">
-                <div class="joined-users">
-                  <div class="user-wrapper">
-                    <div id="user-1-container ">
-                      <img
-                        class="user-1"
-                        src="../assets/images/UserProfileStocks/megan.jpg"
-                        alt=""
-                      >
-                    </div>
-                    <div id="user-2-container ">
-                      <img
-                        class="user-2"
-                        src="../assets/images/UserProfileStocks/megan.jpg"
-                        alt=""
-                      >
-                    </div>
-                    <div id="user-3-container ">
-                      <img
-                        class="user-3"
-                        src="../assets/images/UserProfileStocks/megan.jpg"
-                        alt=""
-                      >
-                    </div>
-                    <div id="user-count-container">
-                      <div class="user-count">
-                        <h6 class="number-count">
-                          {{ room.currentUsers }}+
-                        </h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="join-btn-container">
-                  <button
-                    class="join-btn"
-                    :disabled="room.currentUsers >= room.maxCapacity"
-                    @click="joinRoom(room.id, room.privacyType)"
-                  >
-                    {{ room.currentUsers >= room.maxCapacity ? 'Full' : 'Join' }}
-                  </button> 
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main> -->
   </main>
 </template>
 <style scope>
