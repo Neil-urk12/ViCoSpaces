@@ -71,7 +71,7 @@ const logout = async () => {
             @click="goToRoute('/')"
           >
             <img
-              src="../assets/images/SVG/settings-svgrepo-com.svg"
+              src="../assets/images/SVG/home-svgrepo-com.svg"
               alt="home-icon"
               class="icon"
             >
