@@ -25,13 +25,16 @@ export const useCursorStore = defineStore('cursor', {
       const canvasEl = document.querySelector('.canvas-area canvas');                                          
       if (canvasEl) {                                                                                          
         const rect = canvasEl.getBoundingClientRect();                                                         
-        const offsetX = 10;                                                                                   
-        const offsetY = 10;                                                                                    
+        const offsetX = 161.2                                                                                   
+        const offsetY = 18                                                                                   
         const x = event.clientX - rect.left + offsetX;                                                         
-        const y = event.clientY - rect.top + offsetY;                                                          
+        const y = event.clientY - rect.top + offsetY;        
+        console.log('x y', x, y)
+        console.log(event.clientX, event.clientY)
+                                                          
         this.localCursor = { x, y, username: this.currentUserName };                                           
         this.updateFirebaseCursor(x, y);                                                                       
-      }                                                                                                        
+      }                                                                                                 
     },                                                                                                         
     updateFirebaseCursor(x, y) {                                                                               
       set(dbRef(db, `rooms/${this.roomId}/cursors/${this.userId}`), {                                          

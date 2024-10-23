@@ -26,7 +26,8 @@
  });                                                                                                            
                                                                                                                 
  onUnmounted(() => {                                                                                            
-   chatStore.unsubscribeMessages();                                                                             
+   chatStore.unsubscribeMessages();  
+   chatStore.messages = []                                                                           
  });                                                                                                            
  </script>                                                                                                      
                                                                                                                 
@@ -71,9 +72,12 @@
  message..."
           @keyup.enter="chatStore.sendMessage"
         >                                                                                                 
-        <button @click="chatStore.sendMessage">
-          Send
-        </button>                                                   
+        <button
+          class="send-button"
+          @click="chatStore.sendMessage"
+        >
+          <span class="send-icon">➤</span>
+        </button>                                                 
       </div>                                                                                                   
     </div>                                                                                                     
   </div>                                                                                                       
@@ -90,7 +94,7 @@
  .toggle-button {                                                                                               
    width: 100%;                                                                                                 
    padding: 10px;                                                                                               
-   background-color: #4CAF50;                                                                                   
+   background-color: rgb(59, 130, 246);                                                                                 
    color: white;                                                                                                
    border: none;                                                                                                
    cursor: pointer;                                                                                             
@@ -172,10 +176,32 @@
  button {                                                                                                       
    margin-left: 10px;                                                                                           
    padding: 5px 10px;                                                                                           
-   background-color: #4CAF50;                                                                                   
+   background-color: rgb(59, 130, 246);                                                                                  
    color: white;                                                                                                
    border: none;                                                                                                
    border-radius: 4px;                                                                                          
    cursor: pointer;                                                                                             
- }                                                                                                              
+ }     
+ .send-button {
+  background-color: rgb(59, 130, 246);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.send-button:hover {
+  background-color: #2563eb;
+}
+
+.send-icon {
+  font-size: 1rem;
+  transform: rotate(90deg);
+}                                                                                                         
  </style>
