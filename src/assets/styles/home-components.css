@@ -113,7 +113,7 @@
     font-size: 0.9rem;
     font-weight: bold;
     height: 100%;
-    color: red;
+    color: rgb(64, 64, 64);
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -496,8 +496,47 @@
   
   @media (max-width: 663px) {
     .nav-bar {
-      background-color: #2dff37;
+      background-color: #2d8eff;
       width: 100%;
+    }
+    .button-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 18%;
+      gap:5px;
+    }
+    .join-btn-container{
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      padding: 5px;
+      height: 100%;
+      width: 100%;
+    }
+    .host-btn-container{
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      padding: 5px;
+      height: 100%;
+      width: 100%;
+    }
+    button {
+      background-color: #2d8eff;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      width: 40%;
+      height: 50px;
+      font-size: 1em;
+      font-weight: bold;
+    
+      cursor: pointer;
     }
     
 
@@ -523,7 +562,89 @@
       width: 20px;
       
     }
-
+  @media (max-width: 430) {
+    .button-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 18%;
+      gap:5px;
+    }
+    .join-btn-container{
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      padding: 5px;
+      height: 100%;
+      width: 100%;
+    }
+    .host-btn-container{
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      padding: 5px;
+      height: 100%;
+      width: 100%;
+    }
+    button {
+      background-color: #2d8eff;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      width: 40%;
+      height: 50px;
+      font-size: 1em;
+      font-weight: bold;
+    
+      cursor: pointer;
+    }
+  }
+  @media (max-width: 414px) {
+    .button-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 18%;
+      gap:5px;
+    }
+    .join-btn-container{
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      padding: 5px;
+      height: 100%;
+      width: 100%;
+    }
+    .host-btn-container{
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      padding: 5px;
+      height: 100%;
+      width: 100%;
+    }
+    button {
+      background-color: #2d8eff;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      width: 40%;
+      height: 50px;
+      font-size: 1em;
+      font-weight: bold;
+    
+      cursor: pointer;
+    }
+    
+  }
   
   }
   @media (max-width: 375px) {

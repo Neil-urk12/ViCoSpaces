@@ -173,7 +173,38 @@ const closeModal = () => {
   .option {
     padding: 8px;
   }
-  
+  @media (max-width: 414px) {
+    .modal-content {
+      position: absolute;
+      right: 22%;
+      top: 14%;
+      display: flex;
+      flex-direction: column;
+      background-color: white;
+      border-radius: 12px;
+      border: solid 1px #2d8eff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      width: 250px;
+      padding: 20px;
+      gap: 15px; /* Add spacing between elements */
+    }
+  }
+  @media (max-width: 375px) {
+    .modal-content {
+      position: absolute;
+      right: 17%;
+      top: 18%;
+      display: flex;
+      flex-direction: column;
+      background-color: white;
+      border-radius: 12px;
+      border: solid 1px #2d8eff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      width: 250px;
+      padding: 20px;
+      gap: 15px; /* Add spacing between elements */
+    }
+  }
   </style>
   
 

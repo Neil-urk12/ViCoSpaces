@@ -430,6 +430,20 @@
     .room-form {
       grid-template-columns: 1fr; /* One column for even smaller screens */
     }
+    .room-view-container {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      padding: 10px 2% 0px 2%;
+      width: 100%;    
+      height: 100%;
+      overflow:auto ;
+      
+    }
+  }
+  @media (max-width: 414px) {
+
+    
   }
   @media (max-width: 375px) {
     
@@ -461,6 +475,24 @@
       position: absolute;
       align-self: center;
     }
-
+    .host-btn-container {
+      position: fixed; 
+      bottom: 20px; 
+      right: 20px; 
+      z-index: 1000; 
+      padding: 15px;
+      background-color: #3498db; 
+      border-radius: 50%; 
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      font-size: 18px;
+    }
+  
+    .host-btn-container img {
+      margin-right: 0; 
+    }
+  
+    .host-btn-container p {
+      display: none; 
+    }
     
   }

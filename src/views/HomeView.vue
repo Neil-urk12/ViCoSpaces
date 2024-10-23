@@ -7,7 +7,7 @@ import LockIcon from '@/assets/images/SVG/lock-password-svgrepo-com-red-large.sv
 import UnlockIcon from  '@/assets/images/SVG/lock-unlocked-svgrepo-com-green.svg';
 import lockStatusIcon from '@/assets/images/SVG/lock-svgrepo-com-black.svg';
 import hostIcon from '@/assets/images/SVG/user-svgrepo-com-black.svg';
-
+import FilterModal from '@/components/FilterModal.vue';
 import HostRoomModal from '@/components/HostRoomModal.vue';
 import JoinRoomModal from '@/components/JoinRoomModal.vue';
 import { ref, onMounted, onUnmounted, computed, watch} from 'vue';
@@ -16,18 +16,22 @@ import { realTimeDb as database } from '../firebase/firebaseconfig.js'
 import { useRouter, RouterLink } from 'vue-router';
 import { useAuthStore } from '../stores/authStore'
 import { useRoomStore } from '../stores/roomStore'
-//test filter modal
-import FilterModal from '@/components/FilterModal.vue';//this should be FilterModal.vue
+
+//this should be FilterModal.vue
 const isModalVisible = ref(false);
 
 const openFilterModal = () => {
   isModalVisible.value = true;
 };
-
 const closeFilterModal = () => {
   isModalVisible.value = false;
 };
- // Import Modal component
+
+
+
+import SidebarModal from '@/components/SidebarModal.vue';
+
+const showSideBarModal = ref(false);
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -198,20 +202,36 @@ const logout = async () => {
               src="../assets/images/SVG/mobile-menu-bar.svg"
               alt="side icon"
               width="40px"
+              class="open-sidemodal-btn"
+              @click="showSideBarModal = true"
             >
+            <!-- Pass down the close function as a prop -->
+            <SidebarModal
+              v-if="showSideBarModal"
+              @close="showSideBarModal = false"
+            />
           </div>
           <div class="nav-links-and-buttons">
             <div class="mobile-content">
               <button
                 class="mobile-host-container"
-                @click="isCreateRoomVisible = true"
               >
+                <button
+                  class="open-sidebar-modal-btn"
+                  @click="showSideBarModal = true"
+                >
+                  Open Modal
+                </button>
+
+                <!-- Pass down the close function as a prop -->
+                
                 <img
                   src="../assets/images/SVG/add-square-svgrepo-com white.svg"
                   alt="host-icon"
                   width="30px"
                 >
               </button>
+              
             </div>
             <ul class="pages-container">
               <ul class="pages-container">
