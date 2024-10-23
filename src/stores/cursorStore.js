@@ -25,8 +25,8 @@ export const useCursorStore = defineStore('cursor', {
       const canvasEl = document.querySelector('.canvas-area canvas');                                          
       if (canvasEl) {                                                                                          
         const rect = canvasEl.getBoundingClientRect();                                                         
-        const offsetX = 161.2                                                                                   
-        const offsetY = 18                                                                                   
+        const offsetX = 200                                                                                  
+        const offsetY = 20                                                                                   
         const x = event.clientX - rect.left + offsetX;                                                         
         const y = event.clientY - rect.top + offsetY;        
         console.log('x y', x, y)

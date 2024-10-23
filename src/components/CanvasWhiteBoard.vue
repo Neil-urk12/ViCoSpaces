@@ -7,6 +7,12 @@ import { realTimeDb as db } from '@/firebase/firebaseconfig'
 import { useAuthStore } from '@/stores/authStore'                                                           
 import { useRoute } from 'vue-router'                                                               
 import { useChatStore } from '@/stores/chatStore'
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faT, faShapes, faPencil, faTrash, faDeleteLeft, faFileImport } from '@fortawesome/free-solid-svg-icons';
+import { faImage } from '@fortawesome/free-regular-svg-icons';
+
+library.add(faT, faShapes, faPencil, faTrash, faImage, faDeleteLeft, faFileImport);
                                                                                                                
 const authStore = useAuthStore()                                                                        
 const cursorStore = useCursorStore()                                                                      
@@ -142,14 +148,14 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
           title="Add Text"
           @click="addTextToCanvas"
         >
-          📝
+        <font-awesome-icon :icon="['fas', 't']" />
         </button>
         <button
           class="tool-btn"
           title="Shape Library"
           @click="showShapeLibrary = !showShapeLibrary"
         >
-          🧩
+        <font-awesome-icon :icon="['fas', 'shapes']" />
         </button>
       </div>
   
@@ -165,14 +171,14 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
           title="Clear Canvas"
           @click="clearCanvas"
         >
-          🗑️
+        <font-awesome-icon :icon="['fas', 'trash']" />
         </button>
         <button
           class="tool-btn"
           title="Remove Selected"
           @click="removeSelected"
         >
-          ❌
+        <font-awesome-icon :icon="['fas', 'delete-left']" />
         </button>
       </div>
   
@@ -182,14 +188,14 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
           title="Insert Image"
           @click="triggerFileSelect"
         >
-          🖼️
+        <font-awesome-icon :icon="['far', 'image']" />
         </button>
         <button
           class="tool-btn"
           title="Download Image"
           @click="downloadCanvasAsImage"
         >
-          ⬇️
+        <font-awesome-icon :icon="['fas', 'file-import']" />
         </button>
         <input
           ref="imageInput"
@@ -723,6 +729,7 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
   .cursor-pointer {
     font-size: 1.5rem;
     line-height: 1;
+    transform: rotate(-85deg);
   }
   
   .cursor-label {
@@ -769,9 +776,6 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
     margin-bottom: 10px;                                                                                         
   } 
 
-  svg{
-    transform: rotate(-85deg);
-  }
   
   @media (max-width: 768px) {
     .toolbar {
