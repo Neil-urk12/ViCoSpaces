@@ -12,6 +12,7 @@ const router = createRouter({
     { path: '/home', component: () => import('../views/HomeView.vue'), meta: { requiresAuth: true } },
     { path: '/register', component: () => import('../views/RegisterView.vue'), meta: { requiresAuth: false } },
     { path: '/login', component: () => import('../views/SignInView.vue'), meta: { requiresAuth: false } },
+    { path: '/contact', component: () => import('../views/ContactView.vue'), meta: { requiresAuth: false}},
     {
       path: '/room/:id',
       name: 'Room',
@@ -35,7 +36,6 @@ const router = createRouter({
         }
       },
     },
-    { path: '/testchat', component: () => import('../components/chat-box-feature.vue'), meta: { requiresAuth: true } },
     { path: '/error', name: 'Error', component: () => import('../views/ErrorView.vue') }
   ],
 });
