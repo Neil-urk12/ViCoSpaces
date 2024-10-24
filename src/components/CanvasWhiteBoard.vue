@@ -1,6 +1,6 @@
 <script setup>        
-import * as fabric from 'fabric';        
-import { FabricImage } from 'fabric';                                                                                 
+import * as fabric from 'fabric'       
+import { FabricImage } from 'fabric'                                                                                
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue'                                          
 import { useCursorStore } from '@/stores/cursorStore'                                                    
 import { onValue, ref as dbRef, get, set } from 'firebase/database'  
@@ -8,13 +8,17 @@ import { realTimeDb as db } from '@/firebase/firebaseconfig'
 import { useAuthStore } from '@/stores/authStore'                                                           
 import { useRoute } from 'vue-router'                                                               
 import { useChatStore } from '@/stores/chatStore'
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faT, faShapes, faPencil, faTrash, faDeleteLeft, faFileImport, faPen, faPenNib } from '@fortawesome/free-solid-svg-icons';
-import { faImage } from '@fortawesome/free-regular-svg-icons';
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faT, faShapes, faPencil, faTrash, faDeleteLeft, faFileImport, faPen, faPenNib } from '@fortawesome/free-solid-svg-icons'
+import { faImage } from '@fortawesome/free-regular-svg-icons'
 
-library.add(faT, faShapes, faPencil, faTrash, faImage, faDeleteLeft, faFileImport, faPen, faPenNib);
-                                                                                                               
+library.add(faT, faShapes, faPencil, faTrash, faImage, faDeleteLeft, faFileImport, faPen, faPenNib)
+                          
+let batchTimeout = null
+let pendingUpdates = new Set()
+let lastUpdateTimestamp = Date.now()
+const THROTTLE_DELAY = 500;
 const authStore = useAuthStore()                                                                        
 const cursorStore = useCursorStore()                                                                       
 const chatStore = useChatStore()                                                              
@@ -22,238 +26,262 @@ const route = useRoute()
 
 const userId = computed(() => authStore.getUid)                                                            
 const username = computed(() => authStore.getDisplayName)    
-let debounceTimeout;
 
 function handleSingleReload() {
   if (!sessionStorage.getItem('roomReloadFlag')) {
-    sessionStorage.setItem('roomReloadFlag', 'true');
-    location.reload();
-  } else {
-    sessionStorage.removeItem('roomReloadFlag');
-  }
+    sessionStorage.setItem('roomReloadFlag', 'true')
+    location.reload()
+  } else 
+    sessionStorage.removeItem('roomReloadFlag')
 }
 
  const saveCanvasToDatabase = async (canvas, roomId) => {   
-  if (!canvas) {
-    console.error('Canvas or roomId is missing');
-    return;
-  }                                                    
-   clearTimeout(debounceTimeout);                                                                               
-                                                                                                                
-   debounceTimeout = setTimeout(async () => {                                                                   
-     try {                                                                                                      
-       const currentCanvasObjects = canvas.getObjects().map((obj) => {                                          
-         return {                                                                                               
-          type: obj.type,                                                                                      
-          left: obj.left,                                                                                      
-          top: obj.top,                                                                                        
-          fill: obj.fill,                                                                                      
-          stroke: obj.stroke,                                                                                  
-          strokeWidth: obj.strokeWidth,                                                                        
-          scaleX: obj.scaleX,                                                                                  
-          scaleY: obj.scaleY,                                                                                  
-          angle: obj.angle,                                                                                    
-          width: obj.width,                                                                                    
-          height: obj.height, 
-          flipX: obj.flipX,
-          flipY: obj.flipY,
-         }                                                                                                      
-       })    
-                                                                                                          
-                                                                                                                
-       const canvasRef = dbRef(db, `rooms/${roomId}/canvas`);                                                   
-       const canvasSnapshot = await get(canvasRef);                                                             
-       const previousCanvasObjects = canvasSnapshot.exists() ? canvasSnapshot.val() : [];                       
-                                                                                                                
-       const diff = currentCanvasObjects.filter((obj, index) => {                                               
-         return JSON.stringify(obj) !== JSON.stringify(previousCanvasObjects[index]);                           
-       });                                                                                                      
-                                               
-       const filteredObjects = currentCanvasObjects.filter(obj => !obj.isGrid);
-       await set(dbRef(db, `rooms/${roomId}/canvas`), {
-        objects: filteredObjects,
-        timestamp: Date.now(),
-      });
-
-       if (diff.length > 0) {                                                                                   
-         await set(canvasRef, diff);                                                                            
-         console.log('Canvas elements saved to the database successfully');                                     
-       }                                                                                                        
-     } catch (error) {                                                                                          
-       console.error('Error saving canvas elements to the database:', error);                                   
-       alert('Failed to save canvas elements. Please try again.');                                              
-     }                                                                                                          
-   }, 500)                                                        
- }                         
-                                                                                                                                        
- window.addEventListener('beforeunload', () => saveCanvasToDatabase(canvas, route.params.id));   
+  if (!canvas) return console.error('Canvas or roomId is missing');                                                                                                                        
+const currentTime = Date.now()
+if (currentTime - lastUpdateTimestamp < THROTTLE_DELAY) {
+  clearTimeout(batchTimeout)
+  batchTimeout = setTimeout(() => saveCanvasToDatabase(canvas, roomId), THROTTLE_DELAY)
+  return
+}                                        
+                                                                  
+try {                                                                                                      
+  const currentCanvasObjects = canvas.getObjects().map((obj) => {                                          
+    return {                                                                                               
+    type: obj.type,
+    left: obj.left,
+    top: obj.top,
+    fill: obj.fill,
+    stroke: obj.stroke,
+    strokeWidth: obj.strokeWidth,
+    scaleX: obj.scaleX,
+    scaleY: obj.scaleY,
+    angle: obj.angle,
+    width: obj.width,
+    height: obj.height,
+    flipX: obj.flipX,
+    flipY: obj.flipY,
+    id: obj.id || Math.random().toString(36).substr(2, 9)
+    }                                                                                                      
+  })               
+  await set(dbRef(db, `rooms/${roomId}/canvas`), {
+  currentCanvasObjects,
+  timestamp: currentTime
+});
+  lastUpdateTimestamp = currentTime;
+  pendingUpdates.clear();                                                                                         
+  } catch (error) {                                                                                          
+    console.error('Error saving canvas elements to the database:', error);                                   
+    alert('Failed to save canvas elements. Please try again.');                                              
+  }                                                                                                                                                                 
+}                         
+                                                                                                                                       
+window.addEventListener('beforeunload', () => saveCanvasToDatabase(canvas, route.params.id)); 
                                                                                                                
- const renderCanvasFromDatabase = async (canvas, roomId) => {
-  if (!canvas || !roomId) {
-    console.error('Canvas or roomId is missing');
-    return;
+function throttle(func, limit) {
+  let lastFunc
+  let lastRan
+  return function(...args) {
+    const context = this
+    if (!lastRan) {
+      func.apply(context, args)
+      lastRan = Date.now()
+    } else {
+      clearTimeout(lastFunc)
+      lastFunc = setTimeout(() => {
+        if ((Date.now() - lastRan) >= limit) {
+          func.apply(context, args)
+          lastRan = Date.now()
+        }
+      }, limit - (Date.now() - lastRan))
+    }
   }
-
+}
+const renderCanvasFromDatabase = async (canvas, roomId) => {
+  if (!canvas || !roomId) return console.error('Canvas or roomId is missing')
+    
+  let isUpdating = false
+  let lastUpdateTimestamp = 0
   try {
-    const canvasRef = dbRef(db, `rooms/${roomId}/canvas`);
-    const snapshot = await get(canvasRef);
-    if (!snapshot.exists()) return;
-    const data = snapshot.val();
-    if (!data.objects || !Array.isArray(data.objects)) return;
-    canvas.clear();
-    for (const objData of data.objects) {
-      let fabricObj;
-      switch (objData.type) {
-        case 'rect':
-          fabricObj = new fabric.Rect({
-            ...objData,
-            selectable: true,
-            hasControls: true
-          });
-          break;
-        case 'circle':
-          fabricObj = new fabric.Circle({
-            ...objData,
-            selectable: true,
-            hasControls: true
-          });
-          break;
-        case 'triangle':
-          fabricObj = new fabric.Triangle({
-            ...objData,
-            selectable: true,
-            hasControls: true
-          });
-          break;
-        case 'ellipse':
-          fabricObj = new fabric.Ellipse({
-            ...objData,
-            selectable: true,
-            hasControls: true
-          });
-          break;
-        case 'polygon':
-          if (objData.points) {
-            fabricObj = new fabric.Polygon(objData.points, {
-              ...objData,
-              selectable: true,
-              hasControls: true
-            });
-          }
-          break;
-        case 'textbox':
-          fabricObj = new fabric.Textbox(objData.text || 'Text', {
-            ...objData,
-            selectable: true,
-            hasControls: true
-          });
-          break;
-        case 'path':
-          if (objData.path) {
-            fabricObj = new fabric.Path(objData.path, {
-              ...objData,
-              selectable: true,
-              hasControls: true
-            });
-          }
-          break;
-        case 'image':
-          if (objData.src) {
-            await new Promise((resolve) => {
-              fabric.Image.fromURL(objData.src, (img) => {
-                img.set({
-                  ...objData,
-                  selectable: true,
-                  hasControls: true
-                });
-                canvas.add(img);
-                resolve();
-              }, { crossOrigin: 'anonymous' });
-            });
-            continue;
-          }
-          break;
-      }
+    const canvasRef = dbRef(db, `rooms/${roomId}/canvas`)
+    const snapshot = await get(canvasRef)
+    if (snapshot.exists()) {
+      const data = snapshot.val()
+      if (data.objects && Array.isArray(data.objects)) 
+        loadObjectsToCanvas(canvas, data.objects)
+    }
+
+    const throttledUpdate = throttle(async (snapshot) => {
+      if (!snapshot.exists()) return
+
+      const data = snapshot.val()
+      if (!data.objects || !Array.isArray(data.objects)) return
+
+      if (data.timestamp <= lastUpdateTimestamp) return
+      lastUpdateTimestamp = data.timestamp
+
+      if (isUpdating) return
+      isUpdating = true;
+
+      const activeObject = canvas.getActiveObject()
+      const activeObjectId = activeObject ? activeObject.id : null
+
+      const existingObjects = canvas.getObjects().filter(obj => !obj.isGrid)
+      existingObjects.forEach(obj => canvas.remove(obj))
+
+      loadObjectsToCanvas(canvas, data.objects, activeObjectId)
+
+      canvas.renderAll()
+      isUpdating = false
+
+    }, 500)
+
+    onValue(canvasRef, throttledUpdate)
+    addCanvasEventListeners(canvas, roomId)
+  } catch (error) {
+    console.error('Error loading canvas from database:', error)
+    isUpdating = false
+  }
+}
+function loadObjectsToCanvas(canvas, objects, activeObjectId = null) {
+  for (const objData of objects) {
+    createFabricObject(objData).then(fabricObj => {
       if (fabricObj) {
         canvas.add(fabricObj);
-        addCustomBorder(fabricObj);
-      }
-    }
-    canvas.renderAll();
-    onValue(canvasRef, (snapshot) => {
-      if (!snapshot.exists()) return;
-      const newData = snapshot.val();
-      if (!newData.objects || !Array.isArray(newData.objects)) return;
-      if (!data.timestamp || newData.timestamp > data.timestamp) {
-        renderCanvasFromDatabase(canvas, roomId);
+        if (activeObjectId && fabricObj.id === activeObjectId) 
+          canvas.setActiveObject(fabricObj);
       }
     });
-
-  } catch (error) {
-    console.error('Error loading canvas from database:', error);
   }
-};
+  canvas.renderAll()
+}
+
+async function createFabricObject(objData) {
+  const commonProps = {
+    id: objData.id || Math.random().toString(36).substr(2, 9),
+    left: objData.left || 0,
+    top: objData.top || 0,
+    fill: objData.fill,
+    stroke: objData.stroke,
+    strokeWidth: objData.strokeWidth,
+    scaleX: objData.scaleX || 1,
+    scaleY: objData.scaleY || 1,
+    angle: objData.angle || 0,
+    width: objData.width,
+    height: objData.height,
+    flipX: objData.flipX || false,
+    flipY: objData.flipY || false,
+    selectable: true,
+    hasControls: true,
+    hasBorders: true,
+    objectCaching: false
+  };
+
+  switch (objData.type) {
+    case 'rect':
+      return new fabric.Rect(commonProps);
+    case 'circle':
+      return new fabric.Circle({ ...commonProps, radius: objData.radius || (objData.width ? objData.width / 2 : 50) })
+    case 'triangle':
+      return new fabric.Triangle(commonProps)
+    case 'ellipse':
+      return new fabric.Ellipse({ ...commonProps, rx: objData.rx || 50, ry: objData.ry || 30 })
+    case 'polygon':
+      return objData.points ? new fabric.Polygon(objData.points, commonProps) : null
+    case 'textbox':
+      return new fabric.Textbox(objData.text || 'Text', { ...commonProps, fontSize: objData.fontSize || 20 })
+    case 'path':
+      return objData.path ? new fabric.Path(objData.path, commonProps) : null
+    case 'image':
+      if (objData.src) {
+        return await new Promise((resolve) => {
+          fabric.Image.fromURL(objData.src, (img) => {
+            img.set(commonProps)
+            resolve(img)
+          }, { crossOrigin: 'anonymous', objectCaching: false })
+        })
+      }
+      return null
+    default:
+      return null
+  }
+}
+
+function addCanvasEventListeners(canvas, roomId) {
+  const saveToDatabase = debounce(() => saveCanvasToDatabase(canvas, roomId), 300)
+
+  canvas.on('object:modified', saveToDatabase)
+  canvas.on('object:moving', saveToDatabase)
+}
+
+function debounce(func, wait) {
+  let timeout;
+  return function(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait)
+  }
+}
+
+
 const initializeCanvas = async () => {
-  canvas = new fabric.Canvas(canvasEl.value);
+  canvas = new fabric.Canvas(canvasEl.value)
   resizeCanvas();
-  await renderCanvasFromDatabase(canvas, route.params.id);
-  window.addEventListener('resize', resizeCanvas); 
+  await renderCanvasFromDatabase(canvas, route.params.id)
+  window.addEventListener('resize', resizeCanvas) 
   canvas.on('object:added', function(e) {
-    if (e.target) addCustomBorder(e.target);
-  });
+    if (e.target) addCustomBorder(e.target)
+  })
   canvas.on('selection:created', async function(e) {
     if (e.selected && e.selected.length > 0) {
-      if (e.selected.length > 1) {
-        e.selected.forEach(addCustomBorder);
-      } else {
-        addCustomBorder(e.selected[0]);
-      }
+      if (e.selected.length > 1) 
+        e.selected.forEach(addCustomBorder)
+      else 
+        addCustomBorder(e.selected[0])
     }
   })
-  canvas.defaultCursor = 'none';
-  canvas.hoverCursor = 'none';
-  canvas.moveCursor = 'none';
-  canvas.isDrawingMode = false;
-  canvas.renderAll();
+  canvas.defaultCursor = 'default'
+  canvas.hoverCursor = 'default'
+  canvas.moveCursor = 'default'
+  canvas.isDrawingMode = false
+  canvas.renderAll()
   canvas.on('object:moving', (options) => {
-    const obj = options.target;
+    const obj = options.target
     obj.set({
       originX: 'left',
       originY: 'top',
-    });
-    const snappedLeft = Math.round(obj.left / gridSize) * gridSize;
-    const snappedTop = Math.round(obj.top / gridSize) * gridSize;
+    })
+    const snappedLeft = Math.round(obj.left / gridSize) * gridSize
+    const snappedTop = Math.round(obj.top / gridSize) * gridSize
     obj.set({
       left: snappedLeft,
       top: snappedTop
-    });
+    })
     obj.setCoords();
-  });
-};
+  })
+}
  
 onMounted(async () => {                                                                                   
   cursorStore.setUserId(userId.value)                                                                         
   cursorStore.setRoomId(route.params.id) 
-  window.addEventListener('resize', resizeCanvas);                                               
+  window.addEventListener('resize', resizeCanvas)                                               
                                                                                                                
   const userCursorRef = dbRef(db, `rooms/${route.params.id}/cursors/${userId.value}`)                         
-  const userCursorSnapshot = await get(userCursorRef);                                                         
+  const userCursorSnapshot = await get(userCursorRef);                                                        
   if (userCursorSnapshot.exists()) cursorStore.localCursor = userCursorSnapshot.val()
-  else cursorStore.localCursor = { x: 0, y: 0, username: username.value };
+  else cursorStore.localCursor = { x: 0, y: 0, username: username.value }
 
   onValue(dbRef(db, `rooms/${route.params.id}/cursors`), (snapshot) => {                                       
-    const data = snapshot.val() || {};                                                                         
+    const data = snapshot.val() || {}                                                                    
     cursorStore.otherCursors = Object.entries(data).reduce((acc, [key, value]) => {                            
       if (key !== userId.value)                                                                               
-        acc[key] = value;                                                                                                                                                                             
-      return acc;                                                                                              
+        acc[key] = value                                                                                                                                                                             
+      return acc                                                                                              
     }, {})                                                                                                    
   })    
-  handleSingleReload();
+  handleSingleReload()
   await initializeCanvas()
-  canvas.on('object:modified', () => saveCanvasToDatabase(canvas, route.params.id));                             
-  canvas.on('object:added', () => saveCanvasToDatabase(canvas, route.params.id));                                
-  canvas.on('object:removed', () => saveCanvasToDatabase(canvas, route.params.id));                                                                                                                                                                                                                                                                      
+  canvas.on('object:modified', () => saveCanvasToDatabase(canvas, route.params.id))                             
+  canvas.on('object:added', () => saveCanvasToDatabase(canvas, route.params.id))                            
+  canvas.on('object:removed', () => saveCanvasToDatabase(canvas, route.params.id))                                                                                                                                                                                                                                                                     
 })        
 
 onUnmounted(() => {                                                                                            
@@ -262,19 +290,19 @@ onUnmounted(() => {
   saveCanvasToDatabase(canvas, route.params.id);                                                                     
 })  
 
-const canvasEl = ref(null);
-let canvas = null;
-const isDrawingMode = ref(false);
-const selectedColor = ref('#000000');
+const canvasEl = ref(null)
+let canvas = null
+const isDrawingMode = ref(false)
+const selectedColor = ref('#000000')
 const brushThickness = ref(5);
 const selectedBrush = ref('pencil'); onMounted( async() => { 
   
 })
 const showBrushOptions = ref(false);
-const gridSize = 20;
+const gridSize = 20
 
-const imageInput = ref(null);
-const showShapeLibrary = ref(false);
+const imageInput = ref(null)
+const showShapeLibrary = ref(false)
 
 function addCustomBorder(obj) {
   obj.set({
@@ -289,11 +317,11 @@ const resizeCanvas = () => {
   const width = window.innerWidth * 0.8;
   const height = window.innerHeight * 0.85;
 
-  canvas.setWidth(width);
-  canvas.setHeight(height);
-  canvas.setZoom(1);
-  canvas.calcOffset();
-  canvas.renderAll();
+  canvas.setWidth(width)
+  canvas.setHeight(height)
+  canvas.setZoom(1)
+  canvas.calcOffset()
+  canvas.requestRenderAll()
 }
 
 const addTextToCanvas = () => { 
@@ -306,10 +334,10 @@ const addTextToCanvas = () => {
     editable: true, 
   })
   
-  addCustomBorder(text);
-  canvas.add(text);
-  canvas.setActiveObject(text);
-  canvas.renderAll();
+  addCustomBorder(text)
+  canvas.add(text)
+  canvas.setActiveObject(text)
+  canvas.requestRenderAll()
 }
 
 function addShapeToCanvas(shapeType, isFilled) { 
@@ -389,18 +417,17 @@ function addShapeToCanvas(shapeType, isFilled) {
   addCustomBorder(shape);
   canvas.add(shape);
   canvas.setActiveObject(shape);
-  canvas.renderAll();
-
+  canvas.requestRenderAll();
 }
 
-function createPolygon(sides, radius, fillColor, strokeColor) {//Used for creating Polygon Shapes
+function createPolygon(sides, radius, fillColor, strokeColor) {
   const points = Array.from({ length: sides }, (_, i) => {
     const angle = (i * 2 * Math.PI) / sides;
     return {
       x: radius * Math.cos(angle),
       y: radius * Math.sin(angle),
-    };
-  });
+    }
+  })
 
   return new fabric.Polygon(points, {
     left: 200,
@@ -409,10 +436,10 @@ function createPolygon(sides, radius, fillColor, strokeColor) {//Used for creati
     stroke: strokeColor,
     strokeWidth: 2,
     selectable: true,
-  });
+  })
 }
 
-function createDiamond(fillColor, strokeColor) {//Used for creating Diamond Shape
+function createDiamond(fillColor, strokeColor) {
   return new fabric.Polygon([
     { x: 0, y: -50 },
     { x: 50, y: 0 },
@@ -428,7 +455,7 @@ function createDiamond(fillColor, strokeColor) {//Used for creating Diamond Shap
   });
 }
 
-function createParallelogram(fillColor, strokeColor) {//Used for creating Parallelogram Shape
+function createParallelogram(fillColor, strokeColor) {
   return new fabric.Polygon([
     { x: -50, y: -25 },
     { x: 50, y: -25 },
@@ -441,10 +468,10 @@ function createParallelogram(fillColor, strokeColor) {//Used for creating Parall
     stroke: strokeColor,
     strokeWidth: 2,
     selectable: true,
-  });
+  })
 }
 
-const applyBrushSettings = () => {//Drawing Feature
+const applyBrushSettings = () => {
   switch (selectedBrush.value) {
     case 'pencil':
       canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
@@ -455,81 +482,75 @@ const applyBrushSettings = () => {//Drawing Feature
     default:
       canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
   }
-
   canvas.freeDrawingBrush.color = selectedColor.value;
   canvas.freeDrawingBrush.width = brushThickness.value;
-  canvas.renderAll();
-};
+  canvas.requestRenderAll()
+}
 
-watch([selectedBrush, selectedColor, brushThickness], applyBrushSettings);
+watch([selectedBrush, selectedColor, brushThickness], applyBrushSettings)
 
 const toggleDrawMode = () => {
-  isDrawingMode.value = !isDrawingMode.value;
-  canvas.isDrawingMode = isDrawingMode.value;
-  showBrushOptions.value = isDrawingMode.value;
+  isDrawingMode.value = !isDrawingMode.value
+  canvas.isDrawingMode = isDrawingMode.value
+  showBrushOptions.value = isDrawingMode.value
+  if (isDrawingMode.value) 
+    applyBrushSettings()
+}
 
-  if (isDrawingMode.value) {
-    applyBrushSettings();
-  }
-};
-
-const removeSelected = () => {//Removing Selected Object Feature
-  const activeObject = canvas.getActiveObject();
+const removeSelected = () => {
+  const activeObject = canvas.getActiveObject()
   if (activeObject) {
-    canvas.remove(activeObject);
-    canvas.renderAll();
-    saveCanvasToDatabase(canvas, route.params.id);
+    canvas.remove(activeObject)
+    canvas.requestRenderAll()
+    saveCanvasToDatabase(canvas, route.params.id)
   }
 };
 
-const clearCanvas = () => {//Clearing the entire board feature
+const clearCanvas = () => {
   canvas.getObjects().forEach((obj) => {
-    if (!obj.isGrid) {
+    if (!obj.isGrid) 
       canvas.remove(obj);
-    }
-  });
-  canvas.renderAll();
-  saveCanvasToDatabase(canvas, route.params.id);
-};
+  })
+  canvas.requestRenderAll();
+  saveCanvasToDatabase(canvas, route.params.id)
+}
 
-const triggerFileSelect = () => {
-  imageInput.value.click();
-};
+const triggerFileSelect = () => imageInput.value.click()
 
-const insertImage = (event) => { //Image Insertion Feature
-  const file = event.target.files[0];
+const insertImage = (event) => {
+  const file = event.target.files[0]
   if (file) {
-    const reader = new FileReader();
+    const reader = new FileReader()
     reader.onload = (f) => {
-      const img = new Image();
-      img.src = f.target.result;
+      const img = new Image()
+      img.src = f.target.result
       img.onload = () => {
         const fabricImage = new FabricImage(img, {
           left: 50,
           top: 50,
           angle: 0,
           opacity: 1,
-        });
+        })
 
-        const canvasWidth = canvas.getWidth();
-        const canvasHeight = canvas.getHeight();
+        const canvasWidth = canvas.getWidth()
+        const canvasHeight = canvas.getHeight()
 
-        const imageOriginalWidth = img.width;
-        const imageOriginalHeight = img.height;
+        const imageOriginalWidth = img.width
+        const imageOriginalHeight = img.height
 
-        const scaleX = canvasWidth / imageOriginalWidth;
-        const scaleY = canvasHeight / imageOriginalHeight;
-        let scaleFactor = Math.min(scaleX, scaleY) * 0.8;
+        const scaleX = canvasWidth / imageOriginalWidth
+        const scaleY = canvasHeight / imageOriginalHeight
+        let scaleFactor = Math.min(scaleX, scaleY) * 0.8
 
-        fabricImage.scale(scaleFactor);
+        fabricImage.scale(scaleFactor)
 
-        canvas.add(fabricImage);
-        canvas.renderAll();
-      };
-    };
-    reader.readAsDataURL(file);
+        canvas.add(fabricImage)
+        canvas.requestRenderAll()
+      }
+    }
+    reader.readAsDataURL(file)
   }
-};
+}
 
 const downloadCanvasAsImage = () => {
   const dataURL = canvas.toDataURL({ format: 'png' })
