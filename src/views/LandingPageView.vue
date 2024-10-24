@@ -95,35 +95,37 @@ const { isAuthenticated } = authStore;
           Continue where you left off &nbsp; <span><i class="fa-solid fa-arrow-right" /></span>
         </RouterLink> 
       </button>
-      <p class="buttonMessage" style="font-size: 12px;margin: 7px 0 0 4%;color:rgba(0, 0, 0, 0.699);">
+      <div class="buttonMessage">
+        <p>
         Free Forever. No Credit Card.
-      </p>
+        </p>
+      </div>
+
     </main>
 
     <footer>
       <div class="icons">
-        <p class="iconname">
+        <span class="iconname">
           <i class="fa-brands fa-rocketchat" /><br>Chats
-        </p>
-        <p class="iconname">
+        </span>
+        <span class="iconname">
           <i class="fa-solid fa-chalkboard" /><br>Whiteboards
-        </p>
-        <p class="iconname">
+        </span>
+        <span class="iconname">
           <i class="fa-solid fa-note-sticky" /><br>Notes
-        </p>
-        <p class="iconname">
+        </span>
+        <span class="iconname">
           <i class="fa-solid fa-lock" /><br>Private rooms
-        </p>
-        <p class="iconname">
+        </span>
+        <span class="iconname">
           <i class="fa-solid fa-unlock" /><br>Public rooms
-        </p>
+        </span>
       </div>
     </footer>
   </div>
 </template>
 
 <style scoped>
-
 .roadmap {
   margin: 17px 20px 0 63%;
 }
@@ -192,7 +194,7 @@ const { isAuthenticated } = authStore;
   color: transparent;
 }
 .container p{
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   margin-left: 4.5%;
   text-align: center;
   font-weight: 550;
@@ -238,21 +240,24 @@ const { isAuthenticated } = authStore;
 }
 .icons{
   display: flex;
-  gap: 50px;
+  gap: 10%;
   justify-content: center;
-  margin-top: 48px;
+  margin-top: 6%;
   width: 100%;
   padding: 38px 0;
-  overflow-x:visible;
   background-image: linear-gradient(to left, #004cff17, #d900ff17);
   border-top-right-radius: 50%;
   border-top-left-radius: 50%;
 }
-.icons p {
-  font-size: 16px;
+.icons i{
+  font-size: 20px;
+}
+.icons span {
+  font-weight: 600;
+
 }
 .rightnav{
-  margin: 7px 2% 0 2%;
+  margin: 7px 2% 0 1%;
   box-shadow: 0 0 1px black;
   padding: 10px 15px;
   height: 20px;
@@ -268,40 +273,52 @@ const { isAuthenticated } = authStore;
 .rightnav:hover{
   background-color: rgb(248, 248, 248);
 }
+.buttonMessage p{
+  font-size: 15px;
+  margin: 7px 0 0 3.5%;
+  color:rgba(0, 0, 0, 0.699);
+}
 
-/* @media screen and (max-width: 600px) {
+@media screen and (min-width: 300px) and (max-width: 399px){
   .navigations{
     margin: 0;
     background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
     width: 100%;
+    border-radius: 0;
   }
   .roadmap{
     font-size: 13px;
-    margin-left: 0;
-    margin-right: 0;
+    margin-left: 8%;
+    margin-top: 25px;
+    margin-right: 10px;
   }
-  .signupForFree{
-    height: 20px;
-  }
-  .signupForFree a{
+  .aboutpage{
+    margin: 25px -10px 0 0;
     font-size: 13px;
   }
+  .signupForFree{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5px;
+  }
   .rightnav{
-    height: 10px;
-    font-size: 15px;
-    padding: 10px 10px;
-    margin-left: -40%;
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5%;
   }
   .title{
-    font-size: 5rem;
-  }
-  .container h1{
-    margin: 15% 0 5% 0;
     font-size: 3.5rem;
   }
+  .container h1{
+    margin: 35% 0 5% 0;
+    font-size: 3rem;
+  }
   .container p{
-    font-size: 1px;
-    margin: 0 0 5% 0;
+    /* display: none; */
+    font-size: 10px;
+    margin: 0 0 3% -5px;
   }
   .container ol{
     margin: 0 0 5% 0;
@@ -310,135 +327,1015 @@ const { isAuthenticated } = authStore;
     font-size: 11.5px;
   }
   .signbutton{
-    margin: 0 0 0 34%;
-    padding: 10px;
+    margin: 0 0 0 30%;
+    padding: 7px;
   }
   .signbutton a{
-    font-size: 15px;
-  }
-  .icons{
-    margin-top: 11%;
-    padding: 30px 0;
-    border-top-right-radius: 40%;
-    border-top-left-radius: 40%;
-
-  }
-  .icons p{
-    padding: 40px 0 0 0;
     font-size: 12px;
   }
-} */
-@media screen and (min-width: 600px) and (max-width: 900px) {
+  .icons{
+    margin-top: 17%;
+    padding: 20px 0;
+    gap: 20px;
+    border-top-right-radius: 20%;
+    border-top-left-radius: 20%;
+  }
+  .icons i {
+    font-size: 15px;
+    margin-left: 33%;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .icons span{
+    padding: 40px 0 0 0;
+    font-size: 10px;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .buttonMessage p{
+    margin-left: 1.5%;
+    margin-bottom: 14%;
+  }
+}
+
+@media screen and (min-width: 300px) and (max-width: 399px) and (min-height: 568px){
   .navigations{
-    width: 100%;
     margin: 0;
+    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
+    width: 100%;
+    border-radius: 0;
   }
   .roadmap{
-    margin: 0 0 0 0;
+    font-size: 10px;
+    margin: 25px 10px 0 5%;
+  }
+  .aboutpage{
+    margin: 25px -10px 0 0;
+    font-size: 10px;
   }
   .signupForFree{
-    margin: 0 0 0 5%;
+    height: 10px;
     font-size: 10px;
-    padding: 10px 10px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5px;
   }
   .rightnav{
-    margin:0 0 0 0%;
+    height: 10px;
+    font-size: 10px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5%;
+  }
+  .title{
+    font-size: 2.5rem;
+  }
+  .container h1{
+    margin: 20% 0 5% 0;
+    font-size: 2rem;
+  }
+  .container p{
+    /* display: none; */
+    font-size: 10px;
+    margin: 0 0 3% -5px;
+  }
+  .container ol{
+    margin: 0 0 5% 0;
+  }
+  .container li{
+    font-size: 11.5px;
+  }
+  .signbutton{
+    margin: 2% 0 0 30%;
+    padding: 5px;
+  }
+  .signbutton a{
+    font-size: 11px;
+  }
+  .icons{
+    margin-top: 20%;
+    padding: 20px 0;
+    gap: 20px;
+    border-top-right-radius: 20%;
+    border-top-left-radius: 20%;
+  }
+  .icons i {
     font-size: 15px;
-    padding: 10px 10px;
+    margin-left: 33%;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .icons span{
+    padding: 10px 0 0 0;
+    font-size: 7px;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .buttonMessage p{
+    font-size: 8.5px;
+    margin: 1px 0 14% 3%;
+  }
+}
+
+
+@media screen and (min-width: 360px) and (max-width: 399px) and (min-height: 640px) {
+  .navigations{
+    margin: 0;
+    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
+    width: 100%;
+    border-radius: 0;
+  }
+  .roadmap{
+    font-size: 13px;
+    margin: 25px 10px 0 6%;
+  }
+  .aboutpage{
+    margin: 25px -10px 0 0;
+    font-size: 13px;
+  }
+  .signupForFree{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5px;
+  }
+  .rightnav{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5%;
+  }
+  .title{
+    font-size: 3.5rem;
+  }
+  .container h1{
+    margin: 35% 0 5% 0;
+    font-size: 3rem;
+  }
+  .container p{
+    /* display: none; */
+    font-size: 10px;
+    margin: 0 0 3% -5px;
+  }
+  .container ol{
+    margin: 0 0 5% 0;
+  }
+  .container li{
+    font-size: 11.5px;
+  }
+  .signbutton{
+    margin: 0 0 0 30%;
+    padding: 7px;
+  }
+  .signbutton a{
+    font-size: 12px;
+  }
+  .icons{
+    margin-top: 22%;
+    padding: 20px 0;
+    gap: 30px;
+    border-top-right-radius: 20%;
+    border-top-left-radius: 20%;
+  }
+  .icons i {
+    font-size: 15px;
+    margin-left: 33%;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .icons span{
+    padding: 10px 0 0 0;
+    font-size: 6px;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .buttonMessage p{
+    margin: 0 0 14% 1.5%;
+  }
+}
+
+@media screen and (min-width: 300px) and (max-width: 360px) and (min-height: 700px) and (max-width: 740px) {
+  .navigations{
+    margin: 0;
+    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
+    width: 100%;
+    border-radius: 0;
+  }
+  .roadmap{
+    font-size: 13px;
+    margin-left: 2%;
+    margin-top: 25px;
+    margin-right: 10px;
+  }
+  .aboutpage{
+    margin: 25px -10px 0 0;
+    font-size: 13px;
+  }
+  .signupForFree{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5px;
+  }
+  .rightnav{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5%;
+  }
+  .title{
+    font-size: 3.5rem;
+  }
+  .container h1{
+    margin: 35% 0 5% 0;
+    font-size: 3rem;
+  }
+  .container p{
+    /* display: none; */
+    font-size: 10px;
+    margin: 0 0 3% -5px;
+  }
+  .container ol{
+    margin: 0 0 5% 0;
+  }
+  .container li{
+    font-size: 11.5px;
+  }
+  .signbutton{
+    margin: 0 0 0 30%;
+    padding: 7px;
+  }
+  .signbutton a{
+    font-size: 12px;
+  }
+  .icons{
+    margin-top: 22%;
+    padding: 20px 0;
+    gap: 20px;
+    border-top-right-radius: 20%;
+    border-top-left-radius: 20%;
+  }
+  .icons i {
+    font-size: 15px;
+    margin-left: 33%;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .icons span{
+    padding: 40px 0 0 0;
+    font-size: 10px;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .buttonMessage p{
+    margin-left: 1.5%;
+    margin-bottom: 14%;
+  }
+}
+
+
+@media screen and (min-width: 300px) and (max-width: 399px) and (min-height: 882px){
+  .navigations{
+    margin: 0;
+    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
+    width: 100%;
+    border-radius: 0;
+  }
+  .roadmap{
+    font-size: 13px;
+    margin-left: 2%;
+    margin-top: 25px;
+    margin-right: 10px;
+  }
+  .aboutpage{
+    margin: 25px -10px 0 0;
+    font-size: 13px;
+  }
+  .signupForFree{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5px;
+  }
+  .rightnav{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5%;
+  }
+  .title{
+    font-size: 3.5rem;
+  }
+  .container h1{
+    margin: 35% 0 5.5% 0;
+    font-size: 3rem;
+  }
+  .container p{
+    /* display: none; */
+    font-size: 10px;
+    margin: 0 0 5% -5px;
+  }
+  .container ol{
+    margin: 0 0 5% 0;
+  }
+  .container li{
+    font-size: 11.5px;
+  }
+  .signbutton{
+    margin: 3% 0 0 30%;
+    padding: 7px;
+  }
+  .signbutton a{
+    font-size: 12px;
+  }
+  .icons{
+    margin-top: 30%;
+    padding: 20px 0;
+    gap: 20px;
+    border-top-right-radius: 20%;
+    border-top-left-radius: 20%;
+  }
+  .icons i {
+    font-size: 15px;
+    margin-left: 33%;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .icons span{
+    padding: 10px 0 0 0;
+    font-size: 10px;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .buttonMessage p{
+    margin-left: 1.5%;
+    margin-bottom: 14%;
+  }
+}
+
+@media screen and (min-width: 300px) and (max-width: 391px) and (min-height: 800px) and (max-height: 844px){
+  .navigations{
+    margin: 0;
+    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
+    width: 100%;
+    border-radius: 0;
+  }
+  .roadmap{
+    font-size: 13px;
+    margin: 25px 10px 0 10%;
+  }
+  .aboutpage{
+    margin: 25px -10px 0 0;
+    font-size: 13px;
+  }
+  .signupForFree{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5px;
+  }
+  .rightnav{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5%;
+  }
+  .title{
+    font-size: 3.5rem;
+  }
+  .container h1{
+    margin: 35% 0 5.5% 0;
+    font-size: 3rem;
+  }
+  .container p{
+    /* display: none; */
+    font-size: 10px;
+    margin: 0 0 5% -5px;
+  }
+  .container ol{
+    margin: 0 0 5% 0;
+  }
+  .container li{
+    font-size: 11.5px;
+  }
+  .signbutton{
+    margin: 3% 0 0 30%;
+    padding: 7px;
+  }
+  .signbutton a{
+    font-size: 12px;
+  }
+  .icons{
+    margin-top: 19%;
+    padding: 20px 0;
+    gap: 20px;
+    border-top-right-radius: 20%;
+    border-top-left-radius: 20%;
+  }
+  .icons i {
+    font-size: 15px;
+    margin-left: 33%;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .icons span{
+    padding: 10px 0 0 0;
+    font-size: 10px;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .buttonMessage p{
+    margin-left: 1.5%;
+    margin-bottom: 14%;
+  }
+}
+
+
+@media screen and (min-width: 400px) and (max-width: 499px) {
+  .navigations{
+    margin: 0;
+    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
+    width: 100%;
+    border-radius: 0;
+  }
+  .roadmap{
+    font-size: 13px;
+    margin: 25px 10px 0 15%;
+  }
+  .aboutpage{
+    margin: 25px -10px 0 0;
+    font-size: 13px;
+  }
+  .signupForFree{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5px;
+  }
+  .rightnav{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5%;
+  }
+  .title{
+    font-size: 3.5rem;
+  }
+  .container h1{
+    margin: 28% 0 5% 0;
+    font-size: 3rem;
+  }
+  .container p{
+    /* display: none; */
+    font-size: 12px;
+    margin: 0 0 3% -5px;
+  }
+  .container ol{
+    margin: 0 0 5% 0;
+  }
+  .container li{
+    font-size: 10px;
+  }
+  .signbutton{
+    margin: 0 0 0 30%;
+    padding: 10px 15px;
+  }
+  .signbutton a{
+    font-size: 12px;
+  }
+  .icons{
+    margin-top: 25.5%;
+    padding: 10px 0;
+    gap: 28px;
+    border-top-right-radius: 20%;
+    border-top-left-radius: 20%;
+  }
+  .icons i {
+    font-size: 15px;
+    color:rgba(0, 0, 0, 0.699);
+    margin-left: 33%;
+  }
+  .icons span{
+    padding: 40px 0 0 0;
+    font-size: 10px;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .buttonMessage p{
+    margin-left: 2%;
+    margin-bottom: 16%;
+    font-size: 10px;
+  }
+}
+
+@media screen and (min-width: 500px) and (max-width: 599px) {
+  .navigations{
+    margin: 0;
+    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
+    width: 100%;
+    border-radius: 0;
+  }
+  .roadmap{
+    font-size: 13px;
+    margin: 25px 10px 0 33%;
+  }
+  .aboutpage{
+    margin: 25px -10px 0 0;
+    font-size: 13px;
+  }
+  .signupForFree{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5px;
+  }
+  .rightnav{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5%;
+  }
+  .title{
+    font-size: 4rem;
+  }
+  .container h1{
+    margin: 20% 0 5% 0;
+    font-size: 3.5rem;
+  }
+  .container p{
+    /* display: none; */
+    font-size: 12px;
+    margin: 0 0 3% -5px;
+  }
+  .container ol{
+    margin: 0 0 5% -2.5%;
+  }
+  .container li{
+    font-size: 10px;
+  }
+  .signbutton{
+    margin: 0 0 0 33%;
+    padding: 10px 15px;
+  }
+  .signbutton a{
+    font-size: 12px;
+  }
+  .icons{
+    margin-top: 21%;
+    padding: 5px 0 10px 0;
+    gap: 38px;
+    border-top-right-radius: 20%;
+    border-top-left-radius: 20%;
+  }
+  .icons i {
+    font-size: 15px;
+    color:rgba(0, 0, 0, 0.699);
+    margin-left: 33%;
+  }
+  .icons span{
+    padding: 40px 0 0 0;
+    font-size: 10px;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .buttonMessage p{
+    margin:1px 0 10% -1%;
+    font-size: 10px;
+  }
+}
+
+@media screen and (min-width: 700px) and (max-width: 799px) {
+  .navigations{
+    margin: 0;
+    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
+    width: 100%;
+    border-radius: 0;
+  }
+  .roadmap{
+    font-size: 13px;
+    margin: 25px 10px 0 52%;
+  }
+  .aboutpage{
+    margin: 25px -20px 0 0;
+    font-size: 13px;
+  }
+  .signupForFree{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5px;
+  }
+  .rightnav{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5%;
+  }
+  .title{
+    font-size: 3.5rem;
+  }
+  .container h1{
+    margin: 10% 0 3% 0;
+    font-size: 3rem;
+  }
+  .container p{
+    font-size: 12px;
+    margin: 0 0 3% -5px;
+  }
+  .container ol{
+    margin: 0 0 5% 7.5%;
+  }
+  .container li{
+    font-size: 10px;
+  }
+  .signbutton{
+    margin: 0 0 0 40%;
+    padding: 10px 15px;
+  }
+  .signbutton a{
+    font-size: 12px;
+  }
+  .icons{
+    margin-top: 22%;
+    padding: 5px 0;
+    gap: 10%;
+    border-top-right-radius: 20%;
+    border-top-left-radius: 20%;
+  }
+  .icons i {
+    font-size: 15px;
+    color:rgba(0, 0, 0, 0.699);
+    margin-left: 33%;
+  }
+  .icons span{
+    padding: 20px 0 20px 0;
+    font-size: 10px;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .buttonMessage p{
+    margin: 0 0 10% 2%;
+    font-size: 10px;
+  }
+}
+
+@media screen and (min-width: 800px) and (max-width: 899px){
+  .navigations{
+    margin: 0;
+    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
+    width: 100%;
+    border-radius: 0;
+  }
+  .roadmap{
+    font-size: 13px;
+    margin: 25px 10px 0 55%;
+  }
+  .aboutpage{
+    margin: 25px -20px 0 0;
+    font-size: 13px;
+  }
+  .signupForFree{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5px;
+  }
+  .rightnav{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5%;
   }
   .title{
     font-size: 5rem;
   }
   .container h1{
-    margin: 10% 0 5% 0;
-    font-size: 3.5rem;
+    margin: 10% 0 3% 0;
+    font-size: 4rem;
   }
   .container p{
-    font-size: 1px;
-    margin: 0 0 5% 0;
+    font-size: 15px;
+    margin: 0 0 3% -5px;
   }
   .container ol{
-    margin: 3% 0 10% 0;
+    margin: 0 0 5% 1.5%;
   }
   .container li{
-    font-size: 13px;
-  }
-  .signbutton{
-    margin: 0 0 0 34%;
-    padding: 10px;
-  }
-  .icons{
-    margin-top: 28.5%;
-    padding: 30px 0;
-    border-top-left-radius: 30%;
-    border-top-right-radius: 30%;
-  }
-  .iconname{
-    padding: 20px 0 0 0;
-    font-size: 5px;
-  }
-}
-
-@media screen and (min-width: 901px) and (max-width:1200px){
-    .rightnav{
-      margin: 0 0 0 51%;
-    }
-    .roadmap{
-      margin: 15px 0 0 43%;
-    }
-    .aboutpage{
-      margin: 15px 15px 0 10px;
-    }
-    .signupForFree{
-      margin: 5px 0 0 1%;
-      font-size: 15px;
-      padding: 8px 10px;
-      width: 80px;
-    }
-    .signupForFree a{
-      font-size: 14px;
-    }
-    .rightnav{
-      width: 50px;
-      padding: 8px 10px;
-      margin:5px 0 0 0;
-    }
-    .container h1{
-    margin: 13% 0 5% 0;
-    font-size: 3.5rem;
-  }
-  .container p{
-    font-size: 1px;
-    margin: 0 0 5% 0;
-  }
-  .container ol{
-    margin: 3% 0 5% -1%;
-  }
-  .container li{
-    font-size: 13px;
-  }
-  .signbutton{
-    margin: 0 0 0 34%;
-    padding: 10px;
-  }
-  .container p{
-    margin: 0 0 0 0;
-    font-size: 18px;
+    font-size: 12px;
   }
   .signbutton{
     margin: 0 0 0 40%;
-    padding: 10px;
+    padding: 10px 15px;
+  }
+  .signbutton a{
+    font-size: 12px;
   }
   .icons{
-    margin-top: 15%;
-    padding: 30px 0;
-    border-top-left-radius: 30%;
-    border-top-right-radius: 30%;
+    margin-top: 1%;
+    padding: 5px 0;
+    gap: 10%;
+    border-top-right-radius: 20%;
+    border-top-left-radius: 20%;
   }
-  .iconname{
-    padding: 20px 0 0 0;
-    font-size: 5px;
+  .icons i {
+    font-size: 15px;
+    color:rgba(0, 0, 0, 0.699);
+    margin-left: 33%;
+  }
+  .icons span{
+    padding: 20px 0 20px 0;
+    font-size: 10px;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .buttonMessage p{
+    margin-left: 2%;
+    margin-bottom: 13%;
+    font-size: 10px;
   }
 }
+
+@media screen and (min-width: 900px) and (max-width: 999px) and (min-height: 1368px) {
+  .navigations{
+    margin: 2% 0 0 5%;
+    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
+    width: 90%;
+    border-radius: 5px;
+  }
+  .roadmap{
+    font-size: 13px;
+    margin: 25px 10px 0 55%;
+  }
+  .aboutpage{
+    margin: 25px -20px 0 0;
+    font-size: 13px;
+  }
+  .signupForFree{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5px;
+  }
+  .rightnav{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5%;
+  }
+  .title{
+    font-size: 5rem;
+  }
+  .container h1{
+    margin: 5% 0 3% 0;
+    font-size: 4rem;
+  }
+  .container p{
+    font-size: 15px;
+    margin: 0 0 3% -5px;
+  }
+  .container ol{
+    margin: 0 0 5% 11.5%;
+  }
+  .container li{
+    font-size: 12px;
+  }
+  .signbutton{
+    margin: 0 0 0 40%;
+    padding: 10px 15px;
+  }
+  .signbutton a{
+    font-size: 12px;
+  }
+  .icons{
+    margin-top: -2.6%;
+    padding: 10px 0;
+    gap: 10%;
+    border-top-right-radius: 20%;
+    border-top-left-radius: 20%;
+  }
+  .icons i {
+    font-size: 15px;
+    color:rgba(0, 0, 0, 0.699);
+    margin-left: 33%;
+  }
+  .icons span{
+    padding: 30px 0 20px 0;
+    font-size: 10px;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .buttonMessage p{
+    margin: 1px 0 13% -1%;
+    font-size: 10px;
+  }
+}
+
+ @media screen and (min-width: 1000px) and (max-width: 1100px) and (min-height: 1366px) and (max-height: 1399px) {
+  .navigations{
+    margin: 2% 0 0 5%;
+    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
+    width: 90%;
+    border-radius: 5px;
+  }
+  .roadmap{
+    font-size: 13px;
+    margin: 25px 10px 0 60%;
+  }
+  .aboutpage{
+    margin: 25px -20px 0 0;
+    font-size: 13px;
+  }
+  .signupForFree{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5px;
+  }
+  .rightnav{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5%;
+  }
+  .title{
+    font-size: 5rem;
+  }
+  .container h1{
+    margin: 5% 0 3% 0;
+    font-size: 4rem;
+  }
+  .container p{
+    font-size: 15px;
+    margin: 0 0 3% -5px;
+  }
+  .container ol{
+    margin: 0 0 5% 11.5%;
+  }
+  .container li{
+    font-size: 12px;
+  }
+  .signbutton{
+    margin: 0 0 0 40%;
+    padding: 10px 15px;
+  }
+  .signbutton a{
+    font-size: 12px;
+  }
+  .icons{
+    margin-top: -5%;
+    padding: 10px 0;
+    gap: 10%;
+    border-top-right-radius: 20%;
+    border-top-left-radius: 20%;
+  }
+  .icons i {
+    font-size: 15px;
+    color:rgba(0, 0, 0, 0.699);
+    margin-left: 33%;
+  }
+  .icons span{
+    padding: 30px 0 20px 0;
+    font-size: 10px;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .buttonMessage p{
+    margin: 1px 0 13% -3%;
+    font-size: 10px;
+  }
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1099px) and (min-height: 600px) and (max-height: 699px) {
+  .navigations{
+    margin: 2% 0 0 5%;
+    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
+    width: 90%;
+    border-radius: 5px;
+  }
+  .roadmap{
+    font-size: 13px;
+    margin: 25px 10px 0 60%;
+  }
+  .aboutpage{
+    margin: 25px -20px 0 0;
+    font-size: 13px;
+  }
+  .signupForFree{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5px;
+  }
+  .rightnav{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5%;
+  }
+  .title{
+    font-size: 5rem;
+  }
+  .container h1{
+    margin: 2% 0 3% 0;
+    font-size: 4rem;
+  }
+  .container p{
+    font-size: 15px;
+    margin: 0 0 3% -5px;
+  }
+  .container ol{
+    margin: 0 0 5% 11.5%;
+  }
+  .container li{
+    font-size: 12px;
+  }
+  .signbutton{
+    margin: 0 0 0 40%;
+    padding: 10px 15px;
+  }
+  .signbutton a{
+    font-size: 12px;
+  }
+  .icons{
+    margin-top: -10%;
+    padding: 10px 0;
+    gap: 10%;
+    border-top-right-radius: 20%;
+    border-top-left-radius: 20%;
+  }
+  .icons i {
+    font-size: 15px;
+    color:rgba(0, 0, 0, 0.699);
+    margin-left: 33%;
+  }
+  .icons span{
+    padding: 30px 0 20px 0;
+    font-size: 10px;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .buttonMessage p{
+    margin: 1px 0 13% -3%;
+    font-size: 10px;
+  }
+}
+
+@media screen and (min-width: 1200px) and (max-width: 1299px) and (min-height: 800px) {
+  .navigations{
+    margin: 2% 0 0 6%;
+    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
+    width: 80%;
+    border-radius: 5px;
+  }
+  .roadmap{
+    font-size: 13px;
+    margin: 25px 10px 0 63%;
+  }
+  .aboutpage{
+    margin: 25px -20px 0 0;
+    font-size: 13px;
+  }
+  .signupForFree{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5px;
+  }
+  .rightnav{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5%;
+  }
+  .title{
+    font-size: 5rem;
+  }
+  .container h1{
+    margin: 5% 0 1% 0;
+    font-size: 4rem;
+  }
+  .container p{
+    font-size: 15px;
+    margin: 0 0 3% -5px;
+  }
+  .container ol{
+    margin: 0 0 3% 19%;
+  }
+  .container li{
+    font-size: 12px;
+  }
+  .signbutton{
+    margin: 0 0 0 43%;
+    padding: 10px 15px;
+  }
+  .signbutton a{
+    font-size: 12px;
+  }
+  .icons{
+    margin-top: -7%;
+    padding: 10px 0;
+    gap: 10%;
+    border-top-right-radius: 20%;
+    border-top-left-radius: 20%;
+  }
+  .icons i {
+    font-size: 15px;
+    color:rgba(0, 0, 0, 0.699);
+    margin-left: 33%;
+  }
+  .icons span{
+    padding: 30px 0 20px 0;
+    font-size: 10px;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .buttonMessage p{
+    margin: 1px 0 13% 0;
+    font-size: 10px;
+  }
+}
+
+
+
+
+
 
 </style>

@@ -32,13 +32,36 @@
       font-weight: 600;
       color: white;
     }
-    @media screen and (min-width: 480px) and (max-width: 600px) {
+
+    @media screen and (min-width: 300px) and (max-width: 320px) and (min-height: 500px) and (max-height: 570px) {
+      .logo-container{
+        height: 50px;
+        font-size: 20px;
+        margin: 0 0 0 -5%;
+      }
+    }
+
+    @media screen and (min-width: 360px) and (max-width: 375px){
+      .logo-container{
+        height: 50px;
+        font-size: 20px;
+        margin: 0 0 0 -5%;
+      }
+    }
+    @media screen and (min-width: 375px) and (max-width: 480px) {
+      .logo-container{
+        height: 50px;
+        font-size: 20px;
+        margin: 0 0 0 -5%;
+      }
+    }
+    @media screen and (min-width: 481px) and (max-width: 600px) {
       .logo-container{
         height: 50px;
         font-size: 25px;
       }
     }
-    @media screen and (min-width: 600px) and (max-width: 900px)   {
+    @media screen and (min-width: 601px) and (max-width: 900px)   {
       .logo-container{
         height: 50px;
         font-size: 25px;

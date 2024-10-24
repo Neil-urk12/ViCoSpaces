@@ -101,16 +101,16 @@ import { useAuthStore } from '@/stores/authStore';
       <i id="hidepass" class="fa-solid fa-eye-slash" @click="showpass"></i>
       <i id="showpass" class="fa-solid fa-eye" @click="hidepass"></i><br>
   
+      <span class="forgotpass">
+          Forgot Password
+      </span>
+
         <p
           v-if="errorMessage"
           class="erroMessage"
         >
           {{ errorMessage }}
         </p>
-
-        <span class="forgotpass">
-          Forgot Password
-        </span>
       
       <button
         class="btn-primary"
@@ -160,15 +160,14 @@ body{
   display: none;
 }
 .forgotpass{
-  margin: 10.5% 0 0 18%;
   position: absolute;
-  color: blue;
-  cursor: pointer;
+  color: #0073ff;
+  margin: 10.5% 0 0 18%;
 }
+
 .forgotpass:hover{
   text-decoration: underline;
 }
-
 .signin {
   max-width: 400px;
   margin: 30px auto;
@@ -235,7 +234,7 @@ input:focus {
   background-color: #4a90e2;
   color: white;
   margin-bottom: 5%;
-  margin-top: 7.5%;
+  margin-top: 6.5%;
   padding: 18px 0;
   border-radius: 5px;
   border: 0;
@@ -305,45 +304,350 @@ input:focus {
   text-decoration: none;
   font-weight: bold;
 }
-
 .switch-form a:hover {
   text-decoration: underline;
 }
 
-@media screen and (max-width: 600px) {
-  .signin {
-    padding: 1.5rem;
+@media screen and (min-width: 300px) and (max-width: 320px) and (min-height: 500px) and (max-height: 570px) {
+  .signin{
     border: 0;
-    box-shadow:none;
+    box-shadow: none;
   }
-  input , .btn {
-    font-size: 0.9rem;
+  h1{
+    font-size: 2.5rem;
   }
   .forgotpass{
-    margin: 26% 0 0 46.1%;
+    margin: 48.5% 0 0 59%;
+    font-size: 12px;
   }
-}
-@media screen and (min-width: 601px) and (max-width: 900px)  {
-    .signin{
-      background-color: #ffffff;
-      border: 0;
-      box-shadow:none;
-    }
-    .forgotpass{
-    margin: 27% 0 0 46%;
+  .erroMessage{
+    font-size: 12px;
+    margin-top: 1px;
   }
-    
+  .fa-eye{
+    margin: -19% 0 0 90%;
+  }
+  .fa-eye-slash{
+    margin: -19% 0 0 90%;
+  }
 }
 
-@media (min-width: 901px) and (max-width: 1200px) {
+@media screen and (min-width: 300px) and (max-width: 399px) and (min-height: 600px) and (max-height: 699px) {
   .signin{
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    background-color: #ffffff;
-    }
-    .forgotpass{
-      margin: 18% 0 0 31%;
+    border: 0;
+    box-shadow: none;
+  }
+  .forgotpass{
+    margin: 42% 0 0 61%;
+    font-size: 14px;
+  }
+  .erroMessage{
+    font-size: 14px;
+    margin-top: 1px;
+  }
+  .fa-eye{
+    margin: -16% 0 0 90%;
+  }
+  .fa-eye-slash{
+    margin: -16% 0 0 90%;
   }
 }
+
+@media screen and (min-width: 350px) and (max-width: 360px) and (min-height: 600px) and (max-height: 640px) {
+  .signin{
+    border: 0;
+    box-shadow: none;
+  }
+  .forgotpass{
+    margin: 44% 0 0 62%;
+    font-size: 13px;
+  }
+  .erroMessage{
+    font-size: 13px;
+    margin-top: 1px;
+  }
+  .fa-eye{
+    margin: -16% 0 0 90%;
+  }
+  .fa-eye-slash{
+    margin: -16% 0 0 90%;
+  }
+}
+
+@media screen and (min-width: 360px) and (max-width: 399px) and (min-height: 740px) and (max-height: 799px) {
+  .signin{
+    border: 0;
+    box-shadow: none;
+  }
+  .forgotpass{
+    margin: 43.5% 0 0 61%;
+    font-size: 13px;
+  }
+  .erroMessage{
+    font-size: 13px;
+    margin-top: 1px;
+  }
+  .fa-eye{
+    margin: -17% 0 0 90%;
+  }
+  .fa-eye-slash{
+    margin: -17% 0 0 90%;
+  }
+}
+
+@media screen and (min-width: 400px) and (max-width: 499px) and (min-height: 800px) and (max-height: 899px) {
+  .signin{
+    border: 0;
+    box-shadow: none;
+  }
+  .forgotpass{
+    margin: 37.5% 0 0 63%;
+    font-size: 15px;
+  }
+  .erroMessage{
+    font-size: 15px;
+    margin-top: 1px;
+  }
+  .fa-eye{
+    margin: -15% 0 0 90%;
+  }
+  .fa-eye-slash{
+    margin: -15% 0 0 90%;
+  }
+}
+
+
+@media screen and (min-width: 300px) and (max-width: 344px) and (min-height: 800px) and (max-height: 899px) {
+  .signin{
+    border: 0;
+    box-shadow: none;
+  }
+  .forgotpass{
+    margin: 45.5% 0 0 60%;
+    font-size: 13px;
+  }
+  .erroMessage{
+    font-size: 13px;
+    margin-top: 1px;
+  }
+  .fa-eye{
+    margin: -17.5% 0 0 90%;
+  }
+  .fa-eye-slash{
+    margin: -17.5% 0 0 90%;
+  }
+}
+
+@media screen and (min-width: 300px) and (max-width: 391px) and (min-height: 800px) and (max-height: 845px) {
+  .signin{
+    border: 0;
+    box-shadow: none;
+  }
+  .forgotpass{
+    margin: 40% 0 0 60%;
+    font-size: 15px;
+  }
+  .erroMessage{
+    font-size: 15px;
+    margin-top: 1px;
+  }
+  .fa-eye{
+    margin: -16% 0 0 90%;
+  }
+  .fa-eye-slash{
+    margin: -16% 0 0 90%;
+  }
+}
+
+@media screen and (min-width: 412px) and (max-width: 429px) and (min-height: 914px) and (max-height: 999px) {
+  .signin{
+    border: 0;
+    box-shadow: none;
+  }
+  .forgotpass{
+    margin: 38.5% 0 0 63%;
+    font-size: 15px;
+  }
+  .erroMessage{
+    font-size: 15px;
+    margin-top: 3px;
+  }
+  .fa-eye{
+    margin: -15% 0 0 90%;
+  }
+  .fa-eye-slash{
+    margin: -15% 0 0 90%;
+  }
+}
+
+@media screen and (min-width: 430px) and (max-width: 499px) and (min-height: 932px) and (max-height: 999px) {
+  .signin{
+    border: 0;
+    box-shadow: none;
+  }
+  .forgotpass{
+    margin: 36.5% 0 0 64.5%;
+    font-size: 15px;
+  }
+  .erroMessage{
+    font-size: 15px;
+    margin-top: 3px;
+  }
+  .fa-eye{
+    margin: -15% 0 0 90%;
+  }
+  .fa-eye-slash{
+    margin: -15% 0 0 90%;
+  }
+}
+
+@media screen and (min-width: 500px) and (max-width: 599px) and (min-height: 700px) and (max-height: 799px){
+  .signin{
+    border: 0;
+    box-shadow: none;
+  }
+  .forgotpass{
+    margin: 29.2% 0 0 51.5%;
+    font-size: 16px;
+  }
+  .erroMessage{
+    font-size: 16px;
+    margin-top: 1px;
+  }
+  .fa-eye{
+    margin: -14% 0 0 90%;
+  }
+  .fa-eye-slash{
+    margin: -14% 0 0 90%;
+  }
+}
+
+
+@media screen and (min-width: 700px) and (max-width: 799px) and (min-height: 1000px) and (max-height: 1099px){
+  .forgotpass{
+    margin: 20.5% 0 0 36.1%;
+    font-size: 16px;
+  }
+  .erroMessage{
+    font-size: 16px;
+    margin-top: 1px;
+  }
+  .fa-eye{
+    margin: -14% 0 0 90%;
+  }
+  .fa-eye-slash{
+    margin: -14% 0 0 90%;
+  }
+}
+
+@media screen and (min-width: 800px) and (max-width: 899px) and (min-height: 1100px) and (max-height: 1180px){
+  .forgotpass{
+    margin: 19.2% 0 0 34%;
+    font-size: 16px;
+  }
+  .erroMessage{
+    font-size: 16px;
+    margin-top: 1px;
+  }
+  .fa-eye{
+    margin: -14% 0 0 90%;
+  }
+  .fa-eye-slash{
+    margin: -14% 0 0 90%;
+  }
+}
+
+@media screen and (min-width: 800px) and (max-width: 855px) and (min-height: 1200px) and (max-height: 1280px){
+  .forgotpass{
+    margin: 18.5% 0 0 32.5%;
+    font-size: 16px;
+  }
+  .erroMessage{
+    font-size: 16px;
+    margin-top: 1px;
+  }
+  .fa-eye{
+    margin: -14% 0 0 90%;
+  }
+  .fa-eye-slash{
+    margin: -14% 0 0 90%;
+  }
+}
+
+@media screen and (min-width: 900px) and (max-width: 999px) and (min-height: 1300px) and (max-height: 1399px){
+  .forgotpass{
+    margin: 17.5% 0 0 30.5%;
+    font-size: 16px;
+  }
+  .erroMessage{
+    font-size: 16px;
+    margin-top: 1px;
+  }
+  .fa-eye{
+    margin: -14% 0 0 90%;
+  }
+  .fa-eye-slash{
+    margin: -14% 0 0 90%;
+  }
+}
+
+
+@media screen and (min-width: 1000px) and (max-width: 1024px) and (min-height: 1300px) and (max-height: 1399px){
+  .forgotpass{
+    margin: 15.5% 0 0 27%;
+    font-size: 16px;
+  }
+  .erroMessage{
+    font-size: 16px;
+    margin-top: 1px;
+  }
+  .fa-eye{
+    margin: -14% 0 0 90%;
+  }
+  .fa-eye-slash{
+    margin: -14% 0 0 90%;
+  }
+}
+
+@media screen and (min-width: 1000px) and (max-width: 1024px) and (min-height: 600px) and (max-height: 699px){
+  .forgotpass{
+    margin: 15.5% 0 0 27%;
+    font-size: 16px;
+  }
+  .erroMessage{
+    font-size: 16px;
+    margin-top: 1px;
+  }
+  .fa-eye{
+    margin: -14% 0 0 90%;
+  }
+  .fa-eye-slash{
+    margin: -14% 0 0 90%;
+  }
+}
+
+@media screen and (min-width: 1279px) and (max-width: 1280px) and (min-height: 700px) and (max-height: 800px){
+  .forgotpass{
+    margin: 12.4% 0 0 22%;
+    font-size: 16px;
+  }
+  .erroMessage{
+    font-size: 16px;
+    margin-top: 1px;
+  }
+  .fa-eye{
+    margin: -14% 0 0 90%;
+  }
+  .fa-eye-slash{
+    margin: -14% 0 0 90%;
+  }
+}
+
+
+
+
+
+
 
 
 </style>

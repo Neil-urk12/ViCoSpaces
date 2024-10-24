@@ -293,7 +293,40 @@ input:focus {
 .switch-form a:hover {
   text-decoration: underline;
 }
-@media screen and (min-width: 480px) and (max-width: 600px) {
+@media screen and (min-width: 320px) and (max-width: 360px ){
+  .signup {
+    padding: 1.5rem;
+    border: 0;
+    border-radius: 0;
+    box-shadow:none;
+    margin: -5px 0 0 0;
+  }
+  .fa-eye-slash{  
+    margin: -20.5% 0 0 90%;
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.452);
+  }
+  .erroMessage{
+    font-size: 14px;
+    margin: 1.5% 0 0 0;
+
+  }
+}
+@media screen and (min-width: 361px) and (max-width: 480px) {
+  .signup {
+    padding: 1.5rem;
+    border: 0;
+    border-radius: 0;
+    box-shadow:none;
+    margin: 5px 0 0 0;
+  }
+  .fa-eye-slash{  
+    margin: -17.5% 0 0 90%;
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.452);
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 600px) {
   .signup {
     padding: 1.5rem;
     border: 0;
@@ -307,8 +340,6 @@ input:focus {
 @media screen and (min-width: 601px) and (max-width: 900px)  {
     .signup{
       background-color: #ffffff;
-      border: 0;
-      box-shadow:none;
     }
     
 }
