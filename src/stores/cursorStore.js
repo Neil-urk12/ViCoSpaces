@@ -27,47 +27,44 @@ export const useCursorStore = defineStore('cursor', {
         const rect = canvasEl.getBoundingClientRect();                                                         
 
         // Base 100% zoom
-        let offsetX = 180;
-        let offsetY = 35;
+        let offsetX = 215;
+        let offsetY = 8;
 
         const zoomFactor = window.devicePixelRatio;
         if (zoomFactor >= 2.5) {
           offsetX = 106;
-          offsetY = -40;
+          offsetY = -50;
         } else if (zoomFactor >= 2.0) {
           offsetX = 125;
-          offsetY = -16;
+          offsetY = -25;
         } else if (zoomFactor >= 1.75) { 
-          offsetX = 135;
-          offsetY = -10;
+          offsetX = 140;
+          offsetY = -20;
         } else if (zoomFactor >= 1.5) { 
           offsetX = 156;
-          offsetY = -5;
+          offsetY = -15;
         } else if (zoomFactor >= 1.25) { 
           offsetX = 180;
-          offsetY = 5;
+          offsetY = -6;
         } else if (zoomFactor >= 1.10) { 
           offsetX = 200;
-          offsetY = 10;
+          offsetY = 3;
         } else if (zoomFactor >= 1.0) { 
           offsetX = 215;
-          offsetY = 20;
+          offsetY = 8;
         } else if (zoomFactor >= 0.8) { 
-          offsetX = 270;
-          offsetY = 40;
+          offsetX = 260;
+          offsetY = 20;
         } else if (zoomFactor >= 0.75) { 
           offsetX = 285;
-          offsetY = 45;
+          offsetY = 35;
         } else if (zoomFactor >= 0.5) {
           offsetX = 310;
-          offsetY = 55;
+          offsetY = 45;
         }
 
         const x = event.clientX - rect.left + offsetX;                                                         
-        const y = event.clientY - rect.top + offsetY;
-        // console.log('Zoom', zoomFactor)                                                          
-        // console.log('x y', x, y);                                                                              
-        // console.log('ClientX ClientY', event.clientX, event.clientY);                                          
+        const y = event.clientY - rect.top + offsetY;                                        
 
         this.localCursor = { x, y, username: this.currentUserName };                                           
         this.updateFirebaseCursor(x, y);                                                                       
