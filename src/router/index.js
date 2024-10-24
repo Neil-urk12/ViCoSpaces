@@ -12,33 +12,34 @@ const router = createRouter({
     { path: '/home', component: () => import('../views/HomeView.vue'), meta: { requiresAuth: true } },
     { path: '/register', component: () => import('../views/RegisterView.vue'), meta: { requiresAuth: false } },
     { path: '/login', component: () => import('../views/SignInView.vue'), meta: { requiresAuth: false } },
+    { path: '/contact', component: () => import('../views/ContactView.vue'), meta: { requiresAuth: false}},
+    { path: '/profile', component: () => import('../views/ProfileView.vue'), meta: { requiresAuth: true}},
     {
       path: '/room/:id',
       name: 'Room',
       component: () => import('../views/RoomView.vue'),
       props: route => ({ roomId: route.params.id, roomName: route.query.name }),
-      meta: { requiresAuth: false },
+      meta: { requiresAuth: true },
       beforeEnter: async (to, from, next) => {
-        const roomId = to.params.id;
-        const roomRef = dbRef(database, `rooms/${roomId}`);
+        const roomId = to.params.id
+        const roomRef = dbRef(database, `rooms/${roomId}`)
         try {
-          const snapshot = await get(roomRef);
+          const snapshot = await get(roomRef)
           if (snapshot.exists()) {
-            next();
+            next()
           } else {
-            console.error('Room does not exist');
-            next({ name: 'Error' });
+            console.error('Room does not exist')
+            next({ name: 'Error' })
           }
         } catch (error) {
-          console.error('Error fetching room data:', error);
+          console.error('Error fetching room data:', error)
           next({ name: 'Error' });
         }
       },
     },
-    { path: '/testchat', component: () => import('../components/chat-box-feature.vue'), meta: { requiresAuth: true } },
     { path: '/error', name: 'Error', component: () => import('../views/ErrorView.vue') }
   ],
-});
+})
 
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();

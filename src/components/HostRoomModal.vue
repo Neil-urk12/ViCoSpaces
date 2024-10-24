@@ -33,14 +33,7 @@ const handleSubmit = () => {
   emit('close');
 };
 
-const togglePasswordVisibility = () => {
-  showPassword.value = !showPassword.value;
-};
-
-const toggleConfirmPasswordVisibility = () => {
-  showConfirmPassword.value = !showConfirmPassword.value;
-};
-
+const togglePasswordVisibility = () => showPassword.value = !showPassword.value;
 console.log(props);
 </script>
 
