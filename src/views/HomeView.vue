@@ -5,8 +5,6 @@ import '@/assets/styles/home-components.css';
 //imported icon
 import LockIcon from '@/assets/images/SVG/lock-password-svgrepo-com-red-large.svg';
 import UnlockIcon from  '@/assets/images/SVG/lock-unlocked-svgrepo-com-green.svg';
-import lockStatusIcon from '@/assets/images/SVG/lock-svgrepo-com-black.svg';
-import hostIcon from '@/assets/images/SVG/user-svgrepo-com-black.svg';
 import SidebarModal from '@/components/SidebarModal.vue';
 import FilterModal from '@/components/FilterModal.vue';
 import HostRoomModal from '@/components/HostRoomModal.vue';
@@ -416,6 +414,7 @@ const logout = async () => {
           @click="isCreateRoomVisible = true"
         >
           <img
+            class="host-icon"
             src="../assets/images/SVG/add-square-svgrepo-com white.svg"
             alt="host-icon"
             width="30px"
@@ -457,7 +456,7 @@ const logout = async () => {
               <div class="host-wrapper">
                 <div class="hiw">
                   <img
-                    :src="hostIcon"
+                    src="../assets/images/SVG/user-svgrepo-com.svg"
                     alt="status icon"
                     class="status-icon-privacy"
                     width="26"
@@ -469,7 +468,7 @@ const logout = async () => {
               <div class="privacy-wrapper">
                 <div class="sip">
                   <img
-                    :src="lockStatusIcon"
+                    src="../assets/images/SVG/lock-password-svgrepo-com-blue.svg"
                     alt="status icon"
                     class="status-icon-privacy"
                     width="26"

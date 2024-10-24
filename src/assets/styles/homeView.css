@@ -152,11 +152,13 @@ p{
 
 }
 .join-a-room-btn:hover{
+  box-shadow: 0 0.6em 0.5em -0.4em #2d8eff;
+  transform: translateY(-0.25em);
+  background: #ffffff;
+  border:solid 1px #2d8eff;
   color: #2d8eff;
-  background-color: rgb(255, 255, 255);
-  box-shadow: 3px 2px 2px #2d8eff;
-  transform: translateY(-3%);
 }
+
 .counter{
   display: flex;
   flex-direction: row;
@@ -178,8 +180,9 @@ p{
   width: 20%;
   height: 50%;
   border-radius: 6px;
-  background-color: #D9D9D9;
-  box-shadow: 3px 3px 5px #5f5f5f inset;
+  background-color: transparent;
+  border: solid 1px #2d8eff;
+
   margin-left: 0;
 }
 .user-counter h4{
@@ -271,8 +274,8 @@ button {
     width: 20%;
     height: 50%;
     border-radius: 6px;
-    background-color: #D9D9D9;
-    box-shadow: 3px 3px 5px #5f5f5f inset;
+    background-color: transparent;
+    border: solid 1px #2d8eff;
     margin-left: 0;
   }
   .user-counter h4{

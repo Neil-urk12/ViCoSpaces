@@ -202,6 +202,12 @@
   width: 18%;
   
 }
+.join-icon{
+  display: none;
+}
+.host-icon{
+  display: none;
+}
 .join-btn-container{
   display: flex;
   flex-direction: row;
@@ -358,6 +364,10 @@ button {
 @media (max-width: 1124px) {
   .host-btn-container p, .join-btn-container p{
     display: none;
+  }
+  .join-icon, .host-icon{
+      display: block;
+    
   }
   
 }
@@ -716,6 +726,7 @@ button {
   .host-btn-container {
     display: block;
     position: absolute;
+    align-content: center;
     right: 6%;      
     bottom: -32rem;
     width: 4rem;
@@ -723,8 +734,10 @@ button {
     border: 1px solid white;
   }
   .host-btn-container img{
-    align-self: center;
-    margin-top: 4px;
+    position: absolute;
+    right: 25%;
+    top: 26%;
+
   }
   
   button {
