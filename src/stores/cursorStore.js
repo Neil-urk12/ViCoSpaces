@@ -28,39 +28,39 @@ export const useCursorStore = defineStore('cursor', {
 
         // Base 100% zoom
         let offsetX = 180;
-        let offsetY = 10;
+        let offsetY = 35;
 
         const zoomFactor = window.devicePixelRatio;
         if (zoomFactor >= 2.5) {
           offsetX = 106;
-          offsetY = -30;
+          offsetY = -40;
         } else if (zoomFactor >= 2.0) {
-          offsetX = 120;
-          offsetY = -10;
+          offsetX = 125;
+          offsetY = -16;
         } else if (zoomFactor >= 1.75) { 
           offsetX = 135;
-          offsetY = -5;
+          offsetY = -10;
         } else if (zoomFactor >= 1.5) { 
-          offsetX = 150;
-          offsetY = 0;
+          offsetX = 156;
+          offsetY = -5;
         } else if (zoomFactor >= 1.25) { 
-          offsetX = 165;
+          offsetX = 180;
           offsetY = 5;
         } else if (zoomFactor >= 1.10) { 
-          offsetX = 190;
+          offsetX = 200;
           offsetY = 10;
         } else if (zoomFactor >= 1.0) { 
           offsetX = 215;
-          offsetY = 30;
+          offsetY = 20;
         } else if (zoomFactor >= 0.8) { 
-          offsetX = 240;
-          offsetY = 35;
-        } else if (zoomFactor >= 0.75) { 
           offsetX = 270;
           offsetY = 40;
-        } else if (zoomFactor >= 0.5) {
-          offsetX = 290;
+        } else if (zoomFactor >= 0.75) { 
+          offsetX = 285;
           offsetY = 45;
+        } else if (zoomFactor >= 0.5) {
+          offsetX = 310;
+          offsetY = 55;
         }
 
         const x = event.clientX - rect.left + offsetX;                                                         
