@@ -52,7 +52,7 @@
           @click="chatStore.showTimestamp(message.id)"
         >                                                     
           <div class="sender cosmic-text">
-            {{ message.senderId === currentUserUid ? '👨‍🚀' : '👽' }}
+            {{ message.senderId === currentUserUid ? '👨‍🚀' : '👽' }} {{ message.senderId === currentUserUid ? 'You' : message.sender }}
           </div>         
           <div class="text">
             {{ message.text }}
