@@ -1,24 +1,25 @@
 <script setup>
 import visible from '@/assets/images/SVG/eye-open-svgrepo-com.svg';
 import invisible from '@/assets/images/SVG/eye-closed-svgrepo-com.svg';
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 
-const emit = defineEmits(['close-room', 'create', 'close'])
-const props = defineProps({isVisible: Boolean})
+const emit = defineEmits(['close-room', 'create', 'close']);
+const props = defineProps({ isVisible: Boolean });
 
-const roomName = ref('')
-const privacyType = ref('public')
-const password = ref('')
-const confirmPassword = ref('')
-const roomCapacity = ref(1)
-const category = ref('')
-const showPassword = ref(false)
-const isPrivate = computed(() => privacyType.value === 'private')
+const roomName = ref('');
+const privacyType = ref('public');
+const password = ref('');
+const confirmPassword = ref('');
+const roomCapacity = ref(1);
+const category = ref('');
+const showPassword = ref(false);
+const showConfirmPassword = ref(false); // Separate variable for confirm password
+const isPrivate = computed(() => privacyType.value === 'private');
 
 const handleSubmit = () => {
   if (privacyType.value === 'private' && password.value !== confirmPassword.value) {
-    console.error('Passwords do not match')
-    return
+    console.error('Passwords do not match');
+    return;
   }
   
   emit('create', {
@@ -27,51 +28,19 @@ const handleSubmit = () => {
     capacity: roomCapacity.value,
     category: category.value,
     password: privacyType.value === 'private' ? password.value : null
-  })
+  });
   
-  emit('close')
-}
+  emit('close');
+};
 
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value;
-}
+};
 
+const toggleConfirmPasswordVisibility = () => {
+  showConfirmPassword.value = !showConfirmPassword.value;
+};
 
-// const createRoom = async () => {
-//   try {
-//     isLoading.value = true
-//     error.value = ''
-
-//     if (!roomName.value.trim()) 
-//       throw new Error('Room name is required')
-//     if (isPrivate.value && !password.value.trim()) 
-//       throw new Error('Password is required for private rooms')
-
-//     const room = { 
-//       name: roomName.value,
-//       isPrivate: isPrivate.value,
-//       password: isPrivate.value ? password.value : null,
-//       capacity: roomCapacity.value,
-//       createdAt: Date.now(),
-//     }
-
-//     const roomsRef = dbRef(database, 'rooms')
-//     const newRoomRef = push(roomsRef)
-//     await set(newRoomRef, room)
-
-//     console.log('Room created:', newRoomRef.key)
-//     router.push({ 
-//       name: 'Room', 
-//       params: { id: newRoomRef.key },
-//       query: { name: room.name } 
-//     });
-//   } catch (err) {
-//     console.error('Error creating room:', err)
-//     error.value = err.message
-//   } finally {
-//     isLoading.value = false
-//   }
-// }
 console.log(props);
 </script>
 
@@ -114,20 +83,20 @@ console.log(props);
             <input
               v-model="password"
               class="input-room-password"
-              type="password"
+              :type="showPassword ? 'text' : 'password'"
               placeholder="Password"
             >
             <span
               class="password-toggle-icon"
               @click="togglePasswordVisibility"
-            ><img 
-              :src="showPassword ? invisible : visible" 
-              alt="Toggle Password Visibility"
-              class="icon"
-              width="20"
-              height="20"
             >
-              <!-- <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" /> -->
+              <img 
+                :src="showPassword ? invisible : visible" 
+                alt="Toggle Password Visibility"
+                class="icon"
+                width="20"
+                height="20"
+              >
             </span>
           </div>
           <div
@@ -137,20 +106,21 @@ console.log(props);
             <input
               v-model="confirmPassword"
               class="input-confirm-password"
-              type="password"
+              :type="showConfirmPassword ? 'text' : 'password'"
               placeholder="Confirm Password"
               required
-            >          <span
-              class="password-toggle-icon"
-              @click="togglePasswordVisibility"
-            ><img 
-              :src="showPassword ? invisible : visible" 
-              alt="Toggle Password Visibility"
-              class="icon"
-              width="20"
-              height="20"
             >
-              <!-- <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" /> -->
+            <span
+              class="password-toggle-icon"
+              @click="toggleConfirmPasswordVisibility"
+            >
+              <img 
+                :src="showConfirmPassword ? invisible : visible" 
+                alt="Toggle Confirm Password Visibility"
+                class="icon"
+                width="20"
+                height="20"
+              >
             </span>
           </div>
         </div>
@@ -209,7 +179,7 @@ console.log(props);
           
           <button
             class="create-btn"
-            @click="createRoom"
+            @click="handleSubmit"
           >
             Create
           </button>  
@@ -271,14 +241,14 @@ button {
   height: 30px;
   width: 30px;
 }
-.name-container{
+.name-container {
   width: 100%;
   padding: 14px;
   border-radius: 12px;
   background: #f6f6f6;
   box-sizing: border-box;
 }
-.password-container, .c-password-container{
+.password-container {
   display: flex;
   width: 100%;
   padding: 14px;
@@ -286,7 +256,6 @@ button {
   background: #f6f6f6;
   box-sizing: border-box;
 }
-
 .input-room-name, .input-room-password, .input-confirm-password {
   width: 100%;
   font-size: 16px;
@@ -296,15 +265,14 @@ button {
   background: transparent;
   flex: 1;
 }
-.category-container{
+.category-container {
   width: 52%;
-
   border-radius: 6px;
   background: #f6f6f6;
   box-sizing: border-box;
   margin-left: 0px;
 }
-.category-container input{
+.category-container input {
   width: 100%;
   font-size: 16px;
   color: black;
@@ -325,21 +293,19 @@ select {
   color: #2d8eff;
   border: none;
 }
-
-.status{
+.status {
   padding: 5px;
   font-size: 16px;
   border-radius: 6px;
   appearance: none;
   background-size: 16px 16px;
-  width:20%;
+  width: 20%;
   background-color: #f9f9f9;
   background-image: url('../assets/images/SVG/drop-down-minor-svgrepo-com.svg');
   background-repeat: no-repeat;
   background-position-x: 100%;
   background-position-y: 6px;
   outline: none;
-
 }
 .capacity {
   padding: 5px;
@@ -375,35 +341,12 @@ select {
 
 /* Responsive Styles */
 
-@media (max-width:375px ) {
+@media (max-width: 375px) {
   .edit-room {
-    box-sizing: border-box;
-    border-radius: 12px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    background-color: #2d8eff;
-    color: white;
-    z-index: 1000;
     width: 100%;
-    max-width: 500px;
-    box-sizing: border-box;
   }
-  .status{
-    padding: 5px;
-    font-size: 16px;
-    border-radius: 6px;
-    appearance: none;
-    background-size: 16px 16px;
-    width:30%;
-    background-color: #f9f9f9;
-    background-image: url('../assets/images/SVG/drop-down-minor-svgrepo-com.svg');
-    background-repeat: no-repeat;
-    background-position-x: 100%;
-    background-position-y: 6px;
-    outline: none;
+  .status {
+    width: 30%;
   }
 }
 </style>

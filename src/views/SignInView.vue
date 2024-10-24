@@ -108,15 +108,15 @@ const hidepass = () => {
       /><br>
   
       <span class="forgotpass">
-          Forgot Password
+        Forgot Password
       </span>
 
-        <p
-          v-if="errorMessage"
-          class="erroMessage"
-        >
-          {{ errorMessage }}
-        </p>
+      <p
+        v-if="errorMessage"
+        class="erroMessage"
+      >
+        {{ errorMessage }}
+      </p>
       
       <button
         class="btn-primary"
@@ -651,12 +651,5 @@ input:focus {
     margin: -14% 0 0 90%;
   }
 }
-
-
-
-
-
-
-
 
 </style>

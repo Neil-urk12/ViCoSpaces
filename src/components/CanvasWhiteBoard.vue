@@ -427,37 +427,7 @@ onUnmounted(() => {
               min="1"
               max="30" 
             >                                                                                                 
-          </div>                                                                                                   
-          <button
-            title="Clear Canvas"
-            @click="clearCanvas"
-          >
-            <font-awesome-icon :icon="['fas', 'trash']" />
-          </button>                                            
-          <button
-            title="Insert Image"
-            @click="triggerFileSelect"
-          >
-            <font-awesome-icon :icon="['far', 'image']" />
-          </button>                                      
-          <input
-            ref="imageInput"
-            type="file"
-            style="display: none"
-            @change="insertImage"
-          >                       
-          <button
-            title="Remove Selected"
-            @click="removeSelected"
-          >
-            <font-awesome-icon :icon="['fas', 'delete-left']" />
-          </button>                                      
-          <button
-            title="Download Image"
-            @click="downloadCanvasAsImage"
-          >
-            <font-awesome-icon :icon="['fas', 'file-import']" />
-          </button>                                
+          </div>                                                                                                                    
         </div>
         <button
           class="tool-btn"
@@ -1077,8 +1047,9 @@ onUnmounted(() => {
     z-index: 1000;
   }
   .brush-options-popup {                                                                                         
-    position: absolute;                                                                                                                                                                                          
-    top: 50px;                                                                                                   
+    position: absolute;   
+    left: 30%;                                                                                                                                                                                  
+    top: 10px;                                                                                                   
     background-color: white;                                                                                     
     border: 1px solid #ccc;                                                                                      
     padding: 10px;                                                                                               
