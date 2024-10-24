@@ -1,4 +1,6 @@
 <script setup>
+import visible from '@/assets/images/SVG/eye-open-svgrepo-com.svg';
+import invisible from '@/assets/images/SVG/eye-closed-svgrepo-com.svg';
 import { computed, ref } from 'vue'
 
 const emit = defineEmits(['close-room', 'create', 'close'])
@@ -30,7 +32,47 @@ const handleSubmit = () => {
   emit('close')
 }
 
-const togglePasswordVisibility = () => showPassword.value = !showPassword.value;
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value;
+}
+
+
+// const createRoom = async () => {
+//   try {
+//     isLoading.value = true
+//     error.value = ''
+
+//     if (!roomName.value.trim()) 
+//       throw new Error('Room name is required')
+//     if (isPrivate.value && !password.value.trim()) 
+//       throw new Error('Password is required for private rooms')
+
+//     const room = { 
+//       name: roomName.value,
+//       isPrivate: isPrivate.value,
+//       password: isPrivate.value ? password.value : null,
+//       capacity: roomCapacity.value,
+//       createdAt: Date.now(),
+//     }
+
+//     const roomsRef = dbRef(database, 'rooms')
+//     const newRoomRef = push(roomsRef)
+//     await set(newRoomRef, room)
+
+//     console.log('Room created:', newRoomRef.key)
+//     router.push({ 
+//       name: 'Room', 
+//       params: { id: newRoomRef.key },
+//       query: { name: room.name } 
+//     });
+//   } catch (err) {
+//     console.error('Error creating room:', err)
+//     error.value = err.message
+//   } finally {
+//     isLoading.value = false
+//   }
+// }
+console.log(props);
 </script>
 
 <template>
@@ -49,7 +91,7 @@ const togglePasswordVisibility = () => showPassword.value = !showPassword.value;
             @click="emit('close-room')"
           >
             <img
-              src="../images/SVG/close-bold-svgrepo-com.svg"
+              src="../assets/images/SVG/close-bold-svgrepo-com.svg"
               alt=""
             >
           </button>
@@ -61,6 +103,7 @@ const togglePasswordVisibility = () => showPassword.value = !showPassword.value;
               class="input-room-name"
               type="text"
               placeholder="Room Name"
+              maxlength="30"
               required
             >
           </div>
@@ -77,8 +120,14 @@ const togglePasswordVisibility = () => showPassword.value = !showPassword.value;
             <span
               class="password-toggle-icon"
               @click="togglePasswordVisibility"
+            ><img 
+              :src="showPassword ? invisible : visible" 
+              alt="Toggle Password Visibility"
+              class="icon"
+              width="20"
+              height="20"
             >
-              <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" />
+              <!-- <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" /> -->
             </span>
           </div>
           <div
@@ -87,14 +136,21 @@ const togglePasswordVisibility = () => showPassword.value = !showPassword.value;
           >
             <input
               v-model="confirmPassword"
+              class="input-confirm-password"
               type="password"
               placeholder="Confirm Password"
               required
             >          <span
               class="password-toggle-icon"
               @click="togglePasswordVisibility"
+            ><img 
+              :src="showPassword ? invisible : visible" 
+              alt="Toggle Password Visibility"
+              class="icon"
+              width="20"
+              height="20"
             >
-              <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" />
+              <!-- <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" /> -->
             </span>
           </div>
         </div>
@@ -139,14 +195,18 @@ const togglePasswordVisibility = () => showPassword.value = !showPassword.value;
                 6
               </option>
             </select>
+          </div>
+        </div>
+        <div class="button-container">
+          <div class="category-container">
             <input
               v-model="category"
+              class="input-catergory"
               placeholder="Category"
               required
             >
           </div>
-        </div>
-        <div class="button-container">
+          
           <button
             class="create-btn"
             @click="createRoom"
@@ -160,6 +220,12 @@ const togglePasswordVisibility = () => showPassword.value = !showPassword.value;
 </template>
 
 <style scoped>
+header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+}
 .overlay {
   position: fixed;
   top: 0;
@@ -170,6 +236,7 @@ const togglePasswordVisibility = () => showPassword.value = !showPassword.value;
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100;
 }
 .edit-room {
   box-sizing: border-box;
@@ -182,22 +249,21 @@ const togglePasswordVisibility = () => showPassword.value = !showPassword.value;
   background-color: #2d8eff;
   color: white;
   z-index: 1000;
-  width: 25%;
+  width: 400px;
   max-width: 500px;
+  box-sizing: border-box;
 }
-.edit-room-inputs{
+.edit-room-inputs {
   display: flex;
   flex-direction: column;
   gap: 10px;
   width: 100%;
 }
-header {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  justify-content: space-between;
+button {
+  cursor: pointer;
 }
 .close-btn {
+  width: 40px;
   background-color: #2d8eff;
   border: none;
 }
@@ -205,13 +271,23 @@ header {
   height: 30px;
   width: 30px;
 }
-.name-container {
+.name-container{
   width: 100%;
   padding: 14px;
   border-radius: 12px;
   background: #f6f6f6;
+  box-sizing: border-box;
 }
-.input-room-name {
+.password-container, .c-password-container{
+  display: flex;
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  background: #f6f6f6;
+  box-sizing: border-box;
+}
+
+.input-room-name, .input-room-password, .input-confirm-password {
   width: 100%;
   font-size: 16px;
   color: black;
@@ -220,13 +296,15 @@ header {
   background: transparent;
   flex: 1;
 }
-.password-container {
-  width: 100%;
-  padding: 14px;
-  border-radius: 12px;
+.category-container{
+  width: 52%;
+
+  border-radius: 6px;
   background: #f6f6f6;
+  box-sizing: border-box;
+  margin-left: 0px;
 }
-.input-room-password {
+.category-container input{
   width: 100%;
   font-size: 16px;
   color: black;
@@ -234,89 +312,98 @@ header {
   border: none;
   background: transparent;
   flex: 1;
+  margin-left: 10px;
 }
-.room-info{
+.room-info {
   display: flex;
   justify-content: flex-start;
   gap: 6px;
   width: 100%;
-
+  height: 30px;
 }
 select {
-  color:#2d8eff;
+  color: #2d8eff;
   border: none;
 }
-.status { 
-  width: 80px;
+
+.status{
   padding: 5px;
   font-size: 16px;
   border-radius: 6px;
   appearance: none;
-  background-size:16px 16px ;
-  background-image: url('../images/SVG/drop-down-minor-svgrepo-com.svg');
+  background-size: 16px 16px;
+  width:20%;
+  background-color: #f9f9f9;
+  background-image: url('../assets/images/SVG/drop-down-minor-svgrepo-com.svg');
   background-repeat: no-repeat;
   background-position-x: 100%;
   background-position-y: 6px;
+  outline: none;
+
 }
 .capacity {
-  width: 40px;
   padding: 5px;
   font-size: 16px;
-  border-radius: 5px;
+  border-radius: 6px;
   appearance: none;
+  background-size: 16px 16px;
+  width: 40px;
   background-color: #f9f9f9;
-  background-size:16px 16px ;
-  background-image: url('../images/SVG/drop-down-minor-svgrepo-com.svg');
+  background-image: url('../assets/images/SVG/drop-down-minor-svgrepo-com.svg');
   background-repeat: no-repeat;
   background-position-x: 100%;
   background-position-y: 6px;
+  outline: none;
 }
-.button-container{
-  width: 100% ;
+.button-container {
+  width: 100%;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  padding: 0;
+  margin: 0;
 }
-.create-btn{        
+.create-btn {
   background-color: #fff;
-  color:#2d8eff;
+  color: #2d8eff;
   border: none;
   border-radius: 6px;
   width: 30%;
   height: 35px;
-  font-weight: bold; 
+  font-weight: bold;
+  margin-right: 0px;
 }
+
 /* Responsive Styles */
-@media (max-width: 768px) {
+
+@media (max-width:375px ) {
   .edit-room {
-    width: 90%;
-    padding: 15px;
-    gap: 15px;
+    box-sizing: border-box;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    background-color: #2d8eff;
+    color: white;
+    z-index: 1000;
+    width: 100%;
+    max-width: 500px;
+    box-sizing: border-box;
   }
-  header {
-    gap: 1em;
-  }
-  .name-container {
-    padding: 10px;
-  }
-  .input-room-name {
-    font-size: 14px;
-  }
-}
-@media (max-width: 480px) {
-  .edit-room {
-    width: 95%;
-    padding: 10px;
-    gap: 10px;
-  }
-  .input-room-name {
-    font-size: 12px;
-  }
-  .room-name {
-    font-size: 18px;
-  }
-  .close-btn img {
-    height: 25px;
-    width: 25px;
+  .status{
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 6px;
+    appearance: none;
+    background-size: 16px 16px;
+    width:30%;
+    background-color: #f9f9f9;
+    background-image: url('../assets/images/SVG/drop-down-minor-svgrepo-com.svg');
+    background-repeat: no-repeat;
+    background-position-x: 100%;
+    background-position-y: 6px;
+    outline: none;
   }
 }
 </style>

@@ -2,8 +2,10 @@
   <nav class="nav-bar">
     <div class="logo-container">
       <img
-        src="../assets/svg/filters-2-svgrepo-com.svg"
+        src="../images/logo/transparentlogo 1080.png"
+        alt="ViCoSpaces-Logo"
         class="logo-img"
+        width="50px"
       >
       <span class="logo-name">ViCoSpaces</span>
     </div>
@@ -19,30 +21,21 @@
       box-sizing: border-box;
     }
     .nav-bar {
+      display: flex;
+      align-content: flex-start;
       background: #2d8eff;
       font-family: Calibri, sans-serif;
       align-items: center;
       height: 70px;
-      padding: 15px 40px 0px 40px;
+      padding: 10px;
     }
     .logo-container {
       display: flex;
       align-items: center;
-      font-size: 35px;
+      font-size: 2rem;
       font-weight: 600;
       color: white;
-    }
-    @media screen and (min-width: 480px) and (max-width: 600px) {
-      .logo-container{
-        height: 50px;
-        font-size: 25px;
-      }
-    }
-    @media screen and (min-width: 600px) and (max-width: 900px)   {
-      .logo-container{
-        height: 50px;
-        font-size: 25px;
-      }
+      width: 100%;
     }
     
 </style>
