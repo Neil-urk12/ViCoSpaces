@@ -18,56 +18,58 @@ const { isAuthenticated } = authStore;
     <header>
       <nav>
         <div class="navigations">
-            <!-- <h5>ViCoSpaces</h5> -->
-             <div class="logo">
-                <img src="../images/logo/logo.png" class="logo-img">
-             </div>
+          <div class="logo">
+            <img
+              src="../images/logo/logo.png"
+              class="logo-img"
+            >
+            <p class="vico">
+              ViCo
+            </p>
+          </div>
 
-             <div class="roadmap">
-              <RouterLink target="_blank" to="/roadmap">
-                Road map
-                <!-- <i class="fa-solid fa-angle-down"></i> -->
-              </RouterLink>
-             </div>
+          <div class="roadmap">
+            <RouterLink
+              to="/roadmap"
+            >
+              Road map
+              <!-- <i class="fa-solid fa-angle-down"></i> -->
+            </RouterLink>
+          </div>
 
-             <div class="aboutpage">
-              <RouterLink target="_blank" to="/about">
-                About
-                <!-- <i class="fa-solid fa-angle-down"></i> -->
-              </RouterLink>
-             </div>
+          <div class="aboutpage">
+            <RouterLink
+              to="/about"
+            >
+              About
+              <!-- <i class="fa-solid fa-angle-down"></i> -->
+            </RouterLink>
+          </div>
        
-            <div class="rightnav">
-              <RouterLink
-                v-if="!isAuthenticated"
-                to="/login"
-              >
+          <div class="rightnav">
+            <RouterLink
+              v-if="!isAuthenticated"
+              to="/login"
+            >
               Log in
-              </RouterLink>
-                <RouterLink
-                  v-else
-                  to="/home"
-                >
-                  Home
-                </RouterLink>
+            </RouterLink>
+            <RouterLink
+              v-else
+              to="/home"
+            >
+              Home
+            </RouterLink>
           </div>
           
-          <div class="signupForFree">
-                <RouterLink to="/register">
-                  Sign up free
-                </RouterLink>
-            </div>
-          
+          <div
+            v-if="!isAuthenticated"
+            class="signupForFree"
+          >
+            <RouterLink to="/register">
+              Sign up free
+            </RouterLink>
+          </div>
         </div>
-        <!-- <div class="leftnav">
-                <p class="vicoText">
-                  ViCoSpaces
-                </p><hr>
-                <p class="message">
-                  The everything app for work
-                </p>
-          </div>
-        --> 
       </nav>
     </header>
 
@@ -127,7 +129,7 @@ const { isAuthenticated } = authStore;
 
 <style scoped>
 .roadmap {
-  margin: 17px 20px 0 63%;
+  margin: 17px 20px 0 62%;
 }
 .roadmap a , .aboutpage a{
   text-decoration: none;
@@ -141,19 +143,25 @@ const { isAuthenticated } = authStore;
 }
 .navigations{
   background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
-  width: 80%;
-  margin: 1.2rem 0 0 12%;
+  width: 85%;
+  margin: 1.2rem 0 0 6%;
   display: flex;
   padding: 6px 0;
   border-radius: 10px;
 }
 .logo{
   margin: 0 0 0 1.1rem;
+  display: flex;
+  align-items: center;
 }
 .logo img{
   width: 55px;
   height: 50px; 
   border-radius: 50%;
+}
+.vico{
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 .signupForFree{
   height: 20px;
@@ -214,7 +222,8 @@ const { isAuthenticated } = authStore;
   border-radius: 5px;
   padding: 15px 35px;
   font-size: 1rem;
-  margin-left: 43%;
+  margin: 0 auto;
+  display: block;
   background-image: linear-gradient(35deg , #004cff, #d900ff);
   background-size: 200%;
   background-position: left;
@@ -223,7 +232,6 @@ const { isAuthenticated } = authStore;
   border: 0;
   cursor: pointer;
   transition: 0.4s ease-in-out;
-  margin-right: 2%;
   animation: changeColor 2.5s ease-in-out infinite;
 }
 .signbutton a{
@@ -275,11 +283,92 @@ const { isAuthenticated } = authStore;
 }
 .buttonMessage p{
   font-size: 15px;
-  margin: 7px 0 0 3.5%;
+  margin: 7px 0 0 1%;
   color:rgba(0, 0, 0, 0.699);
 }
 
-@media screen and (min-width: 300px) and (max-width: 399px){
+@media screen and (min-width: 320px) and (max-width: 399px) and (min-height: 568px) and (max-height: 599px) {
+  .vico{
+    display: none;
+  }
+  .navigations{
+    margin: 0;
+    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
+    width: 100%;
+    border-radius: 0;
+  }
+  .roadmap{
+    font-size: 10px;
+    margin: 25px 10px 0 8%;
+  }
+  .aboutpage{
+    margin: 25px -10px 0 0;
+    font-size: 10px;
+  }
+  .signupForFree{
+    height: 10px;
+    font-size: 10px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5px;
+  }
+  .rightnav{
+    height: 10px;
+    font-size: 10px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5%;
+  }
+  .title{
+    font-size: 3rem;
+  }
+  .container h1{
+    margin: 20% 0 5.5% 0;
+    font-size: 2.5rem;
+  }
+  .container p{
+    /* display: none; */
+    font-size: 10px;
+    margin: 0 0 5% -5px;
+  }
+  .container ol{
+    margin: 0 0 5% 0;
+  }
+  .container li{
+    font-size: 11.5px;
+  }
+  .signbutton{
+    margin: 3% 0 0 30%;
+    padding: 7px;
+  }
+  .signbutton a{
+    font-size: 12px;
+  }
+  .icons{
+    margin-top: 16%;
+    padding: 20px 0;
+    gap: 15px;
+    border-top-right-radius: 20%;
+    border-top-left-radius: 20%;
+  }
+  .icons i {
+    font-size: 10px;
+    margin-left: 33%;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .icons span{
+    padding: 10px 0 0 0;
+    font-size: 10px;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .buttonMessage p{
+    margin: 5px 0 14% 8%;
+  }
+}
+
+
+@media screen and (min-width: 360px) and (max-width: 399px) and (min-height: 640px) and (max-height: 699px) {
+  .vico{
+    display: none;
+  }
   .navigations{
     margin: 0;
     background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
@@ -288,9 +377,7 @@ const { isAuthenticated } = authStore;
   }
   .roadmap{
     font-size: 13px;
-    margin-left: 8%;
-    margin-top: 25px;
-    margin-right: 10px;
+    margin: 25px 10px 0 2%;
   }
   .aboutpage{
     margin: 25px -10px 0 0;
@@ -312,13 +399,13 @@ const { isAuthenticated } = authStore;
     font-size: 3.5rem;
   }
   .container h1{
-    margin: 35% 0 5% 0;
+    margin: 35% 0 5.5% 0;
     font-size: 3rem;
   }
   .container p{
     /* display: none; */
     font-size: 10px;
-    margin: 0 0 3% -5px;
+    margin: 0 0 5% -5px;
   }
   .container ol{
     margin: 0 0 5% 0;
@@ -327,14 +414,14 @@ const { isAuthenticated } = authStore;
     font-size: 11.5px;
   }
   .signbutton{
-    margin: 0 0 0 30%;
+    margin: 3% 0 0 30%;
     padding: 7px;
   }
   .signbutton a{
     font-size: 12px;
   }
   .icons{
-    margin-top: 17%;
+    margin-top: 21%;
     padding: 20px 0;
     gap: 20px;
     border-top-right-radius: 20%;
@@ -346,7 +433,7 @@ const { isAuthenticated } = authStore;
     color:rgba(0, 0, 0, 0.699);
   }
   .icons span{
-    padding: 40px 0 0 0;
+    padding: 10px 0 0 0;
     font-size: 10px;
     color:rgba(0, 0, 0, 0.699);
   }
@@ -356,7 +443,10 @@ const { isAuthenticated } = authStore;
   }
 }
 
-@media screen and (min-width: 300px) and (max-width: 399px) and (min-height: 568px){
+@media screen and (min-width: 344px) and (max-width: 399px) and (min-height: 882px) and (max-height: 899px) {
+  .vico{
+    display: none;
+  }
   .navigations{
     margin: 0;
     background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
@@ -364,87 +454,89 @@ const { isAuthenticated } = authStore;
     border-radius: 0;
   }
   .roadmap{
+    font-size: 13px;
+    margin: 25px 10px 0 2%;
+  }
+  .aboutpage{
+    margin: 25px -10px 0 0;
+    font-size: 13px;
+  }
+  .signupForFree{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5px;
+  }
+  .rightnav{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5%;
+  }
+  .title{
+    font-size: 3.5rem;
+  }
+  .container h1{
+    margin: 35% 0 5.5% 0;
+    font-size: 3rem;
+  }
+  .container p{
+    /* display: none; */
     font-size: 10px;
+    margin: 0 0 5% -5px;
+  }
+  .container ol{
+    margin: 0 0 5% 0;
+  }
+  .container li{
+    font-size: 11.5px;
+  }
+  .signbutton{
+    margin: 3% 0 0 30%;
+    padding: 7px;
+  }
+  .signbutton a{
+    font-size: 12px;
+  }
+  .icons{
+    margin-top: 34%;
+    padding: 20px 0;
+    gap: 20px;
+    border-top-right-radius: 20%;
+    border-top-left-radius: 20%;
+  }
+  .icons i {
+    font-size: 15px;
+    margin-left: 33%;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .icons span{
+    padding: 10px 0 0 0;
+    font-size: 10px;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .buttonMessage p{
+    margin-left: 1.5%;
+    margin-bottom: 14%;
+  }
+}
+
+@media screen and (min-width: 375px) and (max-width: 399px) and (min-height: 667px) and (max-height: 699px) {
+  .vico{
+    display: none;
+  }
+  .navigations{
+    margin: 0;
+    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
+    width: 100%;
+    border-radius: 0;
+  }
+  .roadmap{
+    font-size: 13px;
     margin: 25px 10px 0 5%;
   }
   .aboutpage{
     margin: 25px -10px 0 0;
-    font-size: 10px;
-  }
-  .signupForFree{
-    height: 10px;
-    font-size: 10px;
-    padding: 5px 10px;
-    margin: 20px 0 0 5px;
-  }
-  .rightnav{
-    height: 10px;
-    font-size: 10px;
-    padding: 5px 10px;
-    margin: 20px 0 0 5%;
-  }
-  .title{
-    font-size: 2.5rem;
-  }
-  .container h1{
-    margin: 20% 0 5% 0;
-    font-size: 2rem;
-  }
-  .container p{
-    /* display: none; */
-    font-size: 10px;
-    margin: 0 0 3% -5px;
-  }
-  .container ol{
-    margin: 0 0 5% 0;
-  }
-  .container li{
-    font-size: 11.5px;
-  }
-  .signbutton{
-    margin: 2% 0 0 30%;
-    padding: 5px;
-  }
-  .signbutton a{
-    font-size: 11px;
-  }
-  .icons{
-    margin-top: 20%;
-    padding: 20px 0;
-    gap: 20px;
-    border-top-right-radius: 20%;
-    border-top-left-radius: 20%;
-  }
-  .icons i {
-    font-size: 15px;
-    margin-left: 33%;
-    color:rgba(0, 0, 0, 0.699);
-  }
-  .icons span{
-    padding: 10px 0 0 0;
-    font-size: 7px;
-    color:rgba(0, 0, 0, 0.699);
-  }
-  .buttonMessage p{
-    font-size: 8.5px;
-    margin: 1px 0 14% 3%;
-  }
-}
-
-
-@media screen and (min-width: 360px) and (max-width: 399px) and (min-height: 640px) {
-  .navigations{
-    margin: 0;
-    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
-    width: 100%;
-    border-radius: 0;
-  }
-  .roadmap{
-    font-size: 13px;
-    margin: 25px 10px 0 6%;
-  }
-  .aboutpage{
-    margin: 25px -10px 0 0;
     font-size: 13px;
   }
   .signupForFree{
@@ -463,13 +555,13 @@ const { isAuthenticated } = authStore;
     font-size: 3.5rem;
   }
   .container h1{
-    margin: 35% 0 5% 0;
+    margin: 35% 0 5.5% 0;
     font-size: 3rem;
   }
   .container p{
     /* display: none; */
     font-size: 10px;
-    margin: 0 0 3% -5px;
+    margin: 0 0 5% -5px;
   }
   .container ol{
     margin: 0 0 5% 0;
@@ -478,90 +570,14 @@ const { isAuthenticated } = authStore;
     font-size: 11.5px;
   }
   .signbutton{
-    margin: 0 0 0 30%;
+    margin: 3% 0 0 30%;
     padding: 7px;
   }
   .signbutton a{
     font-size: 12px;
   }
   .icons{
-    margin-top: 22%;
-    padding: 20px 0;
-    gap: 30px;
-    border-top-right-radius: 20%;
-    border-top-left-radius: 20%;
-  }
-  .icons i {
-    font-size: 15px;
-    margin-left: 33%;
-    color:rgba(0, 0, 0, 0.699);
-  }
-  .icons span{
-    padding: 10px 0 0 0;
-    font-size: 6px;
-    color:rgba(0, 0, 0, 0.699);
-  }
-  .buttonMessage p{
-    margin: 0 0 14% 1.5%;
-  }
-}
-
-@media screen and (min-width: 300px) and (max-width: 360px) and (min-height: 700px) and (max-width: 740px) {
-  .navigations{
-    margin: 0;
-    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
-    width: 100%;
-    border-radius: 0;
-  }
-  .roadmap{
-    font-size: 13px;
-    margin-left: 2%;
-    margin-top: 25px;
-    margin-right: 10px;
-  }
-  .aboutpage{
-    margin: 25px -10px 0 0;
-    font-size: 13px;
-  }
-  .signupForFree{
-    height: 15px;
-    font-size: 13px;
-    padding: 5px 10px;
-    margin: 20px 0 0 5px;
-  }
-  .rightnav{
-    height: 15px;
-    font-size: 13px;
-    padding: 5px 10px;
-    margin: 20px 0 0 5%;
-  }
-  .title{
-    font-size: 3.5rem;
-  }
-  .container h1{
-    margin: 35% 0 5% 0;
-    font-size: 3rem;
-  }
-  .container p{
-    /* display: none; */
-    font-size: 10px;
-    margin: 0 0 3% -5px;
-  }
-  .container ol{
-    margin: 0 0 5% 0;
-  }
-  .container li{
-    font-size: 11.5px;
-  }
-  .signbutton{
-    margin: 0 0 0 30%;
-    padding: 7px;
-  }
-  .signbutton a{
-    font-size: 12px;
-  }
-  .icons{
-    margin-top: 22%;
+    margin-top: 25%;
     padding: 20px 0;
     gap: 20px;
     border-top-right-radius: 20%;
@@ -573,7 +589,7 @@ const { isAuthenticated } = authStore;
     color:rgba(0, 0, 0, 0.699);
   }
   .icons span{
-    padding: 40px 0 0 0;
+    padding: 10px 0 0 0;
     font-size: 10px;
     color:rgba(0, 0, 0, 0.699);
   }
@@ -583,8 +599,10 @@ const { isAuthenticated } = authStore;
   }
 }
 
-
-@media screen and (min-width: 300px) and (max-width: 399px) and (min-height: 882px){
+@media screen and (min-width: 390px) and (max-width: 399px) and (min-height: 844px) and (max-height: 850px) {
+  .vico{
+    display: none;
+  }
   .navigations{
     margin: 0;
     background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
@@ -593,9 +611,85 @@ const { isAuthenticated } = authStore;
   }
   .roadmap{
     font-size: 13px;
-    margin-left: 2%;
-    margin-top: 25px;
-    margin-right: 10px;
+    margin: 25px 10px 0 9%;
+  }
+  .aboutpage{
+    margin: 25px -10px 0 0;
+    font-size: 13px;
+  }
+  .signupForFree{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5px;
+  }
+  .rightnav{
+    height: 15px;
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 20px 0 0 5%;
+  }
+  .title{
+    font-size: 3.5rem;
+  }
+  .container h1{
+    margin: 35% 0 5.5% 0;
+    font-size: 3rem;
+  }
+  .container p{
+    /* display: none; */
+    font-size: 10px;
+    margin: 0 0 5% -5px;
+  }
+  .container ol{
+    margin: 0 0 5% 0;
+  }
+  .container li{
+    font-size: 11.5px;
+  }
+  .signbutton{
+    margin: 3% 0 0 30%;
+    padding: 7px;
+  }
+  .signbutton a{
+    font-size: 12px;
+  }
+  .icons{
+    margin-top: 25%;
+    padding: 20px 0;
+    gap: 20px;
+    border-top-right-radius: 20%;
+    border-top-left-radius: 20%;
+  }
+  .icons i {
+    font-size: 15px;
+    margin-left: 33%;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .icons span{
+    padding: 10px 0 0 0;
+    font-size: 10px;
+    color:rgba(0, 0, 0, 0.699);
+  }
+  .buttonMessage p{
+    margin-left: 1.5%;
+    margin-bottom: 14%;
+  }
+}
+
+@media screen and (min-width: 360px) and (max-width: 370px) and (min-height: 740px) and (max-height: 750px) {
+  .vico{
+    display: none;
+  }
+  .navigations{
+    margin: 0;
+    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
+    width: 100%;
+    border-radius: 0;
+  }
+  .roadmap{
+    font-size: 13px;
+    margin: 25px 10px 0 5%;
   }
   .aboutpage{
     margin: 25px -10px 0 0;
@@ -661,83 +755,11 @@ const { isAuthenticated } = authStore;
   }
 }
 
-@media screen and (min-width: 300px) and (max-width: 391px) and (min-height: 800px) and (max-height: 844px){
-  .navigations{
-    margin: 0;
-    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
-    width: 100%;
-    border-radius: 0;
-  }
-  .roadmap{
-    font-size: 13px;
-    margin: 25px 10px 0 10%;
-  }
-  .aboutpage{
-    margin: 25px -10px 0 0;
-    font-size: 13px;
-  }
-  .signupForFree{
-    height: 15px;
-    font-size: 13px;
-    padding: 5px 10px;
-    margin: 20px 0 0 5px;
-  }
-  .rightnav{
-    height: 15px;
-    font-size: 13px;
-    padding: 5px 10px;
-    margin: 20px 0 0 5%;
-  }
-  .title{
-    font-size: 3.5rem;
-  }
-  .container h1{
-    margin: 35% 0 5.5% 0;
-    font-size: 3rem;
-  }
-  .container p{
-    /* display: none; */
-    font-size: 10px;
-    margin: 0 0 5% -5px;
-  }
-  .container ol{
-    margin: 0 0 5% 0;
-  }
-  .container li{
-    font-size: 11.5px;
-  }
-  .signbutton{
-    margin: 3% 0 0 30%;
-    padding: 7px;
-  }
-  .signbutton a{
-    font-size: 12px;
-  }
-  .icons{
-    margin-top: 19%;
-    padding: 20px 0;
-    gap: 20px;
-    border-top-right-radius: 20%;
-    border-top-left-radius: 20%;
-  }
-  .icons i {
-    font-size: 15px;
-    margin-left: 33%;
-    color:rgba(0, 0, 0, 0.699);
-  }
-  .icons span{
-    padding: 10px 0 0 0;
-    font-size: 10px;
-    color:rgba(0, 0, 0, 0.699);
-  }
-  .buttonMessage p{
-    margin-left: 1.5%;
-    margin-bottom: 14%;
-  }
-}
-
 
 @media screen and (min-width: 400px) and (max-width: 499px) {
+  .vico{
+    display: none;
+  }
   .navigations{
     margin: 0;
     background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
@@ -814,6 +836,9 @@ const { isAuthenticated } = authStore;
 }
 
 @media screen and (min-width: 500px) and (max-width: 599px) {
+  .logo  .vico{
+    margin: 5px 0 0 10px;
+  }
   .navigations{
     margin: 0;
     background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
@@ -822,7 +847,7 @@ const { isAuthenticated } = authStore;
   }
   .roadmap{
     font-size: 13px;
-    margin: 25px 10px 0 33%;
+    margin: 25px 10px 0 25%;
   }
   .aboutpage{
     margin: 25px -10px 0 0;
@@ -888,7 +913,13 @@ const { isAuthenticated } = authStore;
   }
 }
 
-@media screen and (min-width: 700px) and (max-width: 799px) {
+@media screen and (min-width: 768px) and (max-width: 800px) and (min-height: 1024px) and (max-height: 1100px) {
+  .logo  .vico{
+    margin: 5px 0 0 10px;
+  }
+  .vico{
+    font-size: 1.5rem;
+  }
   .navigations{
     margin: 0;
     background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
@@ -897,23 +928,23 @@ const { isAuthenticated } = authStore;
   }
   .roadmap{
     font-size: 13px;
-    margin: 25px 10px 0 52%;
+    margin: 20px 10px 0 48%;
   }
   .aboutpage{
-    margin: 25px -20px 0 0;
+    margin: 20px -20px 0 0;
     font-size: 13px;
   }
   .signupForFree{
     height: 15px;
     font-size: 13px;
     padding: 5px 10px;
-    margin: 20px 0 0 5px;
+    margin: 15px 0 0 5px;
   }
   .rightnav{
     height: 15px;
     font-size: 13px;
     padding: 5px 10px;
-    margin: 20px 0 0 5%;
+    margin: 15px 0 0 5%;
   }
   .title{
     font-size: 3.5rem;
@@ -962,7 +993,11 @@ const { isAuthenticated } = authStore;
   }
 }
 
+
 @media screen and (min-width: 800px) and (max-width: 899px){
+  .logo  .vico{
+    margin: 5px 0 0 10px;
+  }
   .navigations{
     margin: 0;
     background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
@@ -971,7 +1006,7 @@ const { isAuthenticated } = authStore;
   }
   .roadmap{
     font-size: 13px;
-    margin: 25px 10px 0 55%;
+    margin: 25px 10px 0 50%;
   }
   .aboutpage{
     margin: 25px -20px 0 0;
@@ -1038,6 +1073,9 @@ const { isAuthenticated } = authStore;
 }
 
 @media screen and (min-width: 900px) and (max-width: 999px) and (min-height: 1368px) {
+  .logo  .vico{
+    margin: 5px 0 0 10px;
+  }
   .navigations{
     margin: 2% 0 0 5%;
     background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
@@ -1046,7 +1084,7 @@ const { isAuthenticated } = authStore;
   }
   .roadmap{
     font-size: 13px;
-    margin: 25px 10px 0 55%;
+    margin: 25px 10px 0 50%;
   }
   .aboutpage{
     margin: 25px -20px 0 0;
@@ -1112,6 +1150,9 @@ const { isAuthenticated } = authStore;
 }
 
  @media screen and (min-width: 1000px) and (max-width: 1100px) and (min-height: 1366px) and (max-height: 1399px) {
+  .logo  .vico{
+    margin: 5px 0 0 10px;
+  }
   .navigations{
     margin: 2% 0 0 5%;
     background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
@@ -1120,23 +1161,23 @@ const { isAuthenticated } = authStore;
   }
   .roadmap{
     font-size: 13px;
-    margin: 25px 10px 0 60%;
+    margin: 20px 10px 0 55%;
   }
   .aboutpage{
-    margin: 25px -20px 0 0;
+    margin: 20px -20px 0 0;
     font-size: 13px;
   }
   .signupForFree{
     height: 15px;
     font-size: 13px;
     padding: 5px 10px;
-    margin: 20px 0 0 5px;
+    margin: 15px 0 0 5px;
   }
   .rightnav{
     height: 15px;
     font-size: 13px;
     padding: 5px 10px;
-    margin: 20px 0 0 5%;
+    margin: 15px 0 0 4%;
   }
   .title{
     font-size: 5rem;
@@ -1186,6 +1227,9 @@ const { isAuthenticated } = authStore;
 }
 
 @media screen and (min-width: 1024px) and (max-width: 1099px) and (min-height: 600px) and (max-height: 699px) {
+  .logo  .vico{
+    margin: 5px 0 0 10px;
+  }
   .navigations{
     margin: 2% 0 0 5%;
     background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
@@ -1194,7 +1238,7 @@ const { isAuthenticated } = authStore;
   }
   .roadmap{
     font-size: 13px;
-    margin: 25px 10px 0 60%;
+    margin: 25px 10px 0 55%;
   }
   .aboutpage{
     margin: 25px -20px 0 0;
@@ -1260,6 +1304,9 @@ const { isAuthenticated } = authStore;
 }
 
 @media screen and (min-width: 1200px) and (max-width: 1299px) and (min-height: 800px) {
+  .logo  .vico{
+    margin: 5px 0 0 10px;
+  }
   .navigations{
     margin: 2% 0 0 6%;
     background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
@@ -1268,7 +1315,7 @@ const { isAuthenticated } = authStore;
   }
   .roadmap{
     font-size: 13px;
-    margin: 25px 10px 0 63%;
+    margin: 25px 10px 0 60%;
   }
   .aboutpage{
     margin: 25px -20px 0 0;

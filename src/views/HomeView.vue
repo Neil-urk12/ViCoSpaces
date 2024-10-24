@@ -1,50 +1,353 @@
 <script setup>
-import { ref } from 'vue';
-import myHome from '@/components/home-components.vue';
-import createRoom from '@/components/create-room.vue';
+import HostRoomModal from '../components/HostRoomModal.vue'
+import JoinRoomModal from '../components/JoinRoomModal.vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref as dbRef, onValue, off, push } from 'firebase/database';
+import { realTimeDb as database } from '../firebase/firebaseconfig.js'
+import { useRouter, RouterLink } from 'vue-router';
+import { useAuthStore } from '../stores/authStore'
+import { useRoomStore } from '../stores/roomStore'
 
-const join = () =>{
-  alert("neil joined the program!");
-}
+const router = useRouter();
+const authStore = useAuthStore();
+const roomStore = useRoomStore();
+
+const roomsRef = dbRef(database, 'rooms');
+let showModal = ref(false)
+const searchQuery = ref('');
+const sortBy = ref('createdAt');
+const sortOrder = ref('desc');
+const privacyFilter = ref('all');
+const categoryFilter = ref('all');
+const privacyCondition = ref('public')
+const roomIdToJoin = ref(null)
 
 const isCreateRoomVisible = ref(false);
-const title = ref('Production Design');
+const isDropdownOpen = ref(false)
+const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value
 
-function update(newTitle){
-  title.value = newTitle;
+const uniqueCategories = computed(() => {
+  const categories = new Set(
+    roomStore.rooms.map((room) => room.category).filter(Boolean)
+  );
+  return Array.from(categories);
+})
+
+const createRoomHandler = async (roomData) => {
+  try {
+    const roomId = await roomStore.createRoom(
+      roomData,
+      authStore.user.uid,
+      authStore.user.email
+    );
+    router.push(`/room/${roomId}`);
+  } catch (error) {
+    console.error('Error creating room:', error);
+  }
+}
+
+const joinRoom = async (roomId, privacyType) => {
+  if (privacyType === 'private') {
+    showModal.value = true;
+    privacyCondition.value = privacyType
+    roomIdToJoin.value = roomId
+  } else {
+    try {
+      await roomStore.joinRoom(
+        roomId,
+        authStore.user.uid,
+        authStore.user.email
+      );
+      router.push(`/room/${roomId}`)
+    } catch (error) {
+      console.error('Error joining room:', error)
+    }
+  }
+}
+
+const joinRoomById = async (roomId, password) => {
+  try {
+    await roomStore.joinRoom(
+      roomId,
+      authStore.user.uid,
+      authStore.user.email,
+      password
+    );
+    router.push(`/room/${roomId}`)
+  } catch (error) {
+    console.error('Error joining room:', error)
+  }
+};
+
+onMounted(async () => {
+  if (!authStore.isAuthenticated) router.push('/login')
+  else await roomStore.fetchRooms()
+})
+onUnmounted(() => {
+  off(roomsRef)
+})
+
+const filteredAndSortedRooms = computed(() => {
+  let filteredRooms = roomStore.rooms.filter(
+    (room) => room && typeof room === 'object'
+  )
+  if (searchQuery.value) {
+    filteredRooms = filteredRooms.filter((room) =>
+      room.id.includes(searchQuery.value)
+    )
+  }
+  if (privacyFilter.value !== 'all') {
+    filteredRooms = filteredRooms.filter(
+      (room) => room.privacyType === privacyFilter.value
+    )
+  }
+  if (categoryFilter.value !== 'all') {
+    filteredRooms = filteredRooms.filter(
+      (room) => room.category === categoryFilter.value
+    )
+  }
+  return filteredRooms.sort((a, b) => {
+    let comparison = 0;
+    if (sortBy.value === 'createdAtOldest') {
+      comparison = (a.createdAt || 0) - (b.createdAt || 0);
+    } else if (sortBy.value === 'createdAt') {
+      comparison = (b.createdAt || 0) - (a.createdAt || 0);
+    } else {
+      const aValue = a[sortBy.value] || 0
+      const bValue = b[sortBy.value] || 0
+      if (aValue < bValue) comparison = -1
+      if (aValue > bValue) comparison = 1
+    }
+    return sortOrder.value === 'desc' ? comparison * -1 : comparison;
+  })
+})
+
+const logout = async () => {
+  try {
+    await authStore.logout()
+    router.push('/')
+  } catch (error) {
+    console.error('Logout error:', error)
+  }
 }
 </script>
 
 <template>
   <header>
-    <myHome @open-room="isCreateRoomVisible = true" />
+    <header>
+      <nav class="nav-bar">
+        <div class="nav-div">
+          <div class="logo-container">
+            <img
+              src="../images/logo/logo.png"
+              alt="ViCoSpaces-Logo"
+              class="logo-img"
+            >
+            <span class="logo-name">ViCoSpaces</span>
+          </div>
+          <div
+            class="burger"
+            @click="toggleMenu"
+          >
+            <img
+              src="../images/SVG/burger-simple-svgrepo-com.svg"
+              alt="menu-icon"
+              width="30px"
+            >
+          </div>
+          <div class="nav-links-and-buttons">
+            <ul class="pages-container">
+              <ul class="pages-container">
+                <li>
+                  <RouterLink to="/">
+                    Home
+                  </RouterLink>
+                </li>
+                <li>
+                  <RouterLink to="/about">
+                    About
+                  </RouterLink>
+                </li>
+                <li>
+                  <RouterLink to="/contact">
+                    Contact
+                  </RouterLink>
+                </li>
+              </ul>
+            </ul>
+            <div
+              class="user-profile"
+              @click="toggleDropdown"
+            >
+              <img
+                src="../images/black-default-user-profile-ll(1).webp"
+                alt="User Profile"
+              >
+            </div>
+            <div
+              v-if="isDropdownOpen"
+              class="dropdown"
+            >
+              <RouterLink
+                to="/settings"
+                class="dropdown-item"
+              >
+                Settings
+              </RouterLink>
+              <RouterLink
+                to="/profile"
+                class="dropdown-item"
+              >
+                Profile
+              </RouterLink>
+              <a
+                class="dropdown-item"
+                @click.prevent="logout"
+              >
+                Log out
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+  
+    <main>
+      <div class="search-bar">
+        <div class="search">
+          <img
+            class="search-icon"
+            src="../images/SVG/search-svgrepo-com.svg"
+            alt="search-icon"
+            width="30px"
+          >
+          <input
+            v-model="searchQuery"
+            type="text"
+            class="search-input"
+            name="search-input"
+            placeholder="Search rooms by ID"
+          >
+  
+          <div class="filter-sort">
+            <a
+              href="#"
+              @click.prevent="filter"
+            >
+              <img
+                class="filter-icon"
+                src="../images/SVG/filters-2-svgrepo-com.svg"
+                alt="filter-icon"
+                width="30px"
+              >
+            </a>
+  
+            <a
+              href="#"
+              @click.prevent="sort"
+            >
+              <img
+                class="sort-icon"
+                src="../images/SVG/sort-vertical-svgrepo-com.svg"
+                alt="sort-icon"
+                width="30px"
+                @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"
+              >
+            </a>
+          </div>
+        </div>
+        <div class="button-container">
+          <button @click="showModal = true">
+            Join Room
+          </button>
+          <button @click="isCreateRoomVisible = true">
+            Host Room
+          </button>
+        </div>
+      </div>
+    </main>
     <categoryBar @changetitle="update" />
   </header>
+  <div class="search-sort">
+    <select v-model="sortBy">
+      <option value="capacity">
+        Capacity
+      </option>
+      <option value="createdAt">
+        Latest
+      </option>
+      <option value="createdAtOldest">
+        Oldest
+      </option>
+    </select>
+  </div>
+  <div class="filters">
+    <select v-model="privacyFilter">
+      <option value="all">
+        All Privacy
+      </option>
+      <option value="public">
+        Public
+      </option>
+      <option value="private">
+        Private
+      </option>
+    </select>
+    <select v-model="categoryFilter">
+      <option value="all">
+        All Categories
+      </option>
+      <option
+        v-for="category in uniqueCategories"
+        :key="category"
+        :value="category"
+      >
+        {{ category }}
+      </option>
+    </select>
+  </div>
   <main class="room-view-container">
-    <div class="room">
+    <div
+      v-for="room in filteredAndSortedRooms"
+      :key="room.id"
+      class="room"
+    >
       <div class="image-content">
         <div class="hosting-container">
           <div class="host-profile" />
         </div>
       </div>
       <div class="text-content">
-        <h2> Production Design</h2>
+        <h2>{{ room.name }}</h2>
+        <h4>{{ room.currentUsers }} / {{ room.maxCapacity }}</h4>
+        <p>Host: {{ room.host?.name || 'Unknown' }}</p>
+        <p>Privacy: {{ room.privacyType }}</p>
         <div class="joined-users">
           <i class="icon" />
         </div>
         <div class="join-btn-container">  
           <button
             class="join-btn"
-            @:click="join"
+            :disabled="room.currentUsers >= room.maxCapacity"
+            @click="joinRoom(room.id, room.privacyType)"
           >
-            Join
+            {{ room.currentUsers >= room.maxCapacity ? 'Full' : 'Join' }}
           </button>           
         </div>
       </div>
     </div>
-    <createRoom
+    <JoinRoomModal
+      v-if="showModal"
+      :room-id-to-join="roomIdToJoin"
+      :is-private="privacyCondition"
+      @close="showModal = false"
+      @join="joinRoomById"
+    />
+    <HostRoomModal
       :is-visible="isCreateRoomVisible"
       @close-room="isCreateRoomVisible = false"
+      @close="close"
+      @create="createRoomHandler"
     />
   </main>
 </template>
@@ -140,5 +443,289 @@ function update(newTitle){
   width: 124px;
   color: white;
   background-color: #2d8eff;
+}
+
+.nav-bar {
+  background: #2d8eff;
+  font-family: Calibri, sans-serif;
+  align-items: center;
+  height: 70px;
+  padding: 15px 40px 0px 40px;
+}
+
+.nav-div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.burger {
+  display: none;
+  cursor: pointer;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  font-size: 35px;
+  font-weight: 600;
+  color: white;
+}
+
+.logo-img {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.nav-links-and-buttons {
+  display: flex;
+  align-items: center;
+  gap: 70px;
+}
+
+.pages-container {
+  display: flex;
+  list-style: none;
+  gap: 80px;
+  margin: 0;
+}
+
+.pages-container li a {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  position: relative;
+  text-align: center;
+}
+
+.pages-container li a::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background-color: white;
+  transition: all 0.3s ease-in-out;
+  transform: translateX(-50%);
+}
+
+.pages-container li a:hover::after {
+  width: 100%;
+  left: 50%; 
+  transform: translateX(-50%);
+}
+
+.user-profile {
+  display: flex;
+  background-color: white;
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  justify-content: center;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.search {
+  --padding: 14px;
+  width: max-content;
+  display: flex;
+  align-items: center;
+  padding: var(--padding);
+  border-radius: 12px;
+  background: #f6f6f6;
+  width: 75%;
+}
+
+.search-input {
+  font-size: 16px;
+  font-family: sans-serif;
+  color: black;
+  margin-left: var(--padding);
+  margin-right: var(--padding);
+  outline: none;
+  border: none;
+  background: transparent;
+  flex: 1;
+}
+
+.search-icon, .sort-icon, .filter-icon {
+  cursor: pointer;
+}
+
+.filter-sort {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.button-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 20%;
+}
+
+button {
+  background-color: #2d8eff;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  width: 123px;
+  height: 50px;
+  font-weight: bold;
+}
+
+.dropdown {
+  position: absolute;
+  right: 0;
+  top: 15%;
+  margin-top: 0.5rem;
+  width: 12rem;
+  background-color: #ffffff;
+  border-radius: 0.375rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+  z-index: 10;
+}
+
+.dropdown-item {
+  display: block;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  color: #374151;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: #f3f4f6;
+}
+
+.dropdown-item:not(:last-child) {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+@media (max-width: 794px) {
+
+  .nav-bar {
+  background: #0f1112;
+  font-family: Calibri, sans-serif;
+  align-items: center;
+  height: 70px;
+  padding: 15px 40px 0px 40px;
+}
+
+.nav-div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  font-size: clamp(50px, 1vw, 100px);
+  font-weight: 600;
+  color: white;
+}
+
+.logo-img {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.nav-links-and-buttons {
+  display: flex;
+  align-items: center;
+  gap: 70px;
+}
+.pages-container {
+  display: flex;
+  list-style: none;
+  gap: 80px;
+  margin: 0;
+}
+
+.pages-container li a {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  position: relative;
+  text-align: center;
+}
+
+.pages-container li a::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background-color: white;
+  transition: all 0.3s ease-in-out;
+  transform: translateX(-50%);
+}
+
+.pages-container li a:hover::after {
+  width: 100%;
+  left: 50%; 
+  transform: translateX(-50%);
+}
+}
+
+@media (max-width: 641px) {
+  .nav-bar {
+    background: #003d5b;
+    font-family: Calibri, sans-serif;
+    align-items: center;
+    height: 70px;
+
+  }
+
+  .burger {
+    display: block;
+
+  }
+
+  .logo-container {
+  display: none;
+  align-items: center;
+  font-size: 35px;
+  font-weight: 600;
+  color: white;
+}
+
+.logo-img {
+  height: 40px;
+  margin-right: 10px;
+}
+
+  .nav-links-and-buttons {
+    display: none;
+  }
+
+  .nav-links-and-buttons.menu-open {
+    display: flex;
+    position: absolute;
+    top: 70px;
+    right: 0;
+    background: #003d5b;
+    width: 100%;
+    padding: 20px;
+    gap: 20px;
+    z-index: 10;
+  }
+
+  .pages-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
 }
 </style>
