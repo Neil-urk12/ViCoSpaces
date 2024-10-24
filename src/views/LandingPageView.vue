@@ -6,450 +6,369 @@ const { isAuthenticated } = authStore;
 </script>
 
 <template>
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-    integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  >
-   
-  <div class="container">
-    <header>
-      <nav>
-        <div class="navigations">
-          <div class="logo">
-            <img
-              src="../images/logo/logo.png"
-              class="logo-img"
-            >
-            <p class="vico">
-              ViCo
-            </p>
-          </div>
-
-          <div class="roadmap">
-            <RouterLink
-              to="/roadmap"
-            >
-              Road map
-              <!-- <i class="fa-solid fa-angle-down"></i> -->
-            </RouterLink>
-          </div>
-
-          <div class="aboutpage">
-            <RouterLink
-              to="/about"
-            >
-              About
-              <!-- <i class="fa-solid fa-angle-down"></i> -->
-            </RouterLink>
-          </div>
-       
-          <div class="rightnav">
-            <RouterLink
-              v-if="!isAuthenticated"
-              to="/login"
-            >
-              Log in
-            </RouterLink>
-            <RouterLink
-              v-else
-              to="/home"
-            >
-              Home
-            </RouterLink>
-          </div>
-          
-          <div
-            v-if="!isAuthenticated"
-            class="signupForFree"
+  <div class="cosmic-container">
+    <header class="cosmic-header">
+      <nav class="cosmic-nav">
+        <div class="cosmic-logo">
+          <div class="cosmic-logo-placeholder" />
+          <span class="cosmic-logo-text">Cosmic ViCo</span>
+        </div>
+        <button
+          class="cosmic-menu-toggle"
+          aria-label="Toggle menu"
+        >
+          ☰
+        </button>
+        <div class="cosmic-nav-links">
+          <RouterLink to="/star-map">
+            Star Map
+          </RouterLink>
+          <RouterLink to="/mission">
+            Our Mission
+          </RouterLink>
+          <RouterLink
+            to="/login"
+            class="cosmic-login-link"
           >
-            <RouterLink to="/register">
-              Sign up free
-            </RouterLink>
-          </div>
+            Log In
+          </RouterLink>
+          <RouterLink
+            to="/register"
+            class="cosmic-cta-button"
+          >
+            Launch Free Trial
+          </RouterLink>
         </div>
       </nav>
     </header>
-
-    <main>
-      <h1><span class="title">V</span>i<span class="title">C</span>o<span class="title">S</span>paces</h1>
-      <p>We’re excited to have you join us today. This is a space where we can work together, stay productive, <br> and keep each other accountable.Whether you're tackling a big project, working through smaller tasks.</p>
-        
-      <ol type="1">
-        <li><b>Check-in:</b> Let us know what you’ll be working on today.</li>
-        <li><b>Work Time:</b> We’ll work in focused blocks (e.g., 25 or 50 minutes) followed by short breaks.</li>
-        <li><b>Accountability:</b> Feel free to share your progress or ask for feedback.</li>
-        <li><b>Stay Connected:</b> Use the chat to encourage and motivate each other, but keep distractions to a minimum.</li>
-      </ol>
-      <button class="signbutton">
-        <RouterLink
-          v-if="!isAuthenticated"
-          to="/login"
-        >
-          Get Started it's FREE &nbsp; <span><i class="fa-solid fa-arrow-right" /></span>
+  
+    <main class="cosmic-main">
+      <h1 class="cosmic-title">
+        Cosmic<span>ViCo</span>Spaces
+      </h1>
+      <p class="cosmic-description">
+        Elevate your team's collaboration to new dimensions. Cosmic ViCo offers a seamless, 
+        intuitive workspace designed for the modern professional. Whether you're managing 
+        interstellar projects or coordinating across time zones, your journey to peak 
+        productivity begins here.
+      </p>
+  
+      <div class="cosmic-features">
+        <div class="cosmic-feature">
+          <div class="feature-icon">
+            👨‍🚀
+          </div>
+          <h3>Virtual Offices</h3>
+          <p>Customizable spaces for your team</p>
+        </div>
+        <div class="cosmic-feature">
+          <div class="feature-icon">
+            💬
+          </div>
+          <h3>Real-time Chat</h3>
+          <p>Instant communication across the cosmos</p>
+        </div>
+        <div class="cosmic-feature">
+          <div class="feature-icon">
+            ✅
+          </div>
+          <h3>Task Management</h3>
+          <p>Organize your mission with ease</p>
+        </div>
+        <div class="cosmic-feature">
+          <div class="feature-icon">
+            📊
+          </div>
+          <h3>Analytics Dashboard</h3>
+          <p>Track your team's progress</p>
+        </div>
+      </div>
+  
+      <button class="cosmic-cta-button main-cta">
+        <RouterLink to="/register">
+          Start Your Cosmic Journey 🚀
         </RouterLink>
-        <RouterLink
-          v-else
-          to="/home"
-        >
-          Continue where you left off &nbsp; <span><i class="fa-solid fa-arrow-right" /></span>
-        </RouterLink> 
       </button>
-      <p
-        class="buttonMessage"
-        style="font-size: 12px;margin: 7px 0 0 4%;color:rgba(0, 0, 0, 0.699);"
-      >
-        Free Forever. No Credit Card.
+      <p class="cosmic-cta-subtext">
+        No credit card required. Free 14-day trial.
       </p>
     </main>
-
-    <footer>
-      <div class="icons">
-        <p class="iconname">
-          <i class="fa-brands fa-rocketchat" /><br>Chats
-        </p>
-        <p class="iconname">
-          <i class="fa-solid fa-chalkboard" /><br>Whiteboards
-        </p>
-        <p class="iconname">
-          <i class="fa-solid fa-note-sticky" /><br>Notes
-        </p>
-        <p class="iconname">
-          <i class="fa-solid fa-lock" /><br>Private rooms
-        </p>
-        <p class="iconname">
-          <i class="fa-solid fa-unlock" /><br>Public rooms
-        </p>
+  
+    <footer class="cosmic-footer">
+      <div class="cosmic-footer-links">
+        <RouterLink to="/about">
+          About Us
+        </RouterLink>
+        <RouterLink to="/contact">
+          Contact
+        </RouterLink>
+        <RouterLink to="/privacy">
+          Privacy Policy
+        </RouterLink>
+        <RouterLink to="/terms">
+          Terms of Service
+        </RouterLink>
       </div>
+      <p class="cosmic-copyright">
+        &copy; 2023 Cosmic ViCo. All rights reserved.
+      </p>
     </footer>
   </div>
 </template>
-
-<style scoped>
-
-.roadmap {
-  margin: 17px 20px 0 63%;
-}
-.roadmap a , .aboutpage a{
-  text-decoration: none;
-  color: black;
-}
-.aboutpage{
-  margin: 18px 0 0 0;
-}
-.roadmap a:hover , .aboutpage a:hover{
-  color: blue;
-}
-.navigations{
-  background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
-  width: 80%;
-  margin: 1.2rem 0 0 12%;
-  display: flex;
-  padding: 6px 0;
-  border-radius: 10px;
-}
-.logo{
-  margin: 0 0 0 1.1rem;
-  display: flex;
-  align-items: center;
-}
-.logo img{
-  width: 55px;
-  height: 50px; 
-  border-radius: 50%;
-}
-.vico{
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-.signupForFree{
-  height: 20px;
-  background: linear-gradient(to right, #004cff, #d900ff);
-  padding: 10px 15px;
-  margin: 7px 0 0 -10px;
-  border-radius: 5px;
-  background-size: 200%;
-  background-position: right;
-  transition: background-position 1s;
-}
-.signupForFree a{
-  text-decoration: none;
-  color: white;
-}
-.signupForFree:hover{
-  background-position: left;
-}
-.title{
-  font-size: 6rem;
-  color: rgb(47, 127, 255);
-}
-.container{
-  position: absolute;
-  width: 100%;
-  height: 100vh;
-  background-color: white;
-}
-.container h1{
-  margin-top: 3%;
-  font-size: 4.6rem;
-  text-align: center;
-  margin-bottom: 1%;
-  background: linear-gradient(to right, #004cff, #d900ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  color: transparent;
-}
-.container p{
-  font-size: 1.4rem;
-  margin-left: 4.5%;
-  text-align: center;
-  font-weight: 550;
-  color: rgba(0, 0, 0, 0.699);
-}
-.container ol{
-  margin-left: 15%;
-  font-size: 15px;
-  margin-bottom: 2%;
-  display: block;
-}
-.container li{
-  margin-bottom: 1%;
-  color: rgba(0, 0, 0, 0.699);
-}
-.signbutton{
-  border-radius: 5px;
-  padding: 15px 35px;
-  font-size: 1rem;
-  margin: 0 auto;
-  display: block;
-  background-image: linear-gradient(35deg , #004cff, #d900ff);
-  background-size: 200%;
-  background-position: left;
-  transition: background-position 2s;
-  background-blend-mode:hard-light;
-  border: 0;
-  cursor: pointer;
-  transition: 0.4s ease-in-out;
-  animation: changeColor 2.5s ease-in-out infinite;
-}
-.signbutton a{
-  font-weight: 600;
-  color: rgb(255, 255, 255);
-  text-decoration: none;
-}
-.signbutton:hover{
-  transform: translateY(-3px);
-  box-shadow: 0 0 5px #004cff;
-}
-@keyframes changeColor {
-  50%{background-position: right;}
-}
-.icons{
-  display: flex;
-  gap: 50px;
-  justify-content: center;
-  margin-top: 48px;
-  width: 100%;
-  padding: 38px 0;
-  overflow-x:visible;
-  background-image: linear-gradient(to left, #004cff17, #d900ff17);
-  border-top-right-radius: 50%;
-  border-top-left-radius: 50%;
-}
-.icons p {
-  font-size: 16px;
-}
-.rightnav{
-  margin: 7px 2% 0 2%;
-  box-shadow: 0 0 1px black;
-  padding: 10px 15px;
-  height: 20px;
-  border-radius: 5px;
-  background-color: white;
-  cursor: pointer;
-  transition: 0.2s ease-in-out;
-}
-.rightnav a{
-  color: rgb(0, 0, 0);
-  text-decoration: none;
-}
-.rightnav:hover{
-  background-color: rgb(248, 248, 248);
-}
-
-/* @media screen and (max-width: 600px) {
-  .navigations{
+  
+  <style scoped>
+  :root {
+    --color-primary: #3a1f5d;
+    --color-secondary: #c779d0;
+    --color-accent: #4bc0c8;
+    --color-background: #f4f7f9;
+    --color-text: #333;
+    --color-text-light: #fff;
+    --font-main: 'Roboto', sans-serif;
+    --font-heading: 'Montserrat', sans-serif;
+  }
+  
+  /* Global Styles */
+  * {
+    box-sizing: border-box;
     margin: 0;
-    background-image: linear-gradient(to left, #004cff0b, #d900ff0e);
-    width: 100%;
+    padding: 0;
   }
-  .roadmap{
-    font-size: 13px;
-    margin-left: 0;
-    margin-right: 0;
+  
+  body {
+    font-family: var(--font-main);
+    background-color: var(--color-background);
+    color: var(--color-text);
+    line-height: 1.6;
   }
-  .signupForFree{
-    height: 20px;
+  
+  .cosmic-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
   }
-  .signupForFree a{
-    font-size: 13px;
+  
+  /* Header and Navigation */
+  .cosmic-header {
+    background-color: var(--color-primary);
+    padding: 1rem 0;
   }
-  .rightnav{
-    height: 10px;
-    font-size: 15px;
-    padding: 10px 10px;
-    margin-left: -40%;
+  
+  .cosmic-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
-  .title{
-    font-size: 5rem;
+  
+  .cosmic-logo {
+    display: flex;
+    align-items: center;
   }
-  .container h1{
-    margin: 15% 0 5% 0;
-    font-size: 3.5rem;
+  
+  .cosmic-logo-placeholder {
+    width: 40px;
+    height: 40px;
+    background-color: var(--color-accent);
+    border-radius: 50%;
+    margin-right: 0.5rem;
   }
-  .container p{
-    font-size: 1px;
-    margin: 0 0 5% 0;
+  
+  .cosmic-logo-text {
+    color: var(--color-text-light);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.2rem;
   }
-  .container ol{
-    margin: 0 0 5% 0;
+  
+  .cosmic-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--color-text-light);
+    font-size: 1.5rem;
+    cursor: pointer;
   }
-  .container li{
-    font-size: 11.5px;
+  
+  .cosmic-nav-links {
+    display: flex;
+    gap: 1.5rem;
   }
-  .signbutton{
-    margin: 0 0 0 34%;
-    padding: 10px;
+  
+  .cosmic-nav-links a {
+    color: var(--color-text-light);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
   }
-  .signbutton a{
-    font-size: 15px;
+  
+  .cosmic-nav-links a:hover {
+    color: var(--color-accent);
   }
-  .icons{
-    margin-top: 11%;
-    padding: 30px 0;
-    border-top-right-radius: 40%;
-    border-top-left-radius: 40%;
-
+  
+  .cosmic-login-link {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-text-light);
+    border-radius: 4px;
   }
-  .icons p{
-    padding: 40px 0 0 0;
-    font-size: 12px;
+  
+  .cosmic-cta-button {
+    background-color: var(--color-accent);
+    color: var(--color-text-light);
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
   }
-} */
-@media screen and (min-width: 600px) and (max-width: 900px) {
-  .navigations{
-    width: 100%;
-    margin: 0;
+  
+  .cosmic-cta-button:hover {
+    background-color: #3da8b0;
   }
-  .roadmap{
-    margin: 0 0 0 0;
+  
+  /* Main Content */
+  .cosmic-main {
+    padding: 4rem 0;
+    text-align: center;
   }
-  .signupForFree{
-    margin: 0 0 0 5%;
-    font-size: 10px;
-    padding: 10px 10px;
+  
+  .cosmic-title {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    color: var(--color-primary);
+    margin-bottom: 1rem;
   }
-  .rightnav{
-    margin:0 0 0 0%;
-    font-size: 15px;
-    padding: 10px 10px;
+  
+  .cosmic-title span {
+    color: var(--color-secondary);
   }
-  .title{
-    font-size: 5rem;
+  
+  .cosmic-description {
+    max-width: 800px;
+    margin: 0 auto 3rem;
+    font-size: 1.1rem;
   }
-  .container h1{
-    margin: 10% 0 5% 0;
-    font-size: 3.5rem;
+  
+  .cosmic-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
   }
-  .container p{
-    font-size: 1px;
-    margin: 0 0 5% 0;
+  
+  .cosmic-feature {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
   }
-  .container ol{
-    margin: 3% 0 10% 0;
+  
+  .cosmic-feature:hover {
+    transform: translateY(-5px);
   }
-  .container li{
-    font-size: 13px;
+  
+  .feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
   }
-  .signbutton{
-    margin: 0 0 0 34%;
-    padding: 10px;
+  
+  .cosmic-feature h3 {
+    font-family: var(--font-heading);
+    margin-bottom: 0.5rem;
   }
-  .icons{
-    margin-top: 28.5%;
-    padding: 30px 0;
-    border-top-left-radius: 30%;
-    border-top-right-radius: 30%;
+  
+  .main-cta {
+    font-size: 1.2rem;
+    padding: 0.75rem 1.5rem;
   }
-  .iconname{
-    padding: 20px 0 0 0;
-    font-size: 5px;
+  
+  .cosmic-cta-subtext {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #666;
   }
-}
-
-@media screen and (min-width: 901px) and (max-width:1200px){
-    .rightnav{
-      margin: 0 0 0 51%;
+  
+  /* Footer */
+  .cosmic-footer {
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    padding: 2rem 0;
+    text-align: center;
+  }
+  
+  .cosmic-footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .cosmic-footer-links a {
+    color: var(--color-text-light);
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  
+  .cosmic-copyright {
+    font-size: 0.8rem;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .cosmic-menu-toggle {
+      display: block;
     }
-    .roadmap{
-      margin: 15px 0 0 43%;
+  
+    .cosmic-nav-links {
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background-color: var(--color-primary);
+      padding: 1rem;
     }
-    .aboutpage{
-      margin: 15px 15px 0 10px;
+  
+    .cosmic-nav-links.is-open {
+      display: flex;
     }
-    .signupForFree{
-      margin: 5px 0 0 1%;
-      font-size: 15px;
-      padding: 8px 10px;
-      width: 80px;
+  
+    .cosmic-nav-links a {
+      padding: 0.5rem 0;
     }
-    .signupForFree a{
-      font-size: 14px;
+  
+    .cosmic-title {
+      font-size: 2.5rem;
     }
-    .rightnav{
-      width: 50px;
-      padding: 8px 10px;
-      margin:5px 0 0 0;
+  
+    .cosmic-description {
+      font-size: 1rem;
     }
-    .container h1{
-    margin: 13% 0 5% 0;
-    font-size: 3.5rem;
+  
+    .cosmic-features {
+      grid-template-columns: 1fr;
+    }
   }
-  .container p{
-    font-size: 1px;
-    margin: 0 0 5% 0;
+  
+  @media (max-width: 480px) {
+    .cosmic-title {
+      font-size: 2rem;
+    }
+  
+    .cosmic-description {
+      font-size: 0.9rem;
+    }
+  
+    .main-cta {
+      font-size: 1rem;
+      padding: 0.6rem 1.2rem;
+    }
+  
+    .cosmic-footer-links {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
   }
-  .container ol{
-    margin: 3% 0 5% -1%;
-  }
-  .container li{
-    font-size: 13px;
-  }
-  .signbutton{
-    margin: 0 0 0 34%;
-    padding: 10px;
-  }
-  .container p{
-    margin: 0 0 0 0;
-    font-size: 18px;
-  }
-  .signbutton{
-    margin: 0 0 0 40%;
-    padding: 10px;
-  }
-  .icons{
-    margin-top: 15%;
-    padding: 30px 0;
-    border-top-left-radius: 30%;
-    border-top-right-radius: 30%;
-  }
-  .iconname{
-    padding: 20px 0 0 0;
-    font-size: 5px;
-  }
-}
-
-</style>
+  </style>
