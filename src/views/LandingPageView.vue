@@ -20,7 +20,7 @@ const { isAuthenticated } = authStore;
         <div class="navigations">
           <div class="logo">
             <img
-              src="../images/logo/logo.png"
+              src="../assets/images/logo/transparentlogo 1080.png"
               class="logo-img"
             >
             <p class="vico">
