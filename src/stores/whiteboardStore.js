@@ -214,6 +214,15 @@ export const useWhiteboardStore = defineStore('whiteboard', {
           console.log('Unknown shape');
           return;
       }
+
+      shape.set({
+        selectable: true,
+        evented: true,
+        hasControls: true,
+        hasBorders: true,
+        perPixelTargetFind: false
+      });
+      
       this.addCustomBorder(shape);
       this.canvas.add(shape);
       this.canvas.setActiveObject(shape);

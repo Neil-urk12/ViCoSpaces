@@ -16,7 +16,7 @@ library.add(faT, faShapes, faPencil, faTrash, faImage, faDeleteLeft, faFileImpor
                                                                                                                
 const authStore = useAuthStore()                                                                        
 const cursorStore = useCursorStore()                                                                      
-const whiteboardStore = useWhiteboardStore()
+const whiteboardStore = useWhiteboardStore()  
 const chatStore = useChatStore()                                                              
 const route = useRoute()                                                                                 
                                                                                                                
@@ -116,13 +116,13 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
             title="Clear Canvas"
             @click="clearCanvas"
           >
-            🗑️
+            <font-awesome-icon :icon="['fas', 'trash']" />
           </button>                                            
           <button
             title="Insert Image"
             @click="triggerFileSelect"
           >
-            🖼️
+            <font-awesome-icon :icon="['far', 'image']" />
           </button>                                      
           <input
             ref="imageInput"
@@ -134,13 +134,13 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
             title="Remove Selected"
             @click="removeSelected"
           >
-            ❌
+            <font-awesome-icon :icon="['fas', 'delete-left']" />
           </button>                                      
           <button
             title="Download Image"
             @click="downloadCanvasAsImage"
           >
-            ⬇️
+            <font-awesome-icon :icon="['fas', 'file-import']" />
           </button>                                
         </div>
         <button
@@ -148,14 +148,14 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
           title="Add Text"
           @click="addTextToCanvas"
         >
-        <font-awesome-icon :icon="['fas', 't']" />
+          <font-awesome-icon :icon="['fas', 't']" />
         </button>
         <button
           class="tool-btn"
           title="Shape Library"
           @click="showShapeLibrary = !showShapeLibrary"
         >
-        <font-awesome-icon :icon="['fas', 'shapes']" />
+          <font-awesome-icon :icon="['fas', 'shapes']" />
         </button>
       </div>
   
@@ -171,14 +171,14 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
           title="Clear Canvas"
           @click="clearCanvas"
         >
-        <font-awesome-icon :icon="['fas', 'trash']" />
+          <font-awesome-icon :icon="['fas', 'trash']" />
         </button>
         <button
           class="tool-btn"
           title="Remove Selected"
           @click="removeSelected"
         >
-        <font-awesome-icon :icon="['fas', 'delete-left']" />
+          <font-awesome-icon :icon="['fas', 'delete-left']" />
         </button>
       </div>
   
@@ -188,14 +188,14 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
           title="Insert Image"
           @click="triggerFileSelect"
         >
-        <font-awesome-icon :icon="['far', 'image']" />
+          <font-awesome-icon :icon="['far', 'image']" />
         </button>
         <button
           class="tool-btn"
           title="Download Image"
           @click="downloadCanvasAsImage"
         >
-        <font-awesome-icon :icon="['fas', 'file-import']" />
+          <font-awesome-icon :icon="['fas', 'file-import']" />
         </button>
         <input
           ref="imageInput"
@@ -792,8 +792,30 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
     }
   
     .shape-library {
-      grid-template-columns: repeat(3, 1fr);
-      width: 90%;
-    }
+    grid-template-columns: repeat(4, 1fr); /* 2 columns for devices ≤ 768px */
+    gap: 0.5rem; /* Add space between shapes */
+    width: 40%;
   }
+
+  .shape-option {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .shape-option svg {
+    max-width: 80%; /* Scale down SVG for better fit */
+    height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .shape-library {
+    grid-template-columns: repeat(3, 1fr); /* 1 column for devices ≤ 480px */
+  }
+
+  .shape-option svg {
+    max-width: 70%; /* Further scale down SVG for smaller screens */
+  }
+}
   </style>
