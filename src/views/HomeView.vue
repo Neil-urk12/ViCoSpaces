@@ -1,16 +1,16 @@
 <script setup>
-import '@/assets/styles/homeView.css'
-import '@/assets/styles/home-components.css'
-import LockIcon from '@/assets/images/SVG/lock-password-svgrepo-com-red-large.svg'
-import UnlockIcon from  '@/assets/images/SVG/lock-unlocked-svgrepo-com-green.svg'
-import lockStatusIcon from '@/assets/images/SVG/lock-svgrepo-com-black.svg'
-import hostIcon from '@/assets/images/SVG/user-svgrepo-com-black.svg'
-import SidebarModal from '@/components/SidebarModal.vue'
-import FilterModal from '@/components/FilterModal.vue'
-import HostRoomModal from '@/components/HostRoomModal.vue'
-import JoinRoomModal from '@/components/JoinRoomModal.vue'
-import { ref, onMounted, onUnmounted, computed, watch} from 'vue'
-import { ref as dbRef, off} from 'firebase/database'
+//Styles
+import '@/assets/styles/homeView.css';
+import '@/assets/styles/home-components.css';
+//imported icon
+import LockIcon from '@/assets/images/SVG/lock-password-svgrepo-com-red-large.svg';
+import UnlockIcon from  '@/assets/images/SVG/lock-unlocked-svgrepo-com-green.svg';
+import SidebarModal from '@/components/SidebarModal.vue';
+import FilterModal from '@/components/FilterModal.vue';
+import HostRoomModal from '@/components/HostRoomModal.vue';
+import JoinRoomModal from '@/components/JoinRoomModal.vue';
+import { ref, onMounted, onUnmounted, computed, watch} from 'vue';
+import { ref as dbRef, onValue, off, push } from 'firebase/database';
 import { realTimeDb as database } from '../firebase/firebaseconfig.js'
 import { useRouter, RouterLink } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
@@ -185,13 +185,13 @@ const logout = async () => {
       <div class="nav-div">
         <div class="logo-container">
           <img
-            src="../assets/images/logo/transparentlogo 1080.png"
+            src="../assets/images/logo/Logo.png"
             alt="ViCoSpaces-Logo"
             class="logo-img"
-            width="100%"
-            height="100%"
+            width="100px"
+            height="100px"
           >
-          <span class="logo-name">ViCoSpaces</span>
+          <span class="logo-name" />
         </div>
         <div class="open-sidebar">
           <div class="open-sidebar-icon">
@@ -397,6 +397,7 @@ const logout = async () => {
           @click="isCreateRoomVisible = true"
         >
           <img
+            class="host-icon"
             src="../assets/images/SVG/add-square-svgrepo-com white.svg"
             alt="host-icon"
             width="30px"
@@ -434,7 +435,7 @@ const logout = async () => {
               <div class="host-wrapper">
                 <div class="hiw">
                   <img
-                    :src="hostIcon"
+                    src="../assets/images/SVG/user-svgrepo-com.svg"
                     alt="status icon"
                     class="status-icon-privacy"
                     width="26"
@@ -446,7 +447,7 @@ const logout = async () => {
               <div class="privacy-wrapper">
                 <div class="sip">
                   <img
-                    :src="lockStatusIcon"
+                    src="../assets/images/SVG/lock-password-svgrepo-com-blue.svg"
                     alt="status icon"
                     class="status-icon-privacy"
                     width="26"

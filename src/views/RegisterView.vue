@@ -142,25 +142,24 @@ const signInWithGoogle = async () => {
             Sign Up
           </button>
 
-          <button
-            class="btn btn-google"
-            @click="signInWithGoogle"
-          >
-            <img
-              class="btn-icon"
-              src="../assets/images/google.png"
-              alt="google logo"
-            >
-            Sign Up with Google
-          </button>
-
-          <button
-            class="btn btn-github"
-            @click="signUpWithGithub"
-          >
-            <i class="fa-brands fa-github" />
-            Sign Up with Github
-          </button>
+      <button
+        class="btn-secondary"
+        @click="signInWithGoogle"
+      >
+        <img
+          class="imagelogo"
+          src="../images/google.png"
+          alt="google logo"
+        >
+        Sign Up with Google
+      </button>
+      <button
+        class="btn-Third"
+        @click="signUpWithGithub"
+      >
+        <i class="fa-brands fa-github" />
+        Sign Up with Github
+      </button>
 
           <p class="switch-form">
             Already have an account? 
@@ -342,17 +341,31 @@ input:focus {
   transition: color 0.3s ease;
 }
 .switch-form a:hover {
-  color: #93c5fd;
+  text-decoration: underline;
 }
-@media (max-width: 480px) {
-  .form-container {
-    padding: 24px;
+@media screen and (min-width: 480px) and (max-width: 600px) {
+  .signup {
+    padding: 1.5rem;
+    border: 0;
+    box-shadow:none;
   }
   h1 {
     font-size: 1.75rem;
   }
-  .btn {
-    padding: 10px 20px;
-  }
+}
+
+@media screen and (min-width: 601px) and (max-width: 900px)  {
+    .signup{
+      background-color: #ffffff;
+      border: 0;
+      box-shadow:none;
+    }
+    
+}
+@media screen and (min-width: 901px) and (max-width: 1200px) {
+  .signup{
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    }
 }
 </style>

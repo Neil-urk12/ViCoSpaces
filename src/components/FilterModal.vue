@@ -186,7 +186,7 @@ const closeModal = () => {
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
       width: 250px;
       padding: 20px;
-      gap: 15px; /* Add spacing between elements */
+      gap: 15px;
     }
   }
   @media (max-width: 375px) {
@@ -202,7 +202,7 @@ const closeModal = () => {
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
       width: 250px;
       padding: 20px;
-      gap: 15px; /* Add spacing between elements */
+      gap: 15px;
     }
   }
   </style>
