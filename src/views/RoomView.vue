@@ -1,79 +1,105 @@
+<template>
+  <div class="room-container">
+    <header class="room-header">
+      <div class="room-info">
+        <h1>{{ roomName }}</h1>
+        <p class="host-info">
+          Host: {{ host }}
+        </p>
+      </div>
+      <div class="room-actions">
+        <button
+          class="btn"
+          @click="leaveRoom"
+        >
+          Leave Room
+        </button>
+        <button
+          v-if="isHost"
+          class="btn btn-danger"
+          @click="confirmDeleteRoom"
+        >
+          Delete Room
+        </button>
+      </div>
+    </header>
+    
+    <div class="workspace">
+      <CanvasWhiteBoard />
+      <chatBoxFeature :room-id="roomId" />
+    </div>
+  </div>
+</template>
+
 <script setup>
 import CanvasWhiteBoard from '/src/components/CanvasWhiteBoard.vue';
-import ChatBox from '/src/components/chat-box-feature.vue';
+import chatBoxFeature from '@/components/chat-box-feature.vue';
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { ref as dbRef, get, onValue, off } from 'firebase/database';
 import { realTimeDb as db } from '@/firebase/firebaseconfig';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useRoomStore } from '@/stores/roomStore';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faDoorOpen, faTrash } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faDoorOpen, faTrash);
+const route = useRoute();
+const router = useRouter();
+const roomStore = useRoomStore();
+const authStore = useAuthStore();
 
-const route = useRoute()
-const router = useRouter()
-const roomStore = useRoomStore()
-const authStore = useAuthStore()
-
-const room = ref(null)
-const roomListener = ref(null)
-const host = ref(null)
+const room = ref(null);
+const roomListener = ref(null);
+const host = ref(null);
 const isHost = computed(() => {
-  return room.value && room.value.host.id === authStore.user.uid
-})
+  return room.value && room.value.host.id === authStore.user.uid;
+});
 
 onMounted(async () => {
-  const roomId = route.params.id
+  const roomId = route.params.id;
   roomListener.value = onValue(dbRef(db, `rooms/${roomId}`), (snapshot) => {
     if (snapshot.exists()) {
-      room.value = { id: roomId, ...snapshot.val() }
-      host.value = room.value.host.name
-      console.log(host);
-      
+      room.value = { id: roomId, ...snapshot.val() };
+      host.value = room.value.host.name;
     } else {
-      console.error('Room not found')
-      router.push('/home')
+      console.error('Room not found');
+      router.push('/home');
     }
-  })
-})
+  });
+});
 
 onUnmounted(() => {
   if (roomListener.value) {
-    off(dbRef(db, `rooms/${route.params.id}`), 'value', roomListener.value)
+    off(dbRef(db, `rooms/${route.params.id}`), 'value', roomListener.value);
   }
-  leaveRoom()
-})
+  leaveRoom();
+});
 
 const leaveRoom = async () => {
   try {
-    await roomStore.leaveRoom(route.params.id, authStore.user.uid)
-    router.push('/home')
+    await roomStore.leaveRoom(route.params.id, authStore.user.uid);
+    router.push('/home');
   } catch (error) {
-    console.error('Error leaving room:', error)
+    console.error('Error leaving room:', error);
   }
-}
+};
 
 const confirmDeleteRoom = () => {
   if (room.value.currentUsers > 1) {
     if (confirm('There are other users in the room. Are you sure you want to delete it?')) {
-      deleteRoom()
+      deleteRoom();
     }
   } else {
-    deleteRoom()
+    deleteRoom();
   }
-}
+};
 
 const deleteRoom = async () => {
   try {
-    await roomStore.deleteRoom(route.params.id)
-    router.push('/home')
+    await roomStore.deleteRoom(route.params.id);
+    router.push('/home');
   } catch (error) {
-    console.error('Error deleting room:', error)
+    console.error('Error deleting room:', error);
   }
-}
+};
 
 const roomId = ref(route.params.id);
 const roomName = ref(route.query.name);
@@ -84,191 +110,90 @@ onMounted(async () => {
 
   if (roomSnapshot.exists()) {
     const roomData = roomSnapshot.val();
-    roomName.value = roomData.name; 
+    roomName.value = roomData.name;
   } else console.error('Room not found');
 });
 </script>
 
-<template>
-  <div class="room-header">
-    <div class="top-left-buttons">
-      <button
-        class="rect-button-leave-btn"
-        @click="leaveRoom"
-      >
-        <font-awesome-icon :icon="['fas', 'door-open']" /> Leave Room
-      </button>
-      <button 
-        v-if="isHost" 
-        class="rect-button-delete-btn" 
-        @click="confirmDeleteRoom"
-      >
-        <font-awesome-icon :icon="['fas', 'trash']" /> Delete Room
-      </button>
-    </div>
-
-    <div class="center-room-name">
-      <span class="room-name">{{ roomName }}</span>
-    </div>
-
-    <div class="top-right-info">
-      <div class="room-id">
-        <span class="info-label">Room ID:</span> {{ roomId }}
-      </div>
-      <div class="host-name">
-        <span class="info-label">Host:</span> {{ host }}
-      </div>
-    </div>
-  </div>
-  <CanvasWhiteBoard />
-  <ChatBox />
-</template>
-
 <style scoped>
-.room-header{
+.room-container {
+  height: 100vh;
   display: flex;
-  height: 10%;
+  flex-direction: column;
+  background-color: #f8fafc;
+}
+
+.room-header {
+  background-color: #fff;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
   justify-content: space-between;
-  align-content: center;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.room-info h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
   margin: 0;
-  padding: 0px 10px 0px 10px;
+}
 
+.host-info {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin: 0.25rem 0 0;
 }
-.top-left-buttons{
+
+.room-actions {
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  
- 
+  gap: 1rem;
 }
-.top-left-buttons button{
-  border: 2px solid #3498db; 
-  border-radius: 8px;
-  font-size: 16px; 
-  color: #3498db; 
-  background-color: transparent; 
+
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
   cursor: pointer;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s;
-}
-
-.rect-button-leave-btn:hover {
-  background-color: rgba(52, 152, 219, 0.1); 
-  color: #d01800; 
-  border-color: #ce0000;
-}
-.rect-button-delete-btn:hover {
-  background-color: rgba(52, 152, 219, 0.1); 
-  color: #d01800; 
-  border-color: #ce0000;
-}
-
-.center-room-name{
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  width: 20%;
-  height: 90%;
-  border: 2px solid #ccc;
-  border-radius: 8px;
+  transition: all 0.2s;
+  border: 1px solid #e2e8f0;
   background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  font-size: 20px; /* Increased font size */
-  font-weight: bold;
-  color: red;
+  color: #64748b;
 }
-.room-name{
-  align-self: center;
+
+.btn:hover {
+  background-color: #f1f5f9;
 }
-.top-right-info{
-  align-self: center;
+
+.btn-danger {
+  background-color: #ef4444;
+  color: #fff;
+  border: none;
+}
+
+.btn-danger:hover {
+  background-color: #dc2626;
+}
+
+.workspace {
+  flex: 1;
   display: flex;
-  flex-direction: column;
-  height: 80%;
-  justify-content: space-around;
-  background-color: #fff;
-  border: 2px solid #ccc;
-  border-radius: 6px;
-  padding: 3px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  
-
-}
-.room-id, .host-name {
-  color: #3498db;
-  font-weight: bold;
+  position: relative;
+  overflow: hidden;
 }
 
-.info-label {
-  font-weight: normal;
-  color: black;
-}
-
-/* Media Queries for Responsiveness */
-@media (max-width: 959px) {
-  
-}
 @media (max-width: 768px) {
   .room-header {
+    padding: 1rem;
     flex-direction: column;
-    align-items: center;
-    height: auto;
-    padding: 10px 15px;
+    gap: 1rem;
+    text-align: center;
   }
 
-  .top-left-buttons {
-    position: static; /* Reset position to flow naturally */
-    margin-bottom: 10px;
-    flex-direction: row; /* Change to row for better layout */
-  }
-
-  .rect-button {
-    font-size: 14px;
-    padding: 6px 12px;
-  }
-
-  .center-room-name {
-    font-size: 16px;
-    padding: 8px 12px;
-    margin: 10px 0;
-  }
-
-  .top-right-info {
-    position: static; /* Reset position for better responsiveness */
-    margin-top: 10px;
-    width: 80%;
-    align-items: center;
-    font-size: 16px;
-  }
-}
-
-@media (max-width: 480px) {
-  .room-header {
-    padding: 10px;
-  }
-
-  .top-left-buttons {
-    flex-direction: row;
-    gap: 3px; /* Smaller gap for smaller screens */
-  }
-
-  .rect-button {
-    font-size: 12px;
-    padding: 4px 8px;
-  }
-
-  .center-room-name {
-    font-size: 14px;
-    padding: 6px 10px;
-    margin: 5px 0;
-  }
-
-  .top-right-info {
-    font-size: 14px;
-    padding: 8px 10px;
-  }
-
-  .room-id, .host-name {
-    font-size: 14px;
+  .room-actions {
+    width: 100%;
+    justify-content: center;
   }
 }
 </style>

@@ -1,76 +1,72 @@
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { signInWithPopup } from 'firebase/auth';
-import { authnow , googleprovider } from '@/firebase/firebaseconfig';
-import logonav from '@/components/landing-page-nav.vue';
-import { useAuthStore } from '@/stores/authStore';
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { signInWithPopup } from 'firebase/auth'
+import { authnow , googleprovider } from '@/firebase/firebaseconfig'
+import logonav from '@/components/landing-page-nav.vue'
+import { useAuthStore } from '@/stores/authStore'
 
-  const email = ref('')
-  const password = ref('')
-  const router = useRouter()
-  const errorMessage = ref()
-  const auth = useAuthStore()
+const email = ref('')
+const password = ref('')
+const router = useRouter()
+const errorMessage = ref()
+const auth = useAuthStore()
 
-  if(auth.isAuthenticated) router.push('/home')
+if(auth.isAuthenticated) router.push('/home')
 
-  const login = async () => {
-    try {
-      await auth.login({ email: email.value, password: password.value });
-      router.push('/home');
-    } catch (error) {
-      switch (error.code) {
-        case 'auth/missing-password':
-          errorMessage.value = 'Missing Password';
-          document.querySelector("#password").style.border = "2px solid red";
-          document.querySelector("#email").style.border = "2px solid #4a90e2";
-          break;
-        case 'auth/invalid-credential':
-          errorMessage.value = 'Incorrect email or password';
-          document.querySelector("#password").style.border = "2px solid red";
-          document.querySelector("#email").style.border = "2px solid red";
-          break;
-        case 'auth/invalid-email':
-          errorMessage.value = 'Complete all fields';
-          document.querySelector("#password").style.border = "2px solid red";
-          document.querySelector("#email").style.border = "2px solid red";
-          break;
-        default:
-          alert('Please check your network')
+const login = async () => {
+  try {
+    await auth.login({ email: email.value, password: password.value })
+    router.push('/home')
+  } catch (error) {
+    switch (error.code) {
+      case 'auth/missing-password':
+        errorMessage.value = 'Missing Password'
+        document.querySelector("#password").style.border = "2px solid red"
+        document.querySelector("#email").style.border = "2px solid #4a90e2"
         break
-      }
+      case 'auth/invalid-credential':
+        errorMessage.value = 'Incorrect email or password'
+        document.querySelector("#password").style.border = "2px solid red"
+        document.querySelector("#email").style.border = "2px solid red"
+        break
+      case 'auth/invalid-email':
+        errorMessage.value = 'Complete all fields'
+        document.querySelector("#password").style.border = "2px solid red"
+        document.querySelector("#email").style.border = "2px solid red"
+        break;
+      default:
+        alert('Please check your network')
+      break
     }
-  };
-
-  const signInWithGoogle = async () => {
-    // sessionStorage.setItem('loggedin', 'true')
-      try {
-         const confidential = await signInWithPopup(authnow, googleprovider)
-            if(confidential){
-              const user = confidential.user;
-              console.log(`User Info: ${user}`);
-              router.push('/home')
-            }
-            
-      } catch (error) {
-            console.error(error)
+  }
+}
+const signInWithGoogle = async () => {
+  try {
+      const confidential = await signInWithPopup(authnow, googleprovider)
+      if(confidential){
+        const user = confidential.user;
+        console.log(`User Info: ${user}`)
+        router.push('/home')
       }
-    }
-
-    const showpass = () => {
-      if(document.querySelector('#password').type == 'password'){
-        document.querySelector('#password').type = 'text'
-        document.querySelector('#hidepass').style.display = 'none'
-        document.querySelector('#showpass').style.display = 'block'
-      }
-    }
-    const hidepass = () => {
-      if(document.querySelector('#password').type == 'text'){
-        document.querySelector('#password').type = 'password'
-        document.querySelector('#hidepass').style.display = 'block'
-        document.querySelector('#showpass').style.display = 'none'
-      }
-    }
+  } catch (error) {
+        console.error(error)
+  }
+}
+const showpass = () => {
+  if(document.querySelector('#password').type == 'password'){
+    document.querySelector('#password').type = 'text'
+    document.querySelector('#hidepass').style.display = 'none'
+    document.querySelector('#showpass').style.display = 'block'
+  }
+}
+const hidepass = () => {
+  if(document.querySelector('#password').type == 'text'){
+    document.querySelector('#password').type = 'password'
+    document.querySelector('#hidepass').style.display = 'block'
+    document.querySelector('#showpass').style.display = 'none'
+  }
+}
 </script>
 
 <template>
