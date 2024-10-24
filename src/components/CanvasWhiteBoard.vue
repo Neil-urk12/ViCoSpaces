@@ -9,10 +9,10 @@ import { useRoute } from 'vue-router'
 import { useChatStore } from '@/stores/chatStore'
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faT, faShapes, faPencil, faTrash, faDeleteLeft, faFileImport } from '@fortawesome/free-solid-svg-icons';
+import { faT, faShapes, faPencil, faTrash, faDeleteLeft, faFileImport, faPen, faPenNib } from '@fortawesome/free-solid-svg-icons';
 import { faImage } from '@fortawesome/free-regular-svg-icons';
 
-library.add(faT, faShapes, faPencil, faTrash, faImage, faDeleteLeft, faFileImport);
+library.add(faT, faShapes, faPencil, faTrash, faImage, faDeleteLeft, faFileImport, faPen, faPenNib);
                                                                                                                
 const authStore = useAuthStore()                                                                        
 const cursorStore = useCursorStore()                                                                      
@@ -74,7 +74,14 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
           title="Drawing Mode"
           @click="toggleDrawMode"
         >
-          {{ whiteboardStore.isDrawingMode ? '✏️' : '🖊️' }}
+          <font-awesome-icon 
+            v-if="whiteboardStore.isDrawingMode" 
+            :icon="['fas', 'pen-nib']" 
+          />
+          <font-awesome-icon 
+            v-else 
+            :icon="['fas', 'pen']"  
+          />
         </button>
         <div
           v-if="whiteboardStore.showBrushOptions"

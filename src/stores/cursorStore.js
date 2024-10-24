@@ -31,7 +31,10 @@ export const useCursorStore = defineStore('cursor', {
         let offsetY = 10;
 
         const zoomFactor = window.devicePixelRatio;
-        if (zoomFactor >= 2.0) {
+        if (zoomFactor >= 2.5) {
+          offsetX = 106;
+          offsetY = -30;
+        } else if (zoomFactor >= 2.0) {
           offsetX = 120;
           offsetY = -10;
         } else if (zoomFactor >= 1.75) { 

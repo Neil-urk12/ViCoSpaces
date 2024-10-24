@@ -26,8 +26,8 @@ export const useWhiteboardStore = defineStore('whiteboard', {
         preserveObjectStacking: true,
       });
 
-      this.canvas.defaultCursor = 'default';
-      this.canvas.hoverCursor = 'move';
+      this.canvas.defaultCursor = 'none';
+      this.canvas.hoverCursor = 'none';
       this.canvas.isDrawingMode = false;
 
       this.addGrid();
@@ -222,7 +222,7 @@ export const useWhiteboardStore = defineStore('whiteboard', {
         hasBorders: true,
         perPixelTargetFind: false
       });
-      
+
       this.addCustomBorder(shape);
       this.canvas.add(shape);
       this.canvas.setActiveObject(shape);
