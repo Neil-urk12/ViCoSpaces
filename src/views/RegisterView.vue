@@ -142,24 +142,25 @@ const signInWithGoogle = async () => {
             Sign Up
           </button>
 
-      <button
-        class="btn-secondary"
-        @click="signInWithGoogle"
-      >
-        <img
-          class="imagelogo"
-          src="../images/google.png"
-          alt="google logo"
-        >
-        Sign Up with Google
-      </button>
-      <button
-        class="btn-Third"
-        @click="signUpWithGithub"
-      >
-        <i class="fa-brands fa-github" />
-        Sign Up with Github
-      </button>
+          <button
+            class="btn btn-secondary"
+            @click="signInWithGoogle"
+          >
+            <img
+              class="imagelogo"
+              src="/src/assets/images/google.png"
+              alt="google logo"
+              height="20px"
+            >
+            Sign Up with Google
+          </button>
+          <button
+            class="btn btn-Third"
+            @click="signUpWithGithub"
+          >
+            <i class="fa-brands fa-github" />
+            Sign Up with Github
+          </button>
 
           <p class="switch-form">
             Already have an account? 
@@ -283,7 +284,7 @@ input:focus {
 #hidepass {
   display: none;
 }
-.btn {
+.btn{
   width: 100%;
   padding: 12px 24px;
   border-radius: 8px;

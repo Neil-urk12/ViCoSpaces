@@ -15,7 +15,9 @@ coverage
 *.local
 /cypress/videos/
 /cypress/screenshots/
-
+functions/.eslintrc.js
+functions/.gitignore
+functions/index.js
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -24,7 +26,9 @@ coverage
 *.ntvs*
 *.njsproj
 *.sln
+.firebaserc
+database.rules.json
 *.sw?
-
+firebase.json
 *.tsbuildinfo
 .aider*
