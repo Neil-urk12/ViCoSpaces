@@ -37,8 +37,6 @@ const roomIdToJoin = ref(null)
 const isCreateRoomVisible = ref(false);
 const isDropdownOpen = ref(false)
 const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value
-
-//this should be FilterModal.vue
 const isModalVisible = ref(false);
 
 const openFilterModal = () => {
@@ -107,10 +105,9 @@ const handleClickOutsideProfile= (event) => {
   const dropdown = document.querySelector('.dropdown');
   const profile = document.querySelector('.user-profile');
   if (dropdown && !dropdown.contains(event.target) && !profile.contains(event.target)) {
-    isDropdownOpen.value = false; // Close dropdown if clicked outside
+    isDropdownOpen.value = false
   }
-};
-// Register event listener on mounted, remove on unmount
+}
 onMounted(() => {
   document.addEventListener('click', handleClickOutsideProfile);
 });
@@ -154,7 +151,6 @@ const filteredAndSortedRooms = computed(() => {
   return filteredRooms.sort((a, b) => {
     let comparison = 0;
 
-    // Sort by creation date or capacity based on user selection
     if (sortBy.value === 'createdAt') {
       // Sort by latest (descending)
       comparison = (b.createdAt || 0) - (a.createdAt || 0);
@@ -162,18 +158,15 @@ const filteredAndSortedRooms = computed(() => {
       // Sort by oldest (ascending)
       comparison = (a.createdAt || 0) - (b.createdAt || 0);
     } else if (sortBy.value === 'capacity') {
-      const aCapacity = a.capacity || 0;
-      const bCapacity = b.capacity || 0;
-      comparison = aCapacity - bCapacity;
+      const aCapacity = a.capacity || 0
+      const bCapacity = b.capacity || 0
+      comparison = aCapacity - bCapacity
     }
 
-    return sortOrder.value === 'desc' ? comparison : -comparison;
-  });
-});
-
-// Watch for room creation and update categories
+    return sortOrder.value === 'desc' ? comparison : -comparison
+  })
+})
 watch(roomStore.rooms, (newRooms) => {
-  // Update unique categories when new rooms are created
   const categories = new Set(newRooms.map((room) => room.category).filter(Boolean));
   categoryFilter.value = 'all'; // Reset category filter to ensure dynamic updates
 });
@@ -187,9 +180,6 @@ const logout = async () => {
   }
 }
 </script>
-
-
-
 
 <template>
   <header>
@@ -214,7 +204,6 @@ const logout = async () => {
               class="open-sidemodal-btn"
               @click="showSideBarModal = true"
             >
-            <!-- Pass down the close function as a prop -->
             <SidebarModal
               v-if="showSideBarModal"
               @close="showSideBarModal = false"
@@ -423,9 +412,6 @@ const logout = async () => {
         </button>
       </div>
     </div>
-
-    <!-- ROOM -->
-
     <main class="room-view-container">
       <div class="room-form">
         <div
@@ -444,7 +430,6 @@ const logout = async () => {
                 >
               </div>
             </div>
-
             <div class="room-name-container">
               <h2 class="room-name">
                 {{ room.name }}
@@ -476,7 +461,6 @@ const logout = async () => {
                   >
                 </div>
                 <div class="status-bg-container">
-                  <!-- The container's background color changes based on isPrivate -->
                   <div
                     class="status-background"
                     :style="{ backgroundColor: room.privacyType === 'private' ? 'red' : 'lightgreen' }"
@@ -486,7 +470,6 @@ const logout = async () => {
                     </p>
                   </div>
                 </div>
-                <!-- <p>privacy: {{ room.privacyType }}</p>  -->
               </div>
               <div class="joined-users">
                 <i class="icon" />
@@ -497,15 +480,15 @@ const logout = async () => {
                     Capacity:
                   </div>
                   <div class="user-counter">
-                    <h4>{{ room.currentUsers }} / {{ room.maxCapacity }}</h4>
+                    <h4>{{ room.currentUsers }} / {{ room.capacity }}</h4>
                   </div>
                 </div>
                 <button
                   class="join-a-room-btn"
-                  :disabled="room.currentUsers >= room.maxCapacity"
+                  :disabled="room.currentUsers >= room.capacity"
                   @click="joinRoom(room.id, room.privacyType)"
                 >
-                  {{ room.currentUsers >= room.maxCapacity ? 'Full' : 'Join' }}
+                  {{ room.currentUsers >= room.capacity ? 'Full' : 'Join' }}
                 </button>           
               </div>
             </div>
@@ -529,10 +512,8 @@ const logout = async () => {
 <style scope>
   * {
     text-decoration: none;
-    font-family: Arial, Helvetica, sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
   }
 </style>
-

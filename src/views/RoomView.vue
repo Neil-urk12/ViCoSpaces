@@ -4,7 +4,10 @@
       <div class="room-info">
         <h1>{{ roomName }}</h1>
         <p class="host-info">
-          Host: {{ host }}
+          Host: <b>{{ host }}</b>
+        </p>
+        <p class="host-info">
+          Room Id: <b>{{ roomId }}</b>
         </p>
       </div>
       <div class="room-actions">
