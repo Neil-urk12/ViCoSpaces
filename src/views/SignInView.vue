@@ -365,7 +365,6 @@ input:not(:placeholder-shown) ~ label {
   font-weight: 600;
   transition: opacity 0.3s ease;
 }
-
 .switch-form a:hover {
   opacity: 0.8;
 }

@@ -110,7 +110,7 @@ const { isAuthenticated } = authStore;
         </RouterLink>
       </div>
       <p class="cosmic-copyright">
-        &copy; 2023 Cosmic ViCo. All rights reserved.
+        &copy; 2024 Cosmic ViCo. All rights reserved.
       </p>
     </footer>
   </div>

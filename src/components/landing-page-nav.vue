@@ -2,8 +2,8 @@
   <nav class="nav-bar">
     <div class="logo-container">
       <img
-        src="../images/logo/transparentlogo 1080.png"
-        alt="ViCoSpaces-Logo"
+        src="../assets/images/logo/transparentlogo 1080.png"
+        
         class="logo-img"
         width="50px"
       >

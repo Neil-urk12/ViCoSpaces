@@ -19,7 +19,7 @@ const authStore = useAuthStore()
 const cursorStore = useCursorStore()                                                                       
 const chatStore = useChatStore()                                                              
 const route = useRoute()                                                                                 
-                                                                                                               
+
 const userId = computed(() => authStore.getUid)                                                            
 const username = computed(() => authStore.getDisplayName)    
 let debounceTimeout;                                                                                           
@@ -604,37 +604,7 @@ const downloadCanvasAsImage = () => {
               min="1"
               max="30" 
             >                                                                                                 
-          </div>                                                                                                   
-          <button
-            title="Clear Canvas"
-            @click="clearCanvas"
-          >
-            <font-awesome-icon :icon="['fas', 'trash']" />
-          </button>                                            
-          <button
-            title="Insert Image"
-            @click="triggerFileSelect"
-          >
-            <font-awesome-icon :icon="['far', 'image']" />
-          </button>                                      
-          <input
-            ref="imageInput"
-            type="file"
-            style="display: none"
-            @change="insertImage"
-          >                       
-          <button
-            title="Remove Selected"
-            @click="removeSelected"
-          >
-            <font-awesome-icon :icon="['fas', 'delete-left']" />
-          </button>                                      
-          <button
-            title="Download Image"
-            @click="downloadCanvasAsImage"
-          >
-            <font-awesome-icon :icon="['fas', 'file-import']" />
-          </button>                                
+          </div>                                                                                                                    
         </div>
         <button
           class="tool-btn"
@@ -1162,6 +1132,7 @@ const downloadCanvasAsImage = () => {
     justify-content: center;
     border-bottom: 1px solid #e2e8f0;
     flex-wrap: wrap;
+    z-index: 1;
   }
   
   .tool-group {
@@ -1222,6 +1193,7 @@ const downloadCanvasAsImage = () => {
     font-size: 1.5rem;
     line-height: 1;
     transform: rotate(-85deg);
+    z-index: 1000;
   }
   
   .cursor-label {
@@ -1251,8 +1223,9 @@ const downloadCanvasAsImage = () => {
     z-index: 1000;
   }
   .brush-options-popup {                                                                                         
-    position: absolute;                                                                                                                                                                                          
-    top: 50px;                                                                                                   
+    position: absolute;   
+    left: 30%;                                                                                                                                                                                  
+    top: 10px;                                                                                                   
     background-color: white;                                                                                     
     border: 1px solid #ccc;                                                                                      
     padding: 10px;                                                                                               
