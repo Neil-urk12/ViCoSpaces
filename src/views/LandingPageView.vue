@@ -171,6 +171,7 @@ body {
   background-color: var(--color-background);
   color: var(--color-text);
   line-height: 1.6;
+  overflow-y:unset;
 }
 
 a {
