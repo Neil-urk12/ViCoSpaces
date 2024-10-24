@@ -4,7 +4,7 @@ import '@/assets/styles/homeView.css';
 import '@/assets/styles/home-components.css';
 //imported icon
 import LockIcon from '@/assets/images/SVG/lock-password-svgrepo-com-red-large.svg';
-import UnlockIcon from  '@/assets/images/SVG/lock-unlocked-svgrepo-com-green.svg';
+import UnlockIcon from  '@/assets/images/SVG/lock-svgrepo-com-green-bold.svg';
 import SidebarModal from '@/components/SidebarModal.vue';
 import FilterModal from '@/components/FilterModal.vue';
 import HostRoomModal from '@/components/HostRoomModal.vue';
@@ -384,7 +384,7 @@ const logout = async () => {
         >
           <img
             class="join-icon"
-            src="../assets/images/SVG/session-join-svgrepo-com white.svg"
+            src="../assets/images/SVG/session-join-svgrepo-com.svg"
             alt="join-icon"
             width="30px"
           >
@@ -398,7 +398,7 @@ const logout = async () => {
         >
           <img
             class="host-icon"
-            src="../assets/images/SVG/add-square-svgrepo-com white.svg"
+            src="../assets/images/SVG/add-square-svgrepo-com.svg"
             alt="host-icon"
             width="30px"
           >
@@ -407,6 +407,17 @@ const logout = async () => {
       </div>
     </div>
     <main class="room-view-container">
+      <button
+        class="host-btn-mobile"
+        @click="isCreateRoomVisible = true"
+      >
+        <img
+          class="host-icon"
+          src="../assets/images/SVG/add-square-svgrepo-com.svg"
+          alt="host-icon"
+          width="30px"
+        >
+      </button>
       <div class="room-form">
         <div
           v-for="room in filteredAndSortedRooms"
@@ -416,12 +427,16 @@ const logout = async () => {
           <div class="image-content">
             <div class="status-icon-wrapper">
               <div class="status-icon">
-                <img
-                  :src="room.privacyType === 'public' ? UnlockIcon : LockIcon"
-                  alt="status icon"
-                  width="32"
-                  height="32"
-                >
+                <div class="shape">
+                  <div class="boton">
+                    <img
+                      :src="room.privacyType === 'public' ? UnlockIcon : LockIcon"
+                      alt="status icon"
+                      width="32"
+                      height="32"
+                    >
+                  </div>
+                </div>
               </div>
             </div>
             <div class="room-name-container">
@@ -435,7 +450,7 @@ const logout = async () => {
               <div class="host-wrapper">
                 <div class="hiw">
                   <img
-                    src="../assets/images/SVG/user-svgrepo-com.svg"
+                    src="../assets/images/SVG/user-alt-1-svgrepo-com.svg"
                     alt="status icon"
                     class="status-icon-privacy"
                     width="26"
@@ -447,7 +462,7 @@ const logout = async () => {
               <div class="privacy-wrapper">
                 <div class="sip">
                   <img
-                    src="../assets/images/SVG/lock-password-svgrepo-com-blue.svg"
+                    src="../assets/images/SVG/lock-svgrepo-com.svg"
                     alt="status icon"
                     class="status-icon-privacy"
                     width="26"
@@ -457,7 +472,7 @@ const logout = async () => {
                 <div class="status-bg-container">
                   <div
                     class="status-background"
-                    :style="{ backgroundColor: room.privacyType === 'private' ? 'red' : 'lightgreen' }"
+                    :style="{ backgroundColor: room.privacyType === 'private' ? 'red' : 'limegreen' }"
                   >
                     <p class="p-text">
                       {{ room.privacyType === 'private' ? 'Private' : 'Public' }}
@@ -510,4 +525,5 @@ const logout = async () => {
     padding: 0;
     box-sizing: border-box;
   }
+  
 </style>
