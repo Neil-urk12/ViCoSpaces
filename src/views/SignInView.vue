@@ -68,292 +68,320 @@ const hidepass = () => {
   }
 }
 </script>
-
 <template>
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-    integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  >
-  <logonav />
   <div class="signin">
-    <h1>Sign In</h1>
-    <div class="form-group">
-      <label for="email">Email</label><br>
-      <input
-        id="email"
-        v-model="email"
-        type="email"
-        placeholder="Enter email"
-      >
-      <label for="password">Password</label><br>
-      <input
-        id="password"
-        v-model="password"
-        type="password"
-        placeholder="Enter password" 
-      ><br>
-
-      <i
-        id="hidepass"
-        class="fa-solid fa-eye-slash"
-        @click="showpass"
-      />
-      <i
-        id="showpass"
-        class="fa-solid fa-eye"
-        @click="hidepass"
-      /><br>
-  
-      <p
-        v-if="errorMessage"
-        class="erroMessage"
-      >
-        {{ errorMessage }}
-      </p>
-
-      <span class="forgotpass">
-        Forgot Password
-      </span>
-      
-      <button
-        class="btn-primary"
-        @click="login"
-      >
+    <div class="stars" />
+    <div class="form-container">
+      <h1 class="title">
         Sign In
-      </button>
+      </h1>
+      <div class="form-group">
+        <div class="input-group">
+          <input
+            id="email"
+            v-model="email"
+            type="email"
+            placeholder=" "
+            requireda
+          >
+          <label for="email">Email</label>
+        </div>
 
-      <button
-        class="btn-secondary"
-        @click="signInWithGoogle"
-      >
-        <img
-          class="imagelogo"
-          src="../images/google.png"
-          alt="google logo"
+        <div class="input-group">
+          <input
+            id="password"
+            v-model="password"
+            type="password"
+            placeholder=" "
+            required
+          >
+          <label for="password">Password</label>
+          <i
+            id="hidepass"
+            class="fa-solid fa-eye-slash toggle-password"
+            @click="showpass"
+          />
+          <i
+            id="showpass"
+            class="fa-solid fa-eye toggle-password"
+            @click="hidepass"
+          />
+        </div>
+
+        <span class="forgotpass">
+          Forgot Password?
+        </span>
+
+        <p
+          v-if="errorMessage"
+          class="errorMessage"
         >
-        Sign In with Google
-      </button>
+          {{ errorMessage }}
+        </p>
+        
+        <button
+          class="btn btn-primary"
+          @click="login"
+        >
+          Sign In
+        </button>
 
-      <button
-        class="btn-Third"
-        @click="signInWithGithub"
-      >
-        <i class="fa-brands fa-github" />
-        Sign In with Github
-      </button>
+        <div class="social-divider">
+          <span>or continue with</span>
+        </div>
 
-      <p class="switch-form">
-        Don't have an account ? <router-link to="/register">
-          Sign Up
-        </router-link>
-      </p>
+        <div class="social-buttons">
+          <button
+            class="btn btn-social google"
+            @click="signInWithGoogle"
+          >
+            <img
+              class="imagelogo"
+              src="../assets/images/google.png"
+              alt="google logo"
+            >
+            Google
+          </button>
+
+          <button
+            class="btn btn-social github"
+            @click="signInWithGithub"
+          >
+            <i class="fa-brands fa-github" />
+            Github
+          </button>
+        </div>
+
+        <p class="switch-form">
+          Don't have an account? 
+          <router-link to="/register">
+            Sign Up
+          </router-link>
+        </p>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-body{
-  font-family: Arial, Helvetica, sans-serif;
-}
-.fa-eye-slash{
-  margin: -14% 0 0 90%;
-  cursor: pointer;
-  color: rgba(0, 0, 0, 0.452);
-}
-.fa-eye{
-  margin: -14% 0 0 90%;
-  cursor: pointer;
-  color: rgba(0, 0, 0, 0.452);
-  display: none;
-}
-.forgotpass{
-  margin: 10.5% 0 0 18%;
-  position: absolute;
-  color: blue;
-  cursor: pointer;
-}
-.forgotpass:hover{
-  text-decoration: underline;
-}
-
 .signin {
-  max-width: 400px;
-  margin: 30px auto;
-  padding: 1% 1.2rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  background-color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  position: relative;
+  overflow: hidden;
+  padding: 1rem;
 }
-.erroMessage{
-  width: 35%;
-  margin: 1% 0 0 0;
-  color: red;
+.stars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 50px 160px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 130px 80px, #ffffff, rgba(0,0,0,0));
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  animation: stars 4s linear infinite;
+  opacity: 0.5;
 }
-h1 {
+@keyframes stars {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100px);
+  }
+}
+.form-container {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.title {
+  color: #fff;
+  font-size: 2rem;
   text-align: center;
-  color: #333;
-  font-size: 2.5rem;
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
-
 .form-group {
   display: flex;
   flex-direction: column;
+  gap: 1.5rem;
 }
-
-label {
-  color: #555;
-  font-weight: bold;
-  margin-bottom: -10px;
+.input-group {
+  position: relative;
 }
-
 input {
-  padding: 0.75rem;
-  margin-bottom: 2%;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  width: 100%;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
   font-size: 1rem;
-  outline: 0;
-  border: 2px solid rgba(0, 0, 0, 0.174);
-  cursor: pointer;
+  transition: all 0.3s ease;
 }
-input:hover{
-  background-color: #7474740d;
-}
-
 input:focus {
-  border: 2px solid #4a90e2;
-  box-shadow: 0 0 0 2px rgba(0, 119, 255, 0.288);
+  outline: none;
+  border-color: #64ffda;
+  box-shadow: 0 0 15px rgba(100, 255, 218, 0.3);
 }
-::placeholder{
-  color: lightgrey;
+label {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+input:focus ~ label,
+input:not(:placeholder-shown) ~ label {
+  top: -0.5rem;
+  left: 0.5rem;
+  font-size: 0.8rem;
+  color: #64ffda;
+  background: rgba(26, 26, 46, 0.8);
+  padding: 0 0.5rem;
+}
+.toggle-password {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.toggle-password:hover {
+  color: #64ffda;
+}
+.forgotpass {
+  color: #64ffda;
+  font-size: 0.9rem;
+  text-align: right;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+.forgotpass:hover {
+  opacity: 0.8;
+}
+.errorMessage {
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  text-align: center;
 }
 .btn {
-  padding: 0.75rem;
+  width: 100%;
+  padding: 1rem;
+  border-radius: 8px;
   border: none;
-  border-radius: 4px;
   font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 }
-
 .btn-primary {
-  background-color: #4a90e2;
-  color: white;
-  margin-bottom: 5%;
-  margin-top: 7.5%;
-  padding: 18px 0;
-  border-radius: 5px;
-  border: 0;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 1.1rem;
-  transition: 0.3s ease-in-out;
+  background: linear-gradient(135deg, #64ffda 0%, #48bfe3 100%);
+  color: #1a1a2e;
 }
 .btn-primary:hover {
-  background-color: #0073ff;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(100, 255, 218, 0.4);
+}
+.social-divider {
+  text-align: center;
+  position: relative;
+  margin: 1.5rem 0;
+}
+.social-divider::before,
+.social-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 45%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+.social-divider::before {
+  left: 0;
+}
+.social-divider::after {
+  right: 0;
+}
+.social-divider span {
+  color: rgba(255, 255, 255, 0.6);
+  background: #1a1a2e;
+  padding: 0 1rem;
+  font-size: 0.9rem;
+}
+.social-buttons {
+  display: flex;
+  gap: 1rem;
+}
+.btn-social {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.btn-social:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
-.btn-secondary {
-  background-color: #ffffff;
-  color: #4a90e2;
-  border: 1px solid #4a90e2;
-  padding: 15px 0;
-  border-radius: 5px;
-  box-shadow: 0 0 1px black;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
-  transition: 0.3s ease-in-out;
-}
-
-.imagelogo{
-  width: 1.3rem;
-  margin: 0 10px -3px 0;
-}
-
-.btn-secondary:hover {
-  background-color: #e7f2fe;
-}
-
-.btn-Third{
-  background-color: #ffffff;
-  color: #4a90e2;
-  border: 1px solid #4a90e2;
-  padding: 15px 0;
-  border-radius: 5px;
-  box-shadow: 0 0 1px black;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 1.1rem;
-  transition: 0.3s ease-in-out;
-}
-
-.fa-github{
-  font-size: 1.3rem;
-  margin: 0 10px -3px 0;
-  color: black;
-}
-.btn-Third:hover {
-  background-color: #e7f2fe;
+.btn-social img,
+.btn-social i {
+  width: 20px;
+  height: 20px;
 }
 
 .switch-form {
   text-align: center;
-  margin-top: 1rem;
+  color: rgba(255, 255, 255, 0.6);
   font-size: 0.9rem;
-  color: #666;
 }
 
 .switch-form a {
-  color: #4a90e2;
+  color: #64ffda;
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 600;
+  transition: opacity 0.3s ease;
 }
 
 .switch-form a:hover {
-  text-decoration: underline;
+  opacity: 0.8;
 }
 
-@media screen and (max-width: 600px) {
-  .signin {
+/* Responsive Design */
+@media (max-width: 480px) {
+  .form-container {
     padding: 1.5rem;
-    border: 0;
-    box-shadow:none;
   }
-  input , .btn {
-    font-size: 0.9rem;
+
+  .title {
+    font-size: 1.75rem;
   }
-  .forgotpass{
-    margin: 26% 0 0 46.1%;
+
+  .social-buttons {
+    flex-direction: column;
   }
 }
-@media screen and (min-width: 601px) and (max-width: 900px)  {
-    .signin{
-      background-color: #ffffff;
-      border: 0;
-      box-shadow:none;
-    }
-    .forgotpass{
-    margin: 27% 0 0 46%;
-  }
-    
-}
-
-@media (min-width: 901px) and (max-width: 1200px) {
-  .signin{
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    background-color: #ffffff;
-    }
-    .forgotpass{
-      margin: 18% 0 0 31%;
-  }
-}
-
-
 </style>
