@@ -1,9 +1,6 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { signInWithPopup } from 'firebase/auth'
-import { authnow , googleprovider } from '@/firebase/firebaseconfig'
-import logonav from '@/components/landing-page-nav.vue'
 import { useAuthStore } from '@/stores/authStore'
 
 const email = ref('')
@@ -43,14 +40,10 @@ const login = async () => {
 }
 const signInWithGoogle = async () => {
   try {
-      const confidential = await signInWithPopup(authnow, googleprovider)
-      if(confidential){
-        const user = confidential.user;
-        console.log(`User Info: ${user}`)
-        router.push('/home')
-      }
+    await auth.signInWithGoogle()
+    router.push('/home')
   } catch (error) {
-        console.error(error)
+    console.error(error)
   }
 }
 const showpass = () => {
@@ -86,7 +79,6 @@ const hidepass = () => {
           >
           <label for="email">Email</label>
         </div>
-
         <div class="input-group">
           <input
             id="password"
@@ -107,29 +99,25 @@ const hidepass = () => {
             @click="hidepass"
           />
         </div>
-
         <span class="forgotpass">
           Forgot Password?
         </span>
-
         <p
           v-if="errorMessage"
           class="errorMessage"
         >
           {{ errorMessage }}
         </p>
-        
+
         <button
           class="btn btn-primary"
           @click="login"
         >
           Sign In
         </button>
-
         <div class="social-divider">
           <span>or continue with</span>
         </div>
-
         <div class="social-buttons">
           <button
             class="btn btn-social google"
@@ -151,9 +139,8 @@ const hidepass = () => {
             Github
           </button>
         </div>
-
         <p class="switch-form">
-          Don't have an account? 
+          Don't have an account?
           <router-link to="/register">
             Sign Up
           </router-link>
@@ -181,7 +168,7 @@ const hidepass = () => {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  background-image: 
+  background-image:
     radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
     radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
     radial-gradient(2px 2px at 50px 160px, #ffffff, rgba(0,0,0,0)),
@@ -278,6 +265,7 @@ input:not(:placeholder-shown) ~ label {
   cursor: pointer;
   transition: opacity 0.3s ease;
 }
+#hidepass, #showpass{color: black}
 .forgotpass:hover {
   opacity: 0.8;
 }

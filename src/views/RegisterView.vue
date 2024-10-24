@@ -3,9 +3,19 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { signInWithPopup } from 'firebase/auth';
 import { authnow , googleprovider } from '@/firebase/firebaseconfig';
-import logonav from '@/components/landing-page-nav.vue'
 import { useAuthStore } from '@/stores/authStore'
 
+// const showpass = () => {
+//   document.getElementById('password').type = 'text'
+//   document.getElementById('showpass').style.display = 'none'
+//   document.getElementById('hidepass').style.display = 'inline'
+// }
+
+// const hidepass = () => {
+//   document.getElementById('password').type = 'password'
+//   document.getElementById('hidepass').style.display = 'none'
+//   document.getElementById('showpass').style.display = 'inline'
+// }
 
 const email = ref('')
 const password = ref('')
@@ -18,7 +28,7 @@ if(authStore.isAuthenticated) router.push('/home')
 const register = async () => {
   try {
     await authStore.register({ email: email.value, password: password.value });
-    router.push('/home');
+    router.push('/home')
   } catch (error) {
     switch(error.code){
       case 'auth/invalid-email':
@@ -50,7 +60,6 @@ const register = async () => {
 }
 
 const signInWithGoogle = async () => {
-
       try {
           const confidential = await  signInWithPopup(authnow , googleprovider)
           if(confidential) {
@@ -62,305 +71,288 @@ const signInWithGoogle = async () => {
           console.error(error)
       }
 }
-
-const checkbox = () => {
-      if(document.querySelector('#password').type == 'password'){
-        document.querySelector('#password').type = 'text'
-      }else{
-        document.querySelector('#password').type = 'password'
-      }
-}
-
-const showpass = () => {
-      if(document.querySelector('#password').type == 'password'){
-        document.querySelector('#password').type = 'text'
-        document.querySelector('#hidepass').style.display = 'none'
-        document.querySelector('#showpass').style.display = 'block'
-      }
-    }
-const hidepass = () => {
-  if(document.querySelector('#password').type == 'text'){
-    document.querySelector('#password').type = 'password'
-    document.querySelector('#hidepass').style.display = 'block'
-    document.querySelector('#showpass').style.display = 'none'
-  }
-}
-
-
+// const showpass = () => {
+//       if(document.querySelector('#password').type == 'password'){
+//         document.querySelector('#password').type = 'text'
+//         document.querySelector('#hidepass').style.display = 'none'
+//         document.querySelector('#showpass').style.display = 'block'
+//       }
+//     }
+// const hidepass = () => {
+//   if(document.querySelector('#password').type == 'text'){
+//     document.querySelector('#password').type = 'password'
+//     document.querySelector('#hidepass').style.display = 'block'
+//     document.querySelector('#showpass').style.display = 'none'
+//   }
+// }
 </script>
 
 <template>
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-    integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  >
-  <logonav />
-  <div class="signup">
-    <h1>Sign Up</h1>
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input
-        id="email"
-        v-model="email"
-        type="email"
-        placeholder="Enter email"
-      >
-      <label for="password">Password</label>
-      <input
-        id="password"
-        v-model="password"
-        type="password"
-        placeholder="Enter password"
-      ><br>
+  <div class="container">
+    <div class="stars" />
+    <div class="signup">
+      <div class="form-container">
+        <h1>Sign Up</h1>
+        <div class="form-group">
+          <div class="input-group">
+            <label for="email">Email</label>
+            <input
+              id="email"
+              v-model="email"
+              type="email"
+              placeholder="Enter email"
+            >
+          </div>
 
-      <i
-        id="hidepass"
-        class="fa-solid fa-eye-slash"
-        @click="showpass"
-      />
-      <i
-        id="showpass"
-        class="fa-solid fa-eye"
-        @click="hidepass"
-      /><br>
-      
-      <p
-        v-if="errorMessage"
-        class="erroMessage"
-      >
-        {{ errorMessage }}
-      </p>
+          <div class="input-group">
+            <label for="password">Password</label>
+            <div class="password-input">
+              <input
+                id="password"
+                v-model="password"
+                type="password"
+                placeholder="Enter password"
+              >
+              <div class="password-toggle">
+                <i
+                  id="hidepass"
+                  class="fa-solid fa-eye-slash"
+                  @click="showpass"
+                />
+                <i
+                  id="showpass"
+                  class="fa-solid fa-eye"
+                  @click="hidepass"
+                />
+              </div>
+            </div>
+          </div>
 
-      <button
-        class="btn-primary"
-        @click="register"
-      >
-        Sign Up
-      </button>
+          <p
+            v-if="errorMessage"
+            class="error-message"
+          >
+            {{ errorMessage }}
+          </p>
 
-      <button
-        class="btn-secondary"
-        @click="signInWithGoogle"
-      >
-        <img
-          class="imagelogo"
-          src="../assets/images/google.png"
-          alt="google logo"
-        >
-        Sign Up with Google
-      </button>
-      <button
-        class="btn-Third"
-        @click="signUpWithGithub"
-      >
-        <i class="fa-brands fa-github" />
-        Sign Up with Github
-      </button>
+          <button
+            class="btn btn-primary"
+            @click="register"
+          >
+            Sign Up
+          </button>
 
-      <p class="switch-form">
-        Already have an account? <router-link to="/login">
-          Sign In
-        </router-link>
-      </p>
+          <button
+            class="btn btn-google"
+            @click="signInWithGoogle"
+          >
+            <img
+              class="btn-icon"
+              src="../assets/images/google.png"
+              alt="google logo"
+            >
+            Sign Up with Google
+          </button>
+
+          <button
+            class="btn btn-github"
+            @click="signUpWithGithub"
+          >
+            <i class="fa-brands fa-github" />
+            Sign Up with Github
+          </button>
+
+          <p class="switch-form">
+            Already have an account? 
+            <router-link to="/login">
+              Sign In
+            </router-link>
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-
-.fa-eye-slash{
-  margin: -15.5% 0 0 90%;
-  cursor: pointer;
-  color: rgba(0, 0, 0, 0.452);
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  position: relative;
 }
-.fa-eye{
-  margin: -15.5% 0 0 90%;
-  cursor: pointer;
-  color: rgba(0, 0, 0, 0.452);
-  display: none;
+.stars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 50px 160px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 130px 80px, #ffffff, rgba(0,0,0,0));
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  animation: stars 4s linear infinite;
+  opacity: 0.5;
 }
-
+@keyframes stars {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100px);
+  }
+}
 .signup {
-  max-width: 400px;
-  margin: 30px auto;
-  padding: 1% 1.2rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  background-color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
 }
-.erroMessage{
-  margin: 1% 0 0 0;
-  color: red;
+.form-container {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 40px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 h1 {
+  color: white;
   text-align: center;
-  color: #333;
-  font-size: 2.5rem;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  font-weight: 600;
 }
 .form-group {
   display: flex;
   flex-direction: column;
+  gap: 1.5rem;
+}
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 label {
-  margin-bottom: 10px;
-  color: #555;
-  font-weight: bold; 
+  color: white;
+  font-size: 0.9rem;
 }
 input {
-  padding: 0.75rem;
-  margin-bottom: 3.5%;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
   font-size: 1rem;
-  cursor: pointer;
+  transition: all 0.3s ease;
 }
-::placeholder{
-  color: lightgrey;
-}
-input:hover{
-  background-color: #7474740d;
+input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }
 input:focus {
   outline: none;
-  border-color: #4a90e2;
-  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
 }
-.btn {
-  padding: 0.75rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.btn-primary {
-  background-color: #4a90e2;
-  color: white;
-  margin: 5% 0 1.2rem 0;
-  padding: 18px 0;
-  border-radius: 5px;
-  border: 0;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 1.1rem;
-}
-.btn-primary:hover {
-  background-color: #0f7bff;
-}
-.btn-secondary {
-  background-color: #ffffff;
-  color: #4a90e2;
-  border: 1px solid #4a90e2;
-  padding: 15px 0;
-  border-radius: 5px;
-  box-shadow: 0 0 1px black;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
-  transition: 0.3s ease-in-out;
-}
-.btn-secondary:hover {
-  background-color: #e7f2fe;
-}
-
-.imagelogo{
-  width: 1.3rem;
-  margin: 0 10px -3px 0;
-}
-.btn-Third{
-  background-color: #ffffff;
-  color: #4a90e2;
-  border: 1px solid #4a90e2;
-  padding: 15px 0;
-  border-radius: 5px;
-  box-shadow: 0 0 1px black;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 1.1rem;
-  transition: 0.3s ease-in-out;
-}
-.fa-github{
-  font-size: 1.3rem;
-  margin: 0 10px -3px 0;
+#showpass, #hidepass{
   color: black;
 }
-.btn-Third:hover {
-  background-color: #e7f2fe;
+.password-input {
+  position: relative;
+}
+.password-toggle {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+}
+.password-toggle i:hover {
+  color: white;
+}
+#hidepass {
+  display: none;
+}
+.btn {
+  width: 100%;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  border: none;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: white;
+}
+.btn-primary:hover {
+  background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+  transform: translateY(-1px);
+}
+.btn-google {
+  background: white;
+  color: #333;
+}
+.btn-google:hover {
+  background: #f8f9fa;
+}
+.btn-github {
+  background: #24292e;
+  color: white;
+}
+.btn-github:hover {
+  background: #2c3238;
+}
+.btn-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+.error-message {
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
 }
 .switch-form {
   text-align: center;
+  color: white;
   margin-top: 1rem;
-  font-size: 0.9rem;
-  color: #666;
 }
 .switch-form a {
-  color: #4a90e2;
+  color: #60a5fa;
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 500;
+  transition: color 0.3s ease;
 }
 .switch-form a:hover {
-  text-decoration: underline;
+  color: #93c5fd;
 }
-@media screen and (min-width: 320px) and (max-width: 360px ){
-  .signup {
-    padding: 1.5rem;
-    border: 0;
-    border-radius: 0;
-    box-shadow:none;
-    margin: -5px 0 0 0;
+@media (max-width: 480px) {
+  .form-container {
+    padding: 24px;
   }
-  .fa-eye-slash{  
-    margin: -20.5% 0 0 90%;
-    cursor: pointer;
-    color: rgba(0, 0, 0, 0.452);
+  h1 {
+    font-size: 1.75rem;
   }
-  .erroMessage{
-    font-size: 14px;
-    margin: 1.5% 0 0 0;
-
+  .btn {
+    padding: 10px 20px;
   }
 }
-@media screen and (min-width: 361px) and (max-width: 480px) {
-  .signup {
-    padding: 1.5rem;
-    border: 0;
-    border-radius: 0;
-    box-shadow:none;
-    margin: 5px 0 0 0;
-  }
-  .fa-eye-slash{  
-    margin: -17.5% 0 0 90%;
-    cursor: pointer;
-    color: rgba(0, 0, 0, 0.452);
-  }
-}
-@media screen and (min-width: 481px) and (max-width: 600px) {
-  .signup {
-    padding: 1.5rem;
-    border: 0;
-    box-shadow:none;
-  }
-  input , .btn {
-    font-size: 0.9rem;
-  }
-}
-
-@media screen and (min-width: 601px) and (max-width: 900px)  {
-    .signup{
-      background-color: #ffffff;
-    }
-    
-}
-@media screen and (min-width: 901px) and (max-width: 1200px) {
-  .signup{
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    background-color: #ffffff;
-    }
-}
-
 </style>

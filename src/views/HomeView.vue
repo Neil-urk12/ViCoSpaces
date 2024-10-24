@@ -1,66 +1,64 @@
 <script setup>
-//Styles
-import '@/assets/styles/homeView.css';
-import '@/assets/styles/home-components.css';
-//imported icon
-import LockIcon from '@/assets/images/SVG/lock-password-svgrepo-com-red-large.svg';
-import UnlockIcon from  '@/assets/images/SVG/lock-unlocked-svgrepo-com-green.svg';
-import lockStatusIcon from '@/assets/images/SVG/lock-svgrepo-com-black.svg';
-import hostIcon from '@/assets/images/SVG/user-svgrepo-com-black.svg';
-import SidebarModal from '@/components/SidebarModal.vue';
-import FilterModal from '@/components/FilterModal.vue';
-import HostRoomModal from '@/components/HostRoomModal.vue';
-import JoinRoomModal from '@/components/JoinRoomModal.vue';
-import { ref, onMounted, onUnmounted, computed, watch} from 'vue';
-import { ref as dbRef, onValue, off, push } from 'firebase/database';
+import '@/assets/styles/homeView.css'
+import '@/assets/styles/home-components.css'
+import LockIcon from '@/assets/images/SVG/lock-password-svgrepo-com-red-large.svg'
+import UnlockIcon from  '@/assets/images/SVG/lock-unlocked-svgrepo-com-green.svg'
+import lockStatusIcon from '@/assets/images/SVG/lock-svgrepo-com-black.svg'
+import hostIcon from '@/assets/images/SVG/user-svgrepo-com-black.svg'
+import SidebarModal from '@/components/SidebarModal.vue'
+import FilterModal from '@/components/FilterModal.vue'
+import HostRoomModal from '@/components/HostRoomModal.vue'
+import JoinRoomModal from '@/components/JoinRoomModal.vue'
+import { ref, onMounted, onUnmounted, computed, watch} from 'vue'
+import { ref as dbRef, off} from 'firebase/database'
 import { realTimeDb as database } from '../firebase/firebaseconfig.js'
-import { useRouter, RouterLink } from 'vue-router';
+import { useRouter, RouterLink } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
 import { useRoomStore } from '../stores/roomStore'
 
-
-
-const showSideBarModal = ref(false);
-
-const router = useRouter();
-const authStore = useAuthStore();
-const roomStore = useRoomStore();
-
-const roomsRef = dbRef(database, 'rooms');
+const showSideBarModal = ref(false)
+const router = useRouter()
+const authStore = useAuthStore()
+const roomStore = useRoomStore()
+const roomsRef = dbRef(database, 'rooms')
 let showModal = ref(false)
-const searchQuery = ref('');
-const sortBy = ref('createdAt');
-const sortOrder = ref('desc');
-const privacyFilter = ref('all');
-const categoryFilter = ref('all');
+const searchQuery = ref('')
+const sortBy = ref('createdAt')
+const sortOrder = ref('desc')
+const privacyFilter = ref('all')
+const categoryFilter = ref('all')
 const privacyCondition = ref('public')
 const roomIdToJoin = ref(null)
-
-const isCreateRoomVisible = ref(false);
+const isCreateRoomVisible = ref(false)
 const isDropdownOpen = ref(false)
 const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value
-const isModalVisible = ref(false);
-
+const isModalVisible = ref(false)
 const openFilterModal = () => {
-  isModalVisible.value = true;
-};
-const closeFilterModal = () => {
-  isModalVisible.value = false;
-};
-
-
-const createRoomHandler = async (roomData) => {
-  try {
-    const roomId = await roomStore.createRoom(
-      roomData,
-      authStore.user.uid,
-      authStore.user.email
-    );
-    router.push(`/room/${roomId}`);
-  } catch (error) {
-    console.error('Error creating room:', error);
-  }
+  isModalVisible.value = true
 }
+const closeFilterModal = () => isModalVisible.value = false
+
+
+let isCreatingRoom = false;                                                                                                                                                                                                  
+ const createRoomHandler = async (roomData) => {                                                                
+   if (isCreatingRoom) {                                                                                        
+     console.warn('Room creation is already in progress.');                                                     
+     return;                                                                                                    
+   }                                                                                                                                                                                                                         
+   isCreatingRoom = true;                                                                                                                                                                                                  
+   try {                                                                                                        
+     const roomId = await roomStore.createRoom(                                                                 
+       roomData,                                                                                                
+       authStore.user.uid,                                                                                      
+       authStore.user.email                                                                                     
+     );                                                                                                         
+     router.push(`/room/${roomId}`);                                                                            
+   } catch (error) {                                                                                            
+     console.error('Error creating room:', error);                                                              
+   } finally {                                                                                                  
+     isCreatingRoom = false;                                                                                    
+   }                                                                                                            
+ }  
 
 const joinRoom = async (roomId, privacyType) => {
   if (privacyType === 'private') {
@@ -153,11 +151,9 @@ const filteredAndSortedRooms = computed(() => {
   return filteredRooms.sort((a, b) => {
     let comparison = 0;
 
-    if (sortBy.value === 'createdAt') {
-      // Sort by latest (descending)
+    if (sortBy.value === 'createdAt') 
       comparison = (b.createdAt || 0) - (a.createdAt || 0);
-    } else if (sortBy.value === 'createdAtOldest') {
-      // Sort by oldest (ascending)
+    else if (sortBy.value === 'createdAtOldest') {
       comparison = (a.createdAt || 0) - (b.createdAt || 0);
     } else if (sortBy.value === 'capacity') {
       const aCapacity = a.capacity || 0
@@ -334,8 +330,6 @@ const logout = async () => {
             {{ item }}
           </a>
         </div>
-        <!-- </div> -->
-        <!-- search bar input -->
         <input
           v-model="searchQuery"
           type="text"
@@ -350,7 +344,6 @@ const logout = async () => {
           name="search-input"
           placeholder="Search room ID"
         >
-        <!-- to fix asap -->
         <div class="filter-sort">
           <a
             href="#"
@@ -370,7 +363,6 @@ const logout = async () => {
             @close="closeFilterModal"
             @filter-change="handleFilterChange"
           />
-
           <a 
             href="#"
             @click.prevent="sort"
