@@ -38,7 +38,7 @@ main{
 }
 .room:hover{
   box-shadow: 3px 5px 20px rgba(45, 45, 45, 0.7);
-  transform: translate3d(2%, -2%, 0);
+  transform: translateY(-2%);
 }
 .image-content {
   position: relative;
@@ -139,10 +139,6 @@ p{
   font-size: 0.9rem;
   color: white;
 }
-.join-btn-container{
-  align-content: flex-end;
-  height: 100%;
-}
 .room-join-wrapper{
   display: flex;
   justify-content: space-between;
@@ -150,6 +146,16 @@ p{
   padding: 0; 
   margin: 0;  
   width: 100%;
+}
+.join-a-room-btn{
+  transition: transform 0.5s ease;
+
+}
+.join-a-room-btn:hover{
+  color: #2d8eff;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 3px 2px 2px #2d8eff;
+  transform: translateY(-3%);
 }
 .counter{
   display: flex;
