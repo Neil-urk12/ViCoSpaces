@@ -3,31 +3,24 @@
 import '@/assets/styles/homeView.css';
 import '@/assets/styles/home-components.css';
 //imported icon
-import LockIcon from '@/assets/images/SVG/lock-password-svgrepo-com-red.svg';
+import LockIcon from '@/assets/images/SVG/lock-password-svgrepo-com-red-large.svg';
 import UnlockIcon from  '@/assets/images/SVG/lock-unlocked-svgrepo-com-green.svg';
 import lockStatusIcon from '@/assets/images/SVG/lock-svgrepo-com-black.svg';
 import hostIcon from '@/assets/images/SVG/user-svgrepo-com-black.svg';
-
+import SidebarModal from '@/components/SidebarModal.vue';
+import FilterModal from '@/components/FilterModal.vue';
 import HostRoomModal from '@/components/HostRoomModal.vue';
 import JoinRoomModal from '@/components/JoinRoomModal.vue';
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed, watch} from 'vue';
 import { ref as dbRef, onValue, off, push } from 'firebase/database';
 import { realTimeDb as database } from '../firebase/firebaseconfig.js'
 import { useRouter, RouterLink } from 'vue-router';
 import { useAuthStore } from '../stores/authStore'
 import { useRoomStore } from '../stores/roomStore'
-//test filter modal
-// import Modal from '@/components/test-modal.vue';//this should be FilterModal.vue
-const isModalVisible = ref(false);
 
-const openModal = () => {
-  isModalVisible.value = true;
-};
 
-const closeModal = () => {
-  isModalVisible.value = false;
-};
- // Import Modal component
+
+const showSideBarModal = ref(false);
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -47,12 +40,16 @@ const isCreateRoomVisible = ref(false);
 const isDropdownOpen = ref(false)
 const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value
 
-// const uniqueCategories = computed(() => {
-//   const categories = new Set(
-//     roomStore.rooms.map((room) => room.category).filter(Boolean)
-//   );
-//   return Array.from(categories);
-// })
+//this should be FilterModal.vue
+const isModalVisible = ref(false);
+
+const openFilterModal = () => {
+  isModalVisible.value = true;
+};
+const closeFilterModal = () => {
+  isModalVisible.value = false;
+};
+
 
 const createRoomHandler = async (roomData) => {
   try {
@@ -108,40 +105,80 @@ onUnmounted(() => {
   off(roomsRef)
 })
 
+const handleClickOutsideProfile= (event) => {
+  const dropdown = document.querySelector('.dropdown');
+  const profile = document.querySelector('.user-profile');
+  if (dropdown && !dropdown.contains(event.target) && !profile.contains(event.target)) {
+    isDropdownOpen.value = false; // Close dropdown if clicked outside
+  }
+};
+// Register event listener on mounted, remove on unmount
+onMounted(() => {
+  document.addEventListener('click', handleClickOutsideProfile);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutsideProfile);
+});
+//Filters
+const handleFilterChange = (filters) => {
+  searchQuery.value = filters.searchQuery;
+  sortBy.value = filters.sortBy;
+  sortOrder.value = filters.sortOrder;
+  privacyFilter.value = filters.privacyFilter;
+  categoryFilter.value = filters.categoryFilter;
+};
+
+const uniqueCategories = computed(() => {
+  const categories = new Set(roomStore.rooms.map((room) => room.category).filter(Boolean));
+  return Array.from(categories);
+});
+
 const filteredAndSortedRooms = computed(() => {
   let filteredRooms = roomStore.rooms.filter(
     (room) => room && typeof room === 'object'
-  )
+  );
   if (searchQuery.value) {
     filteredRooms = filteredRooms.filter((room) =>
       room.id.includes(searchQuery.value)
-    )
+    );
   }
   if (privacyFilter.value !== 'all') {
     filteredRooms = filteredRooms.filter(
       (room) => room.privacyType === privacyFilter.value
-    )
+    );
   }
   if (categoryFilter.value !== 'all') {
     filteredRooms = filteredRooms.filter(
       (room) => room.category === categoryFilter.value
-    )
+    );
   }
   return filteredRooms.sort((a, b) => {
     let comparison = 0;
-    if (sortBy.value === 'createdAtOldest') {
-      comparison = (a.createdAt || 0) - (b.createdAt || 0);
-    } else if (sortBy.value === 'createdAt') {
+
+    // Sort by creation date or capacity based on user selection
+    if (sortBy.value === 'createdAt') {
+      // Sort by latest (descending)
       comparison = (b.createdAt || 0) - (a.createdAt || 0);
-    } else {
-      const aValue = a[sortBy.value] || 0
-      const bValue = b[sortBy.value] || 0
-      if (aValue < bValue) comparison = -1
-      if (aValue > bValue) comparison = 1
+    } else if (sortBy.value === 'createdAtOldest') {
+      // Sort by oldest (ascending)
+      comparison = (a.createdAt || 0) - (b.createdAt || 0);
+    } else if (sortBy.value === 'capacity') {
+      const aCapacity = a.capacity || 0;
+      const bCapacity = b.capacity || 0;
+      comparison = aCapacity - bCapacity;
     }
-    return sortOrder.value === 'desc' ? comparison * -1 : comparison;
-  })
-})
+
+    return sortOrder.value === 'desc' ? comparison : -comparison;
+  });
+});
+
+// Watch for room creation and update categories
+watch(roomStore.rooms, (newRooms) => {
+  // Update unique categories when new rooms are created
+  const categories = new Set(newRooms.map((room) => room.category).filter(Boolean));
+  categoryFilter.value = 'all'; // Reset category filter to ensure dynamic updates
+});
 
 const logout = async () => {
   try {
@@ -151,42 +188,6 @@ const logout = async () => {
     console.error('Logout error:', error)
   }
 }
-// const isDisplayed = ref(false);
-
-// const toggleInput = () => {
-//   isDisplayed.value = !isDisplayed.value;
-// }
-
-// const filter = () => {
-//   alert("filtered");
-// };
-
-// const sort = () => {
-//   alert("sorted search");
-// };
-
-// const emit = defineEmits(["open-room"]);
-
-// const HostRoom = () => {
-//   console.log("button clicked");
-//   emit("open-room");
-// };
-
-//from homeView
-// const join = () => {
-//   alert("neil joined the program!");
-// };
-
-// //const title = ref("Production Design");
-
-//function update(newTitle) {
-  //title.value = newTitle;
-//}
-//test condition of the color background change in the private or public
-//create a condition that will check if privacy is private and if it is change ref(true);
-const isPrivate =ref(false);
-console.log(isPrivate);
-
 </script>
 
 
@@ -212,13 +213,19 @@ console.log(isPrivate);
               src="../assets/images/SVG/mobile-menu-bar.svg"
               alt="side icon"
               width="40px"
+              class="open-sidemodal-btn"
+              @click="showSideBarModal = true"
             >
+            <!-- Pass down the close function as a prop -->
+            <SidebarModal
+              v-if="showSideBarModal"
+              @close="showSideBarModal = false"
+            />
           </div>
           <div class="nav-links-and-buttons">
             <div class="mobile-content">
               <button
                 class="mobile-host-container"
-                @click="isCreateRoomVisible = true"
               >
                 <img
                   src="../assets/images/SVG/add-square-svgrepo-com white.svg"
@@ -246,42 +253,70 @@ console.log(isPrivate);
                 </li>
               </ul>
             </ul>
-            <a
-              id="user-profile"
-              href=""
+
+            <div
+              class="user-profile"
+              @click="toggleDropdown"
             >
-              <div class="user-profile">
-                <img
-                  src="../assets/images/SVG/user-svgrepo-com.svg"
-                  alt="User Profile"
-                  width="30px"
-                >
-              </div>
-              <div
-                v-if="isDropdownOpen"
-                class="dropdown"
+              <img
+                src="../assets/images/SVG/user-svgrepo-com.svg"
+                alt="User Profile"
+                width="30px"
               >
-                <RouterLink
-                  to="/settings"
-                  class="dropdown-item"
-                >
-                  Settings
-                </RouterLink>
-                <RouterLink
-                  to="/profile"
-                  class="dropdown-item"
-                >
-                  Profile
-                </RouterLink>
-                <RouterLink
-                  to="/logout"
-                  class="dropdown-item"
-                  @click.prevent="logout"
-                >
-                  Log out
-                </RouterLink>
+            </div>
+            <div
+              v-if="isDropdownOpen"
+              class="dropdown"
+            >
+              <div class="user-option-container">
+                <div class="settings">
+                  <img
+                    src="../assets/images/SVG/settings-svgrepo-com.svg"
+                    alt="status icon"
+                    class="setting-icon"
+                    width="20"
+                    height="20"
+                  >
+                  <RouterLink
+                    to="/settings"
+                    class="dropdown-item 1"
+                  >
+                    Settings
+                  </RouterLink>
+                </div>
+                <div class="profile">
+                  <img
+                    src="../assets/images/SVG/user-svgrepo-com.svg"
+                    alt="status icon"
+                    class="profile-icon"
+                    width="20"
+                    height="20"
+                  >
+                  <RouterLink
+                    to="/profile"
+                    class="dropdown-item 2"
+                  >
+                    Profile
+                  </RouterLink>
+                </div>
+                <div class="logout">
+                  <img
+                    src="../assets/images/SVG/log-out-svgrepo-com.svg"
+                    alt="status icon"
+                    class="logout-icon"
+                    width="20"
+                    height="20"
+                  > 
+                  <RouterLink
+                    to="/logout"
+                    class="dropdown-item 3"
+                    @click.prevent="logout"
+                  >
+                    Log out
+                  </RouterLink>
+                </div>
               </div>
-            </a>
+            </div>
           </div>
         </div>
       </div>
@@ -296,7 +331,6 @@ console.log(isPrivate);
           src="../assets/images/SVG/search-svgrepo-com.svg"
           alt="search-icon"
           width="30px"
-          @click="toggleDropdown"
         >
         <div
           v-show="isDropdownVisible"
@@ -327,7 +361,7 @@ console.log(isPrivate);
           name="search-input"
           placeholder="Search room ID"
         >
-  
+        <!-- to fix asap -->
         <div class="filter-sort">
           <a
             href="#"
@@ -338,15 +372,17 @@ console.log(isPrivate);
               src="../assets/images/SVG/filters-2-svgrepo-com.svg"
               alt="filter-icon"
               width="30px"
-              @click="openModal"
+              @click="openFilterModal"
             >
           </a>
-          <Modal
+          <FilterModal
             v-if="isModalVisible"
-            @close="closeModal"
+            :available-categories="uniqueCategories"
+            @close="closeFilterModal"
+            @filter-change="handleFilterChange"
           />
-  
-          <a
+
+          <a 
             href="#"
             @click.prevent="sort"
           >
@@ -440,18 +476,18 @@ console.log(isPrivate);
                     height="26"
                   >
                 </div>
-                <div class="status-background">
+                <div class="status-bg-container">
                   <!-- The container's background color changes based on isPrivate -->
                   <div
                     class="status-background"
-                    :style="{ backgroundColor: isPrivate ? 'red' : 'lightgreen' }"
+                    :style="{ backgroundColor: room.privacyType === 'private' ? 'red' : 'lightgreen' }"
                   >
                     <p class="p-text">
-                      {{ isPrivate ? 'Private' : 'Public' }}
+                      {{ room.privacyType === 'private' ? 'Private' : 'Public' }}
                     </p>
                   </div>
                 </div>
-                <p>privacy:{{ room.privacyType }}</p>
+                <!-- <p>privacy: {{ room.privacyType }}</p>  -->
               </div>
               <div class="joined-users">
                 <i class="icon" />
