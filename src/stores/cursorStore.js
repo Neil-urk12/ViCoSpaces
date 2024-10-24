@@ -65,9 +65,9 @@ export const useCursorStore = defineStore('cursor', {
 
         const x = event.clientX - rect.left + offsetX;                                                         
         const y = event.clientY - rect.top + offsetY;
-        console.log('Zoom', zoomFactor)                                                          
-        console.log('x y', x, y);                                                                              
-        console.log('ClientX ClientY', event.clientX, event.clientY);                                          
+        // console.log('Zoom', zoomFactor)                                                          
+        // console.log('x y', x, y);                                                                              
+        // console.log('ClientX ClientY', event.clientX, event.clientY);                                          
 
         this.localCursor = { x, y, username: this.currentUserName };                                           
         this.updateFirebaseCursor(x, y);                                                                       
