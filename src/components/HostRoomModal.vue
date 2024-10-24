@@ -32,46 +32,7 @@ const handleSubmit = () => {
   emit('close')
 }
 
-const togglePasswordVisibility = () => {
-  showPassword.value = !showPassword.value;
-}
-
-
-// const createRoom = async () => {
-//   try {
-//     isLoading.value = true
-//     error.value = ''
-
-//     if (!roomName.value.trim()) 
-//       throw new Error('Room name is required')
-//     if (isPrivate.value && !password.value.trim()) 
-//       throw new Error('Password is required for private rooms')
-
-//     const room = { 
-//       name: roomName.value,
-//       isPrivate: isPrivate.value,
-//       password: isPrivate.value ? password.value : null,
-//       capacity: roomCapacity.value,
-//       createdAt: Date.now(),
-//     }
-
-//     const roomsRef = dbRef(database, 'rooms')
-//     const newRoomRef = push(roomsRef)
-//     await set(newRoomRef, room)
-
-//     console.log('Room created:', newRoomRef.key)
-//     router.push({ 
-//       name: 'Room', 
-//       params: { id: newRoomRef.key },
-//       query: { name: room.name } 
-//     });
-//   } catch (err) {
-//     console.error('Error creating room:', err)
-//     error.value = err.message
-//   } finally {
-//     isLoading.value = false
-//   }
-// }
+const togglePasswordVisibility = () => showPassword.value = !showPassword.value;
 console.log(props);
 </script>
 
