@@ -1,7 +1,7 @@
 <script setup>        
 import * as fabric from 'fabric';        
 import { FabricImage } from 'fabric';                                                                                 
-import { ref, onMounted, onUnmounted, computed, watch } from 'vue'                                          
+import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue'                                          
 import { useCursorStore } from '@/stores/cursorStore'                                                    
 import { onValue, ref as dbRef, get } from 'firebase/database'  
 import { realTimeDb as db } from '@/firebase/firebaseconfig'                                         
@@ -19,11 +19,10 @@ const authStore = useAuthStore()
 const cursorStore = useCursorStore()                                                                       
 const chatStore = useChatStore()                                                              
 const route = useRoute()                                                                                 
-                                                                                                               
+
 const userId = computed(() => authStore.getUid)                                                            
-const username = computed(() => authStore.getDisplayName)                                                     
-                                                                                                                                                                                                 
-                                                                                                               
+const username = computed(() => authStore.getDisplayName)
+
 onMounted(async () => {                                                                                        
   cursorStore.setUserId(userId.value)                                                                         
   cursorStore.setRoomId(route.params.id)                                                
@@ -56,7 +55,8 @@ const gridSize = 20;
 const imageInput = ref(null);
 const showShapeLibrary = ref(false);
 
-onMounted(() => { 
+onMounted(async() => { 
+  await nextTick();
   canvas = new fabric.Canvas(canvasEl.value);
   resizeCanvas();
   window.addEventListener('resize', resizeCanvas);
@@ -77,13 +77,12 @@ onMounted(() => {
     }
   });
   
-  canvas.defaultCursor = 'default';
-  canvas.hoverCursor = 'default';
-  canvas.moveCursor = 'default';
+  canvas.defaultCursor = 'none';
+  canvas.hoverCursor = 'none';
+  canvas.moveCursor = 'none';
   canvas.isDrawingMode = false;
   canvas.renderAll();
   
-  addGrid();
 
   canvas?.on('object:moving', (options) => {
   const obj = options.target;
@@ -125,34 +124,6 @@ const resizeCanvas = () => {
   canvas.calcOffset();
   canvas.renderAll();
 };
-
-function addGrid() {//Adding Snapping Grid into the Canvas
-  canvas.getObjects().forEach((obj) => {
-    if (obj.isGrid) {
-      canvas.remove(obj);
-    }
-  });
-
-  for (let i = 0; i < (canvas.width / gridSize); i++) {
-    const lineX = new fabric.Line([i * gridSize, 0, i * gridSize, canvas.height], {
-      stroke: '#ccc',
-      selectable: false,
-      excludeFromExport: true,
-      isGrid: true,
-    });
-    canvas.add(lineX);
-  }
-  for (let j = 0; j < (canvas.height / gridSize); j++) {
-    const lineY = new fabric.Line([0, j * gridSize, canvas.width, j * gridSize], {
-      stroke: '#ccc',
-      selectable: false,
-      excludeFromExport: true,
-      isGrid: true, 
-    });
-    canvas.add(lineY);
-  }
-  canvas.renderAll();
-}
 
 const addTextToCanvas = () => { //Adding text Feature
   const text = new fabric.Textbox('Enter Text', {
@@ -1015,6 +986,7 @@ onUnmounted(() => {
     justify-content: center;
     border-bottom: 1px solid #e2e8f0;
     flex-wrap: wrap;
+    z-index: 1;
   }
   
   .tool-group {
@@ -1075,6 +1047,7 @@ onUnmounted(() => {
     font-size: 1.5rem;
     line-height: 1;
     transform: rotate(-85deg);
+    z-index: 1000;
   }
   
   .cursor-label {
