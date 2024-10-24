@@ -1,5 +1,8 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+  
+const router = useRouter();
 
 const userProfile = ref({
   name: '',
@@ -41,12 +44,21 @@ const saveProfile = async () => {
     isSaving.value = false
   }
 }
+const goToHome = () => {
+    router.push('/')
+  }
 </script>
 
 <template>
   <div class="space-profile">
     <div class="stars" />
     <div class="content">
+      <button
+        class="home-button"
+        @click="goToHome"
+      >
+        Return to Home
+      </button>
       <h1>Space Explorer Profile</h1>
       
       <form @submit.prevent="saveProfile">
