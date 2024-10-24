@@ -1,12 +1,26 @@
 <script setup>
-import HostRoomModal from '../components/HostRoomModal.vue'
-import JoinRoomModal from '../components/JoinRoomModal.vue'
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+//Styles
+import '@/assets/styles/homeView.css';
+import '@/assets/styles/home-components.css';
+//imported icon
+import LockIcon from '@/assets/images/SVG/lock-password-svgrepo-com-red-large.svg';
+import UnlockIcon from  '@/assets/images/SVG/lock-unlocked-svgrepo-com-green.svg';
+import lockStatusIcon from '@/assets/images/SVG/lock-svgrepo-com-black.svg';
+import hostIcon from '@/assets/images/SVG/user-svgrepo-com-black.svg';
+import SidebarModal from '@/components/SidebarModal.vue';
+import FilterModal from '@/components/FilterModal.vue';
+import HostRoomModal from '@/components/HostRoomModal.vue';
+import JoinRoomModal from '@/components/JoinRoomModal.vue';
+import { ref, onMounted, onUnmounted, computed, watch} from 'vue';
 import { ref as dbRef, onValue, off, push } from 'firebase/database';
 import { realTimeDb as database } from '../firebase/firebaseconfig.js'
 import { useRouter, RouterLink } from 'vue-router';
 import { useAuthStore } from '../stores/authStore'
 import { useRoomStore } from '../stores/roomStore'
+
+
+
+const showSideBarModal = ref(false);
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -26,12 +40,16 @@ const isCreateRoomVisible = ref(false);
 const isDropdownOpen = ref(false)
 const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value
 
-const uniqueCategories = computed(() => {
-  const categories = new Set(
-    roomStore.rooms.map((room) => room.category).filter(Boolean)
-  );
-  return Array.from(categories);
-})
+//this should be FilterModal.vue
+const isModalVisible = ref(false);
+
+const openFilterModal = () => {
+  isModalVisible.value = true;
+};
+const closeFilterModal = () => {
+  isModalVisible.value = false;
+};
+
 
 const createRoomHandler = async (roomData) => {
   try {
@@ -87,40 +105,80 @@ onUnmounted(() => {
   off(roomsRef)
 })
 
+const handleClickOutsideProfile= (event) => {
+  const dropdown = document.querySelector('.dropdown');
+  const profile = document.querySelector('.user-profile');
+  if (dropdown && !dropdown.contains(event.target) && !profile.contains(event.target)) {
+    isDropdownOpen.value = false; // Close dropdown if clicked outside
+  }
+};
+// Register event listener on mounted, remove on unmount
+onMounted(() => {
+  document.addEventListener('click', handleClickOutsideProfile);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutsideProfile);
+});
+//Filters
+const handleFilterChange = (filters) => {
+  searchQuery.value = filters.searchQuery;
+  sortBy.value = filters.sortBy;
+  sortOrder.value = filters.sortOrder;
+  privacyFilter.value = filters.privacyFilter;
+  categoryFilter.value = filters.categoryFilter;
+};
+
+const uniqueCategories = computed(() => {
+  const categories = new Set(roomStore.rooms.map((room) => room.category).filter(Boolean));
+  return Array.from(categories);
+});
+
 const filteredAndSortedRooms = computed(() => {
   let filteredRooms = roomStore.rooms.filter(
     (room) => room && typeof room === 'object'
-  )
+  );
   if (searchQuery.value) {
     filteredRooms = filteredRooms.filter((room) =>
       room.id.includes(searchQuery.value)
-    )
+    );
   }
   if (privacyFilter.value !== 'all') {
     filteredRooms = filteredRooms.filter(
       (room) => room.privacyType === privacyFilter.value
-    )
+    );
   }
   if (categoryFilter.value !== 'all') {
     filteredRooms = filteredRooms.filter(
       (room) => room.category === categoryFilter.value
-    )
+    );
   }
   return filteredRooms.sort((a, b) => {
     let comparison = 0;
-    if (sortBy.value === 'createdAtOldest') {
-      comparison = (a.createdAt || 0) - (b.createdAt || 0);
-    } else if (sortBy.value === 'createdAt') {
+
+    // Sort by creation date or capacity based on user selection
+    if (sortBy.value === 'createdAt') {
+      // Sort by latest (descending)
       comparison = (b.createdAt || 0) - (a.createdAt || 0);
-    } else {
-      const aValue = a[sortBy.value] || 0
-      const bValue = b[sortBy.value] || 0
-      if (aValue < bValue) comparison = -1
-      if (aValue > bValue) comparison = 1
+    } else if (sortBy.value === 'createdAtOldest') {
+      // Sort by oldest (ascending)
+      comparison = (a.createdAt || 0) - (b.createdAt || 0);
+    } else if (sortBy.value === 'capacity') {
+      const aCapacity = a.capacity || 0;
+      const bCapacity = b.capacity || 0;
+      comparison = aCapacity - bCapacity;
     }
-    return sortOrder.value === 'desc' ? comparison * -1 : comparison;
-  })
-})
+
+    return sortOrder.value === 'desc' ? comparison : -comparison;
+  });
+});
+
+// Watch for room creation and update categories
+watch(roomStore.rooms, (newRooms) => {
+  // Update unique categories when new rooms are created
+  const categories = new Set(newRooms.map((room) => room.category).filter(Boolean));
+  categoryFilter.value = 'all'; // Reset category filter to ensure dynamic updates
+});
 
 const logout = async () => {
   try {
@@ -132,214 +190,332 @@ const logout = async () => {
 }
 </script>
 
+
+
+
 <template>
   <header>
-    <header>
-      <nav class="nav-bar">
-        <div class="nav-div">
-          <div class="logo-container">
-            <img
-              src="../images/logo/logo.png"
-              alt="ViCoSpaces-Logo"
-              class="logo-img"
-            >
-            <span class="logo-name">ViCoSpaces</span>
-          </div>
-          <div
-            class="burger"
-            @click="toggleMenu"
+    <nav class="nav-bar">
+      <div class="nav-div">
+        <div class="logo-container">
+          <img
+            src="../assets/images/logo/transparentlogo 1080.png"
+            alt="ViCoSpaces-Logo"
+            class="logo-img"
+            width="100%"
+            height="100%"
           >
+          <span class="logo-name">ViCoSpaces</span>
+        </div>
+        <div class="open-sidebar">
+          <div class="open-sidebar-icon">
             <img
-              src="../images/SVG/burger-simple-svgrepo-com.svg"
-              alt="menu-icon"
-              width="30px"
+              src="../assets/images/SVG/mobile-menu-bar.svg"
+              alt="side icon"
+              width="40px"
+              class="open-sidemodal-btn"
+              @click="showSideBarModal = true"
             >
+            <!-- Pass down the close function as a prop -->
+            <SidebarModal
+              v-if="showSideBarModal"
+              @close="showSideBarModal = false"
+            />
           </div>
           <div class="nav-links-and-buttons">
+            <div class="mobile-content">
+              <button
+                class="mobile-host-container"
+              >
+                <img
+                  src="../assets/images/SVG/add-square-svgrepo-com white.svg"
+                  alt="host-icon"
+                  width="30px"
+                >
+              </button>
+            </div>
             <ul class="pages-container">
               <ul class="pages-container">
                 <li>
-                  <RouterLink to="/">
+                  <router-link to="/">
                     Home
-                  </RouterLink>
+                  </router-link>
                 </li>
                 <li>
-                  <RouterLink to="/about">
+                  <router-link to="/about">
                     About
-                  </RouterLink>
+                  </router-link>
                 </li>
                 <li>
-                  <RouterLink to="/contact">
+                  <router-link to="/contact">
                     Contact
-                  </RouterLink>
+                  </router-link>
                 </li>
               </ul>
             </ul>
+
             <div
               class="user-profile"
               @click="toggleDropdown"
             >
               <img
-                src="../images/black-default-user-profile-ll(1).webp"
+                src="../assets/images/SVG/user-svgrepo-com.svg"
                 alt="User Profile"
+                width="30px"
               >
             </div>
             <div
               v-if="isDropdownOpen"
               class="dropdown"
             >
-              <RouterLink
-                to="/settings"
-                class="dropdown-item"
-              >
-                Settings
-              </RouterLink>
-              <RouterLink
-                to="/profile"
-                class="dropdown-item"
-              >
-                Profile
-              </RouterLink>
-              <a
-                class="dropdown-item"
-                @click.prevent="logout"
-              >
-                Log out
-              </a>
+              <div class="user-option-container">
+                <div class="settings">
+                  <img
+                    src="../assets/images/SVG/settings-svgrepo-com.svg"
+                    alt="status icon"
+                    class="setting-icon"
+                    width="20"
+                    height="20"
+                  >
+                  <RouterLink
+                    to="/settings"
+                    class="dropdown-item 1"
+                  >
+                    Settings
+                  </RouterLink>
+                </div>
+                <div class="profile">
+                  <img
+                    src="../assets/images/SVG/user-svgrepo-com.svg"
+                    alt="status icon"
+                    class="profile-icon"
+                    width="20"
+                    height="20"
+                  >
+                  <RouterLink
+                    to="/profile"
+                    class="dropdown-item 2"
+                  >
+                    Profile
+                  </RouterLink>
+                </div>
+                <div class="logout">
+                  <img
+                    src="../assets/images/SVG/log-out-svgrepo-com.svg"
+                    alt="status icon"
+                    class="logout-icon"
+                    width="20"
+                    height="20"
+                  > 
+                  <RouterLink
+                    to="/logout"
+                    class="dropdown-item 3"
+                    @click.prevent="logout"
+                  >
+                    Log out
+                  </RouterLink>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </nav>
-    </header>
+      </div>
+    </nav>
+  </header>
   
-    <main>
-      <div class="search-bar">
-        <div class="search">
+  <main>
+    <div class="search-bar">
+      <div class="search">
+        <img
+          class="search-icon"
+          src="../assets/images/SVG/search-svgrepo-com.svg"
+          alt="search-icon"
+          width="30px"
+        >
+        <div
+          v-show="isDropdownVisible"
+          class="dropdown-menu"
+        >
+          <a
+            v-for="(item, index) in dropdownItems"
+            :key="index"
+            href="#"
+            class="dropdown-item"
+          >
+            {{ item }}
+          </a>
+        </div>
+        <!-- </div> -->
+        <!-- search bar input -->
+        <input
+          v-model="searchQuery"
+          type="text"
+          class="search-input"
+          name="search-input"
+          placeholder="Search rooms by ID"
+        >
+        <input
+          v-model="searchQuery"
+          type="text"
+          class="search-input-small"
+          name="search-input"
+          placeholder="Search room ID"
+        >
+        <!-- to fix asap -->
+        <div class="filter-sort">
+          <a
+            href="#"
+            @click.prevent="filter"
+          >
+            <img
+              class="filter-icon"
+              src="../assets/images/SVG/filters-2-svgrepo-com.svg"
+              alt="filter-icon"
+              width="30px"
+              @click="openFilterModal"
+            >
+          </a>
+          <FilterModal
+            v-if="isModalVisible"
+            :available-categories="uniqueCategories"
+            @close="closeFilterModal"
+            @filter-change="handleFilterChange"
+          />
+
+          <a 
+            href="#"
+            @click.prevent="sort"
+          >
+            <img
+              class="sort-icon"
+              src="../assets/images/SVG/sort-vertical-svgrepo-com.svg"
+              alt="sort-icon"
+              width="30px"
+              @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"
+            >
+          </a>
+        </div>
+      </div>
+      <div class="button-container">
+        <button
+          class="join-btn-container"
+          @click="showModal = true"
+        >
           <img
-            class="search-icon"
-            src="../images/SVG/search-svgrepo-com.svg"
-            alt="search-icon"
+            class="join-icon"
+            src="../assets/images/SVG/session-join-svgrepo-com white.svg"
+            alt="join-icon"
             width="30px"
           >
-          <input
-            v-model="searchQuery"
-            type="text"
-            class="search-input"
-            name="search-input"
-            placeholder="Search rooms by ID"
+          <p class="join-text-hide">
+            Join <span class="room-text-hide-on-small">Room</span>
+          </p>
+        </button>
+        <button
+          class="host-btn-container"
+          @click="isCreateRoomVisible = true"
+        >
+          <img
+            src="../assets/images/SVG/add-square-svgrepo-com white.svg"
+            alt="host-icon"
+            width="30px"
           >
-  
-          <div class="filter-sort">
-            <a
-              href="#"
-              @click.prevent="filter"
-            >
-              <img
-                class="filter-icon"
-                src="../images/SVG/filters-2-svgrepo-com.svg"
-                alt="filter-icon"
-                width="30px"
-              >
-            </a>
-  
-            <a
-              href="#"
-              @click.prevent="sort"
-            >
-              <img
-                class="sort-icon"
-                src="../images/SVG/sort-vertical-svgrepo-com.svg"
-                alt="sort-icon"
-                width="30px"
-                @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"
-              >
-            </a>
+          <p>Host <span class="room-text-hide-on-small">Room</span></p>
+        </button>
+      </div>
+    </div>
+
+    <!-- ROOM -->
+
+    <main class="room-view-container">
+      <div class="room-form">
+        <div
+          v-for="room in filteredAndSortedRooms"
+          :key="room.id"
+          class="room"
+        >
+          <div class="image-content">
+            <div class="status-icon-wrapper">
+              <div class="status-icon">
+                <img
+                  :src="room.privacyType === 'public' ? UnlockIcon : LockIcon"
+                  alt="status icon"
+                  width="32"
+                  height="32"
+                >
+              </div>
+            </div>
+
+            <div class="room-name-container">
+              <h2 class="room-name">
+                {{ room.name }}
+              </h2>
+            </div>
           </div>
-        </div>
-        <div class="button-container">
-          <button @click="showModal = true">
-            Join Room
-          </button>
-          <button @click="isCreateRoomVisible = true">
-            Host Room
-          </button>
+          <div class="text-content">
+            <div class="bottom-content">
+              <div class="host-wrapper">
+                <div class="hiw">
+                  <img
+                    :src="hostIcon"
+                    alt="status icon"
+                    class="status-icon-privacy"
+                    width="26"
+                    height="26"
+                  >
+                </div>
+                <p>{{ room.host?.name || 'Unknown' }}</p>
+              </div>
+              <div class="privacy-wrapper">
+                <div class="sip">
+                  <img
+                    :src="lockStatusIcon"
+                    alt="status icon"
+                    class="status-icon-privacy"
+                    width="26"
+                    height="26"
+                  >
+                </div>
+                <div class="status-bg-container">
+                  <!-- The container's background color changes based on isPrivate -->
+                  <div
+                    class="status-background"
+                    :style="{ backgroundColor: room.privacyType === 'private' ? 'red' : 'lightgreen' }"
+                  >
+                    <p class="p-text">
+                      {{ room.privacyType === 'private' ? 'Private' : 'Public' }}
+                    </p>
+                  </div>
+                </div>
+                <!-- <p>privacy: {{ room.privacyType }}</p>  -->
+              </div>
+              <div class="joined-users">
+                <i class="icon" />
+              </div>
+              <div class="room-join-wrapper">  
+                <div class="counter">
+                  <div class="capaticy-txt">
+                    Capacity:
+                  </div>
+                  <div class="user-counter">
+                    <h4>{{ room.currentUsers }} / {{ room.maxCapacity }}</h4>
+                  </div>
+                </div>
+                <button
+                  class="join-a-room-btn"
+                  :disabled="room.currentUsers >= room.maxCapacity"
+                  @click="joinRoom(room.id, room.privacyType)"
+                >
+                  {{ room.currentUsers >= room.maxCapacity ? 'Full' : 'Join' }}
+                </button>           
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </main>
-    <categoryBar @changetitle="update" />
-  </header>
-  <div class="search-sort">
-    <select v-model="sortBy">
-      <option value="capacity">
-        Capacity
-      </option>
-      <option value="createdAt">
-        Latest
-      </option>
-      <option value="createdAtOldest">
-        Oldest
-      </option>
-    </select>
-  </div>
-  <div class="filters">
-    <select v-model="privacyFilter">
-      <option value="all">
-        All Privacy
-      </option>
-      <option value="public">
-        Public
-      </option>
-      <option value="private">
-        Private
-      </option>
-    </select>
-    <select v-model="categoryFilter">
-      <option value="all">
-        All Categories
-      </option>
-      <option
-        v-for="category in uniqueCategories"
-        :key="category"
-        :value="category"
-      >
-        {{ category }}
-      </option>
-    </select>
-  </div>
-  <main class="room-view-container">
-    <div
-      v-for="room in filteredAndSortedRooms"
-      :key="room.id"
-      class="room"
-    >
-      <div class="image-content">
-        <div class="hosting-container">
-          <div class="host-profile" />
-        </div>
-      </div>
-      <div class="text-content">
-        <h2>{{ room.name }}</h2>
-        <h4>{{ room.currentUsers }} / {{ room.maxCapacity }}</h4>
-        <p>Host: {{ room.host?.name || 'Unknown' }}</p>
-        <p>Privacy: {{ room.privacyType }}</p>
-        <div class="joined-users">
-          <i class="icon" />
-        </div>
-        <div class="join-btn-container">  
-          <button
-            class="join-btn"
-            :disabled="room.currentUsers >= room.maxCapacity"
-            @click="joinRoom(room.id, room.privacyType)"
-          >
-            {{ room.currentUsers >= room.maxCapacity ? 'Full' : 'Join' }}
-          </button>           
-        </div>
-      </div>
-    </div>
     <JoinRoomModal
       v-if="showModal"
-      :room-id-to-join="roomIdToJoin"
-      :is-private="privacyCondition"
       @close="showModal = false"
       @join="joinRoomById"
     />
@@ -351,381 +527,13 @@ const logout = async () => {
     />
   </main>
 </template>
-
-<style scoped>
-.room-view-container {
-  display: grid;
-  column-gap: 20px;
-  row-gap: 20px;
-  grid-template-columns: 28% 1fr 1fr; 
-  grid-template-rows: 300px auto auto; 
-  background-color: rgb(255, 255, 255);
-  width: 96%;
-  height: 71.8vh;
-  margin: auto;
-}
-.room {
-  border-radius: 12px;
-  height: 100%; 
-  width: 100%;
-  flex-direction: column; 
-  overflow: hidden;
-  box-shadow: 3px 5px 20px #9e9e9e;
-}
-.image-content{
-  background-image: url(../images/SVG/room-background_2.svg);
-  display: grid;
-  grid-template-columns: 28% 1fr 1fr; 
-  grid-template-rows: auto auto; 
-  border-radius: 12px 12px 0px 0px;
-  height: 60%;
-  background-color: #2d8eff;
-}
-.hosting-container{
-  grid-column: 3;
-  background-color: rgb(255, 255, 255);
-  height: 64px;
-  width: 64px;
-  border-radius: 50%;
-  align-self: center;
-  transform: translate(107px, -20px); 
-  background-image: url('../images/UserProfileStocks/megan.jpg'); 
-  background-size: 220%; 
-  background-size: cover; 
-  background-position: center; 
-  background-repeat: no-repeat;
-}
-.text-content {
-  display: grid;
-  grid-template-columns: auto auto auto 130px;
-  grid-template-rows: auto 1fr auto;
-  height: 40%; 
-  max-height: 100%; 
-  max-width: 100%; 
-  border-radius: 0px 0px 12px 12px;
-  background-color: rgb(255, 255, 255);
-  padding: 0px 10px 10px 10px;
-  align-items: center;
-  box-sizing: border-box; 
-}
-.title {
-  grid-column: 1 / span 3; 
-  grid-row: 1; 
-  font-size: 24px;
-  font-weight: bold;
-  align-items: center;
-  text-align: center;
-}
-.title h2 {
-  color: white;
-}
-.joined-users {
-  grid-column: 1 / span 1; 
-  grid-row: 3; 
-  background-color: rgb(9, 255, 140);
-  border-radius: 50%;
-  height: 32px;
-  width: 32px;
-  font-size: 24px;
-}
-.join-btn-container {
-  grid-column: 4; 
-  grid-row: 3;
-  display: flex;
-  justify-content: center; 
-  align-items: center;
-}
-.join-btn {
-  font-weight: bolder;
-  border: none;
-  border-radius: 12px;
-  height: 42px;
-  width: 124px;
-  color: white;
-  background-color: #2d8eff;
-}
-
-.nav-bar {
-  background: #2d8eff;
-  font-family: Calibri, sans-serif;
-  align-items: center;
-  height: 70px;
-  padding: 15px 40px 0px 40px;
-}
-
-.nav-div {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.burger {
-  display: none;
-  cursor: pointer;
-}
-
-.logo-container {
-  display: flex;
-  align-items: center;
-  font-size: 35px;
-  font-weight: 600;
-  color: white;
-}
-
-.logo-img {
-  height: 40px;
-  margin-right: 10px;
-}
-
-.nav-links-and-buttons {
-  display: flex;
-  align-items: center;
-  gap: 70px;
-}
-
-.pages-container {
-  display: flex;
-  list-style: none;
-  gap: 80px;
-  margin: 0;
-}
-
-.pages-container li a {
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
-  position: relative;
-  text-align: center;
-}
-
-.pages-container li a::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: -2px;
-  width: 0;
-  height: 2px;
-  background-color: white;
-  transition: all 0.3s ease-in-out;
-  transform: translateX(-50%);
-}
-
-.pages-container li a:hover::after {
-  width: 100%;
-  left: 50%; 
-  transform: translateX(-50%);
-}
-
-.user-profile {
-  display: flex;
-  background-color: white;
-  height: 40px;
-  width: 40px;
-  border-radius: 50%;
-  justify-content: center;
-}
-
-.search-bar {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.search {
-  --padding: 14px;
-  width: max-content;
-  display: flex;
-  align-items: center;
-  padding: var(--padding);
-  border-radius: 12px;
-  background: #f6f6f6;
-  width: 75%;
-}
-
-.search-input {
-  font-size: 16px;
-  font-family: sans-serif;
-  color: black;
-  margin-left: var(--padding);
-  margin-right: var(--padding);
-  outline: none;
-  border: none;
-  background: transparent;
-  flex: 1;
-}
-
-.search-icon, .sort-icon, .filter-icon {
-  cursor: pointer;
-}
-
-.filter-sort {
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
-}
-
-.button-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  width: 20%;
-}
-
-button {
-  background-color: #2d8eff;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  width: 123px;
-  height: 50px;
-  font-weight: bold;
-}
-
-.dropdown {
-  position: absolute;
-  right: 0;
-  top: 15%;
-  margin-top: 0.5rem;
-  width: 12rem;
-  background-color: #ffffff;
-  border-radius: 0.375rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e5e7eb;
-  z-index: 10;
-}
-
-.dropdown-item {
-  display: block;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  color: #374151;
-  text-decoration: none;
-  transition: background-color 0.2s;
-}
-
-.dropdown-item:hover {
-  background-color: #f3f4f6;
-}
-
-.dropdown-item:not(:last-child) {
-  border-bottom: 1px solid #e5e7eb;
-}
-
-@media (max-width: 794px) {
-
-  .nav-bar {
-  background: #0f1112;
-  font-family: Calibri, sans-serif;
-  align-items: center;
-  height: 70px;
-  padding: 15px 40px 0px 40px;
-}
-
-.nav-div {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.logo-container {
-  display: flex;
-  align-items: center;
-  font-size: clamp(50px, 1vw, 100px);
-  font-weight: 600;
-  color: white;
-}
-
-.logo-img {
-  height: 40px;
-  margin-right: 10px;
-}
-
-.nav-links-and-buttons {
-  display: flex;
-  align-items: center;
-  gap: 70px;
-}
-.pages-container {
-  display: flex;
-  list-style: none;
-  gap: 80px;
-  margin: 0;
-}
-
-.pages-container li a {
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
-  position: relative;
-  text-align: center;
-}
-
-.pages-container li a::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: -2px;
-  width: 0;
-  height: 2px;
-  background-color: white;
-  transition: all 0.3s ease-in-out;
-  transform: translateX(-50%);
-}
-
-.pages-container li a:hover::after {
-  width: 100%;
-  left: 50%; 
-  transform: translateX(-50%);
-}
-}
-
-@media (max-width: 641px) {
-  .nav-bar {
-    background: #003d5b;
-    font-family: Calibri, sans-serif;
-    align-items: center;
-    height: 70px;
-
+<style scope>
+  * {
+    text-decoration: none;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
-
-  .burger {
-    display: block;
-
-  }
-
-  .logo-container {
-  display: none;
-  align-items: center;
-  font-size: 35px;
-  font-weight: 600;
-  color: white;
-}
-
-.logo-img {
-  height: 40px;
-  margin-right: 10px;
-}
-
-  .nav-links-and-buttons {
-    display: none;
-  }
-
-  .nav-links-and-buttons.menu-open {
-    display: flex;
-    position: absolute;
-    top: 70px;
-    right: 0;
-    background: #003d5b;
-    width: 100%;
-    padding: 20px;
-    gap: 20px;
-    z-index: 10;
-  }
-
-  .pages-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-}
 </style>
+

@@ -147,7 +147,7 @@ const hidepass = () => {
       >
         <img
           class="imagelogo"
-          src="../images/google.png"
+          src="../assets/images/google.png"
           alt="google logo"
         >
         Sign Up with Google

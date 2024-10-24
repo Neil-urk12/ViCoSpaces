@@ -1,25 +1,28 @@
-<script setup>                                                                                                 
-import { ref, onMounted, onUnmounted, computed } from 'vue'                                          
+<script setup>        
+import * as fabric from 'fabric';        
+import { FabricImage } from 'fabric';                                                                                 
+import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue'                                          
 import { useCursorStore } from '@/stores/cursorStore'                                                    
-import { useWhiteboardStore } from '@/stores/whiteboardStore' 
 import { onValue, ref as dbRef, get } from 'firebase/database'  
 import { realTimeDb as db } from '@/firebase/firebaseconfig'                                         
 import { useAuthStore } from '@/stores/authStore'                                                           
 import { useRoute } from 'vue-router'                                                               
 import { useChatStore } from '@/stores/chatStore'
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faT, faShapes, faPencil, faTrash, faDeleteLeft, faFileImport, faPen, faPenNib } from '@fortawesome/free-solid-svg-icons';
+import { faImage } from '@fortawesome/free-regular-svg-icons';
+
+library.add(faT, faShapes, faPencil, faTrash, faImage, faDeleteLeft, faFileImport, faPen, faPenNib);
                                                                                                                
 const authStore = useAuthStore()                                                                        
-const cursorStore = useCursorStore()                                                                      
-const whiteboardStore = useWhiteboardStore()
+const cursorStore = useCursorStore()                                                                       
 const chatStore = useChatStore()                                                              
 const route = useRoute()                                                                                 
-                                                                                                               
+
 const userId = computed(() => authStore.getUid)                                                            
-const username = computed(() => authStore.getDisplayName)                                                     
-                                                                                                               
-const canvasEl = ref(null)   
-const showShapeLibrary = ref(false)                                                                                    
-                                                                                                               
+const username = computed(() => authStore.getDisplayName)
+
 onMounted(async () => {                                                                                        
   cursorStore.setUserId(userId.value)                                                                         
   cursorStore.setRoomId(route.params.id)                                                
@@ -37,29 +40,341 @@ onMounted(async () => {
       return acc;                                                                                              
     }, {})                                                                                                    
   })                                                                                                          
-                                                                                                               
-  whiteboardStore.initializeCanvas(canvasEl.value)                                                           
-})                                                                                                            
+                                                                                                                                                                         
+})        
+
+const canvasEl = ref(null);
+let canvas = null;
+const isDrawingMode = ref(false);
+const selectedColor = ref('#000000');
+const brushThickness = ref(5);
+const selectedBrush = ref('pencil'); 
+const showBrushOptions = ref(false);
+const gridSize = 20;
+
+const imageInput = ref(null);
+const showShapeLibrary = ref(false);
+
+onMounted(async() => { 
+  await nextTick();
+  canvas = new fabric.Canvas(canvasEl.value);
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  canvas.on('object:added', function(e) {
+    if (e.target) {
+      addCustomBorder(e.target);
+    }
+  });
+
+  canvas.on('selection:created', function(e) {
+    if (e.selected && e.selected.length > 0) {
+      if (e.selected.length > 1) {
+        e.selected.forEach(addCustomBorder);
+      } else {
+        addCustomBorder(e.selected[0]);
+      }
+    }
+  });
+  
+  canvas.defaultCursor = 'none';
+  canvas.hoverCursor = 'none';
+  canvas.moveCursor = 'none';
+  canvas.isDrawingMode = false;
+  canvas.renderAll();
+  
+
+  canvas?.on('object:moving', (options) => {
+  const obj = options.target;
+
+  obj.set({
+    originX: 'left',
+    originY: 'top',
+  });
+
+  const snappedLeft = Math.round(obj.left / gridSize) * gridSize;
+  const snappedTop = Math.round(obj.top / gridSize) * gridSize;
+
+  obj.set({
+    left: snappedLeft,
+    top: snappedTop
+  });
+
+  obj.setCoords();
+
+    });
+});
+
+function addCustomBorder(obj) {
+  obj.set({
+    borderColor: 'red',
+    cornerColor: 'green',
+    cornerSize: 6,
+    transparentCorners: false
+  });
+}
+
+const resizeCanvas = () => {
+  const width = window.innerWidth * 0.8;
+  const height = window.innerHeight * 0.85;
+
+  canvas.setWidth(width);
+  canvas.setHeight(height);
+  canvas.setZoom(1);
+  canvas.calcOffset();
+  canvas.renderAll();
+};
+
+const addTextToCanvas = () => { //Adding text Feature
+  const text = new fabric.Textbox('Enter Text', {
+    left: 100,
+    top: 100,
+    fill: selectedColor.value, 
+    fontSize: 20,
+    fontFamily: 'Arial',
+    editable: true, 
+  });
+  
+  addCustomBorder(text);
+  canvas.add(text);
+  canvas.setActiveObject(text);
+  canvas.renderAll();
+};
+
+function addShapeToCanvas(shapeType, isFilled) { //Adding Shapes Feature
+  let shape;
+  const fillColor = isFilled ? selectedColor.value : 'transparent';
+  const strokeColor = isFilled ? 'transparent' : selectedColor.value;
+
+  switch (shapeType) {
+    case 'rectangle':
+      shape = new fabric.Rect({
+        left: 100,
+        top: 100,
+        fill: fillColor,
+        stroke: strokeColor,
+        strokeWidth: 2,
+        width: 100,
+        height: 100,
+      });
+      break;
+    case 'circle':
+      shape = new fabric.Circle({
+        left: 200,
+        top: 200,
+        radius: 50,
+        fill: fillColor,
+        stroke: strokeColor,
+        strokeWidth: 2,
+      });
+      break;
+    case 'triangle':
+      shape = new fabric.Triangle({
+        left: 300,
+        top: 300,
+        width: 100,
+        height: 100,
+        fill: fillColor,
+        stroke: strokeColor,
+        strokeWidth: 2,
+      });
+      break;
+    case 'ellipse':
+      shape = new fabric.Ellipse({
+        left: 150,
+        top: 150,
+        rx: 75,
+        ry: 50,
+        fill: fillColor,
+        stroke: strokeColor,
+        strokeWidth: 2,
+      });
+      break;
+    case 'hexagon':
+      shape = createPolygon(6, 50, fillColor, strokeColor);
+      break;
+    case 'octagon':
+      shape = createPolygon(8, 50, fillColor, strokeColor);
+      break;
+    case 'diamond':
+      shape = createDiamond(fillColor, strokeColor);
+      break;
+    case 'parallelogram':
+      shape = createParallelogram(fillColor, strokeColor);
+      break;
+    default:
+      console.log('Unknown shape');
+      return;
+  }
+
+  shape.set({
+    selectable: true,
+    evented: true,
+    hasControls: true,
+    hasBorders: true,
+    perPixelTargetFind: false
+  });
+
+  addCustomBorder(shape);
+  canvas.add(shape);
+  canvas.setActiveObject(shape);
+  canvas.renderAll();
+}
+
+function createPolygon(sides, radius, fillColor, strokeColor) {//Used for creating Polygon Shapes
+  const points = Array.from({ length: sides }, (_, i) => {
+    const angle = (i * 2 * Math.PI) / sides;
+    return {
+      x: radius * Math.cos(angle),
+      y: radius * Math.sin(angle),
+    };
+  });
+
+  return new fabric.Polygon(points, {
+    left: 200,
+    top: 200,
+    fill: fillColor,
+    stroke: strokeColor,
+    strokeWidth: 2,
+    selectable: true,
+  });
+}
+
+function createDiamond(fillColor, strokeColor) {//Used for creating Diamond Shape
+  return new fabric.Polygon([
+    { x: 0, y: -50 },
+    { x: 50, y: 0 },
+    { x: 0, y: 50 },
+    { x: -50, y: 0 },
+  ], {
+    left: 200,
+    top: 200,
+    fill: fillColor,
+    stroke: strokeColor,
+    strokeWidth: 2,
+    selectable: true,
+  });
+}
+
+function createParallelogram(fillColor, strokeColor) {//Used for creating Parallelogram Shape
+  return new fabric.Polygon([
+    { x: -50, y: -25 },
+    { x: 50, y: -25 },
+    { x: 75, y: 25 },
+    { x: -25, y: 25 },
+  ], {
+    left: 200,
+    top: 200,
+    fill: fillColor,
+    stroke: strokeColor,
+    strokeWidth: 2,
+    selectable: true,
+  });
+}
+
+const applyBrushSettings = () => {//Drawing Feature
+  switch (selectedBrush.value) {
+    case 'pencil':
+      canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
+      break;
+    case 'circle':
+      canvas.freeDrawingBrush = new fabric.CircleBrush(canvas);
+      break;
+    default:
+      canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
+  }
+
+  canvas.freeDrawingBrush.color = selectedColor.value;
+  canvas.freeDrawingBrush.width = brushThickness.value;
+  canvas.renderAll();
+};
+
+watch([selectedBrush, selectedColor, brushThickness], applyBrushSettings);
+
+const toggleDrawMode = () => {
+  isDrawingMode.value = !isDrawingMode.value;
+  canvas.isDrawingMode = isDrawingMode.value;
+  showBrushOptions.value = isDrawingMode.value;
+
+  if (isDrawingMode.value) {
+    applyBrushSettings();
+  }
+};
+
+const removeSelected = () => {//Removing Selected Object Feature
+  const activeObject = canvas.getActiveObject();
+  if (activeObject) {
+    canvas.remove(activeObject);
+    canvas.renderAll();
+  }
+};
+
+const clearCanvas = () => {//Clearing the entire board feature
+  canvas.getObjects().forEach((obj) => {
+    if (!obj.isGrid) {
+      canvas.remove(obj);
+    }
+  });
+  canvas.renderAll();
+};
+
+const triggerFileSelect = () => {
+  imageInput.value.click();
+};
+
+const insertImage = (event) => { //Image Insertion Feature
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (f) => {
+      const img = new Image();
+      img.src = f.target.result;
+      img.onload = () => {
+        const fabricImage = new FabricImage(img, {
+          left: 50,
+          top: 50,
+          angle: 0,
+          opacity: 1,
+        });
+
+        const canvasWidth = canvas.getWidth();
+        const canvasHeight = canvas.getHeight();
+
+        const imageOriginalWidth = img.width;
+        const imageOriginalHeight = img.height;
+
+        const scaleX = canvasWidth / imageOriginalWidth;
+        const scaleY = canvasHeight / imageOriginalHeight;
+        let scaleFactor = Math.min(scaleX, scaleY) * 0.8;
+
+        fabricImage.scale(scaleFactor);
+
+        canvas.add(fabricImage);
+        canvas.renderAll();
+      };
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+const downloadCanvasAsImage = () => {//Exporting Canvas into IMG Feature
+  const dataURL = canvas.toDataURL({ format: 'png' });
+  const link = document.createElement('a');
+  link.href = dataURL;
+  link.download = 'canvas-image.png';
+  link.click();
+};
                                                                                                                
 onUnmounted(() => {                                                                                            
   cursorStore.unsubscribeCursors()  
   chatStore.unsubscribeMessages()                                                                         
-});                                                                                                                                                                                                                       
-const updateCursorPosition = (event) => cursorStore.updateCursorPosition(event)                                                                                                            
-const addTextToCanvas = () => whiteboardStore.addTextToCanvas()                                                                                                            
-const addShapeToCanvas = (shapeType, isFilled) => whiteboardStore.addShapeToCanvas(shapeType, isFilled)                                                                                                            
-const toggleDrawMode = () => whiteboardStore.toggleDrawMode()                                                                                                            
-const removeSelected = () => whiteboardStore.removeSelected()                                                                                                            
-const clearCanvas = () => whiteboardStore.clearCanvas()                                                                                                          
-const triggerFileSelect = () => whiteboardStore.triggerFileSelect()                                                                                                             
-const insertImage = (event) => whiteboardStore.insertImage(event)                                                                                                            
-const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()                                                                                                   
+});                                                                                                                                                                                                                                                                                                                         
 </script>    
 
 <template>
   <div
     class="whiteboard-container"
-    @mousemove="updateCursorPosition"
+    @mousemove="cursorStore.updateCursorPosition"
   >
     <div class="toolbar">
       <div class="tool-group">
@@ -68,17 +383,24 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
           title="Drawing Mode"
           @click="toggleDrawMode"
         >
-          {{ whiteboardStore.isDrawingMode ? '✏️' : '🖊️' }}
+          <font-awesome-icon 
+            v-if="isDrawingMode" 
+            :icon="['fas', 'pen-nib']" 
+          />
+          <font-awesome-icon 
+            v-else 
+            :icon="['fas', 'pen']"  
+          />
         </button>
         <div
-          v-if="whiteboardStore.showBrushOptions"
+          v-if="showBrushOptions"
           class="brush-options-popup"
         >                                
           <div class="brush-option">                                                                             
             <label for="brush-type">Brush Type:</label>                                                          
             <select
               id="brush-type"
-              v-model="whiteboardStore.selectedBrush"
+              v-model="selectedBrush"
             >                                     
               <option value="pencil">
                 Pencil
@@ -92,7 +414,7 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
             <label for="brush-color">Brush Color:</label>                                                        
             <input
               id="brush-color"
-              v-model="whiteboardStore.selectedColor"
+              v-model="selectedColor"
               type="color"
             >                      
           </div>                                                                                                 
@@ -100,7 +422,7 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
             <label for="brush-thickness">Thickness:</label>                                                      
             <input
               id="brush-thickness"
-              v-model="whiteboardStore.brushThickness"
+              v-model="brushThickness"
               type="range"
               min="1"
               max="30" 
@@ -110,13 +432,13 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
             title="Clear Canvas"
             @click="clearCanvas"
           >
-            🗑️
+            <font-awesome-icon :icon="['fas', 'trash']" />
           </button>                                            
           <button
             title="Insert Image"
             @click="triggerFileSelect"
           >
-            🖼️
+            <font-awesome-icon :icon="['far', 'image']" />
           </button>                                      
           <input
             ref="imageInput"
@@ -128,13 +450,13 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
             title="Remove Selected"
             @click="removeSelected"
           >
-            ❌
+            <font-awesome-icon :icon="['fas', 'delete-left']" />
           </button>                                      
           <button
             title="Download Image"
             @click="downloadCanvasAsImage"
           >
-            ⬇️
+            <font-awesome-icon :icon="['fas', 'file-import']" />
           </button>                                
         </div>
         <button
@@ -142,20 +464,20 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
           title="Add Text"
           @click="addTextToCanvas"
         >
-          📝
+          <font-awesome-icon :icon="['fas', 't']" />
         </button>
         <button
           class="tool-btn"
           title="Shape Library"
           @click="showShapeLibrary = !showShapeLibrary"
         >
-          🧩
+          <font-awesome-icon :icon="['fas', 'shapes']" />
         </button>
       </div>
   
       <div class="tool-group">
         <input
-          v-model="whiteboardStore.selectedColor"
+          v-model="selectedColor"
           type="color"
           class="color-picker"
           title="Choose Color"
@@ -165,14 +487,14 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
           title="Clear Canvas"
           @click="clearCanvas"
         >
-          🗑️
+          <font-awesome-icon :icon="['fas', 'trash']" />
         </button>
         <button
           class="tool-btn"
           title="Remove Selected"
           @click="removeSelected"
         >
-          ❌
+          <font-awesome-icon :icon="['fas', 'delete-left']" />
         </button>
       </div>
   
@@ -182,14 +504,14 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
           title="Insert Image"
           @click="triggerFileSelect"
         >
-          🖼️
+          <font-awesome-icon :icon="['far', 'image']" />
         </button>
         <button
           class="tool-btn"
           title="Download Image"
           @click="downloadCanvasAsImage"
         >
-          ⬇️
+          <font-awesome-icon :icon="['fas', 'file-import']" />
         </button>
         <input
           ref="imageInput"
@@ -664,6 +986,7 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
     justify-content: center;
     border-bottom: 1px solid #e2e8f0;
     flex-wrap: wrap;
+    z-index: 1;
   }
   
   .tool-group {
@@ -723,6 +1046,8 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
   .cursor-pointer {
     font-size: 1.5rem;
     line-height: 1;
+    transform: rotate(-85deg);
+    z-index: 1000;
   }
   
   .cursor-label {
@@ -769,9 +1094,6 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
     margin-bottom: 10px;                                                                                         
   } 
 
-  svg{
-    transform: rotate(-85deg);
-  }
   
   @media (max-width: 768px) {
     .toolbar {
@@ -788,8 +1110,30 @@ const downloadCanvasAsImage = () => whiteboardStore.downloadCanvasAsImage()
     }
   
     .shape-library {
-      grid-template-columns: repeat(3, 1fr);
-      width: 90%;
-    }
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    width: 40%;
   }
+
+  .shape-option {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .shape-option svg {
+    max-width: 80%;
+    height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .shape-library {
+    grid-template-columns: repeat(3, 1fr); 
+  }
+
+  .shape-option svg {
+    max-width: 70%;
+  }
+}
   </style>

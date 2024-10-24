@@ -113,14 +113,14 @@ const handleSubmit = () => {
     width: 100%;
     padding: 10px;
     margin-top: 10px;
-    background-color: #4CAF50;
+    background-color: #2d8eff;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
   }
   .modal button:hover {
-    background-color: #45a049;
+    background-color: #2d8eff;
   }
   .modal select {                                                                                             
     display: block;                                                                                           

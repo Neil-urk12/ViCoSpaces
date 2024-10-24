@@ -9,7 +9,7 @@ const router = createRouter({
     { path: '/', component: () => import('../views/LandingPageView.vue'), meta: { requiresAuth: false }  },
     { path: '/about', component: () => import('../views/AboutView.vue'), meta: { requiresAuth: false }  },
     { path: '/roadmap', component: () => import('../views/RoadMap.vue'), meta: { requiresAuth: false }  },
-    { path: '/home', component: () => import('../views/HomeView.vue'), meta: { requiresAuth: true } },
+    { path: '/home', component: () => import('../views/HomeView.vue'), meta: { requiresAuth: false } },
     { path: '/register', component: () => import('../views/RegisterView.vue'), meta: { requiresAuth: false } },
     { path: '/login', component: () => import('../views/SignInView.vue'), meta: { requiresAuth: false } },
     {
@@ -17,7 +17,7 @@ const router = createRouter({
       name: 'Room',
       component: () => import('../views/RoomView.vue'),
       props: route => ({ roomId: route.params.id, roomName: route.query.name }),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: false },
       beforeEnter: async (to, from, next) => {
         const roomId = to.params.id;
         const roomRef = dbRef(database, `rooms/${roomId}`);
