@@ -22,8 +22,17 @@ const route = useRoute()
 
 const userId = computed(() => authStore.getUid)                                                            
 const username = computed(() => authStore.getDisplayName)    
-let debounceTimeout;                                                                                           
-                                                                                                                
+let debounceTimeout;
+
+function handleSingleReload() {
+  if (!sessionStorage.getItem('roomReloadFlag')) {
+    sessionStorage.setItem('roomReloadFlag', 'true');
+    location.reload();
+  } else {
+    sessionStorage.removeItem('roomReloadFlag');
+  }
+}
+
  const saveCanvasToDatabase = async (canvas, roomId) => {   
   if (!canvas) {
     console.error('Canvas or roomId is missing');
@@ -88,19 +97,12 @@ let debounceTimeout;
   try {
     const canvasRef = dbRef(db, `rooms/${roomId}/canvas`);
     const snapshot = await get(canvasRef);
-    
     if (!snapshot.exists()) return;
-
     const data = snapshot.val();
     if (!data.objects || !Array.isArray(data.objects)) return;
-
-    // Clear existing canvas objects
     canvas.clear();
-
-    // Render each object based on its type
     for (const objData of data.objects) {
       let fabricObj;
-
       switch (objData.type) {
         case 'rect':
           fabricObj = new fabric.Rect({
@@ -109,7 +111,6 @@ let debounceTimeout;
             hasControls: true
           });
           break;
-
         case 'circle':
           fabricObj = new fabric.Circle({
             ...objData,
@@ -117,7 +118,6 @@ let debounceTimeout;
             hasControls: true
           });
           break;
-
         case 'triangle':
           fabricObj = new fabric.Triangle({
             ...objData,
@@ -125,7 +125,6 @@ let debounceTimeout;
             hasControls: true
           });
           break;
-
         case 'ellipse':
           fabricObj = new fabric.Ellipse({
             ...objData,
@@ -133,7 +132,6 @@ let debounceTimeout;
             hasControls: true
           });
           break;
-
         case 'polygon':
           if (objData.points) {
             fabricObj = new fabric.Polygon(objData.points, {
@@ -143,7 +141,6 @@ let debounceTimeout;
             });
           }
           break;
-
         case 'textbox':
           fabricObj = new fabric.Textbox(objData.text || 'Text', {
             ...objData,
@@ -151,7 +148,6 @@ let debounceTimeout;
             hasControls: true
           });
           break;
-
         case 'path':
           if (objData.path) {
             fabricObj = new fabric.Path(objData.path, {
@@ -161,10 +157,8 @@ let debounceTimeout;
             });
           }
           break;
-
         case 'image':
           if (objData.src) {
-            // Handle image loading asynchronously
             await new Promise((resolve) => {
               fabric.Image.fromURL(objData.src, (img) => {
                 img.set({
@@ -176,23 +170,20 @@ let debounceTimeout;
                 resolve();
               }, { crossOrigin: 'anonymous' });
             });
-            continue; // Skip the rest of this iteration since image is already added
+            continue;
           }
           break;
       }
       if (fabricObj) {
         canvas.add(fabricObj);
-        addCustomBorder(fabricObj); // Add custom border if you're using this function
+        addCustomBorder(fabricObj);
       }
     }
     canvas.renderAll();
     onValue(canvasRef, (snapshot) => {
       if (!snapshot.exists()) return;
-      
       const newData = snapshot.val();
       if (!newData.objects || !Array.isArray(newData.objects)) return;
-      
-      // Only update if timestamp is newer
       if (!data.timestamp || newData.timestamp > data.timestamp) {
         renderCanvasFromDatabase(canvas, roomId);
       }
@@ -219,7 +210,7 @@ const initializeCanvas = async () => {
       }
     }
   })
-  canvas.defaultCursor = 'default';
+  canvas.defaultCursor = 'none';
   canvas.hoverCursor = 'none';
   canvas.moveCursor = 'none';
   canvas.isDrawingMode = false;
@@ -258,6 +249,7 @@ onMounted(async () => {
       return acc;                                                                                              
     }, {})                                                                                                    
   })    
+  handleSingleReload();
   await initializeCanvas()
   canvas.on('object:modified', () => saveCanvasToDatabase(canvas, route.params.id));                             
   canvas.on('object:added', () => saveCanvasToDatabase(canvas, route.params.id));                                
