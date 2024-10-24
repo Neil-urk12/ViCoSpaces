@@ -7,6 +7,7 @@ import LockIcon from '@/assets/images/SVG/lock-password-svgrepo-com-red-large.sv
 import UnlockIcon from  '@/assets/images/SVG/lock-unlocked-svgrepo-com-green.svg';
 import lockStatusIcon from '@/assets/images/SVG/lock-svgrepo-com-black.svg';
 import hostIcon from '@/assets/images/SVG/user-svgrepo-com-black.svg';
+import SidebarModal from '@/components/SidebarModal.vue';
 import FilterModal from '@/components/FilterModal.vue';
 import HostRoomModal from '@/components/HostRoomModal.vue';
 import JoinRoomModal from '@/components/JoinRoomModal.vue';
@@ -17,19 +18,7 @@ import { useRouter, RouterLink } from 'vue-router';
 import { useAuthStore } from '../stores/authStore'
 import { useRoomStore } from '../stores/roomStore'
 
-//this should be FilterModal.vue
-const isModalVisible = ref(false);
 
-const openFilterModal = () => {
-  isModalVisible.value = true;
-};
-const closeFilterModal = () => {
-  isModalVisible.value = false;
-};
-
-
-
-import SidebarModal from '@/components/SidebarModal.vue';
 
 const showSideBarModal = ref(false);
 
@@ -47,13 +36,19 @@ const categoryFilter = ref('all');
 const privacyCondition = ref('public')
 const roomIdToJoin = ref(null)
 
-
-
-
 const isCreateRoomVisible = ref(false);
 const isDropdownOpen = ref(false)
 const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value
 
+//this should be FilterModal.vue
+const isModalVisible = ref(false);
+
+const openFilterModal = () => {
+  isModalVisible.value = true;
+};
+const closeFilterModal = () => {
+  isModalVisible.value = false;
+};
 
 
 const createRoomHandler = async (roomData) => {
@@ -109,6 +104,22 @@ onMounted(async () => {
 onUnmounted(() => {
   off(roomsRef)
 })
+
+const handleClickOutsideProfile= (event) => {
+  const dropdown = document.querySelector('.dropdown');
+  const profile = document.querySelector('.user-profile');
+  if (dropdown && !dropdown.contains(event.target) && !profile.contains(event.target)) {
+    isDropdownOpen.value = false; // Close dropdown if clicked outside
+  }
+};
+// Register event listener on mounted, remove on unmount
+onMounted(() => {
+  document.addEventListener('click', handleClickOutsideProfile);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutsideProfile);
+});
 //Filters
 const handleFilterChange = (filters) => {
   searchQuery.value = filters.searchQuery;
@@ -216,22 +227,12 @@ const logout = async () => {
               <button
                 class="mobile-host-container"
               >
-                <button
-                  class="open-sidebar-modal-btn"
-                  @click="showSideBarModal = true"
-                >
-                  Open Modal
-                </button>
-
-                <!-- Pass down the close function as a prop -->
-                
                 <img
                   src="../assets/images/SVG/add-square-svgrepo-com white.svg"
                   alt="host-icon"
                   width="30px"
                 >
               </button>
-              
             </div>
             <ul class="pages-container">
               <ul class="pages-container">
