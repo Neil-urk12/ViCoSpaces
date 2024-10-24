@@ -1,0 +1,482 @@
+
+  main{
+    margin: 0;
+    padding: 0;
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+  }
+  .room-view-container {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    padding: 30px 2% 0px 2%;
+    width: 100%;    
+    height: 100%;
+    overflow:auto ;
+  }
+  .room-form {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-auto-flow: row;
+    align-content: baseline;
+    grid-template-columns: repeat(3, minmax(310px, 1fr));
+    grid-template-rows: auto; 
+    gap: 30px;
+    flex-grow: 1;
+    /* overflow-y: auto; */
+  }
+  
+  .room {
+    position: relative; 
+    border-radius: 12px;
+    height: 350px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    word-wrap: break-word;
+    box-shadow: 3px 5px 20px #9e9e9e;
+
+  }
+  
+  .image-content {
+    position: relative;
+    background-image: url(../images/SVG/room-background_2.svg);
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px 12px 0px 0px;
+    height: 60%;
+    box-sizing: border-box;
+    background-color: #2d8eff;
+  }
+  .room-name-container{
+    height: 50%;
+    display: flex;
+    align-items: end;
+
+  }
+  .room-name{
+    color: white;
+    margin-left: 4%;
+    margin-bottom: 1%;
+    width: 100%;
+  }
+
+
+  .status-icon-wrapper{
+    display: flex;
+    justify-content: end;
+    height: 50%;
+  }.status-icon{
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    background-color: rgb(255, 255, 255);
+    border-radius: 50%;
+    border: solid 1px #ffffff;
+    height: 80%;
+    width: 100px;
+    margin-right: 10px;
+  }
+  .status-icon img {
+    align-self: center;
+  }
+  /* .hosting-container {
+    grid-column: 3;
+    background-color: rgb(255, 255, 255);
+    height: 64px;
+    width: 64px;
+    border-radius: 50%;
+    align-self: center;
+    transform: translate(107px, -20px);
+    background-image: url("../images/UserProfileStocks/megan.jpg");
+    background-size: 220%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  } */
+  .text-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 40%;
+    max-height: 100%;
+    max-width: 100%;
+    gap: 6px;
+    border-radius: 0px 0px 12px 12px;
+    background-color: rgb(255, 255, 255);
+    padding: 10px 20px 10px 20px;
+    align-items: center;
+    box-sizing: border-box;
+  
+  }
+  
+  .bottom-content{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    
+  }
+  .host-wrapper{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    height: 20%;
+  }
+  .host-wrapper p{
+    font-weight: bold;
+  }
+  .privacy-wrapper{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 30%;
+    gap: 6px;
+  }
+  /* just the icon container */
+  .sip{ 
+    display: flex;
+    justify-content: center;  
+  }
+
+  .status-background {
+    align-content: center;
+    height: 28px;
+    width: 70px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .p-text {
+
+    font-size: 0.9rem;
+    color: white; /* You can change the text color if needed */
+  }
+  /* .joined-and-button-container{
+    display: flex;
+    justify-content: space-between;
+    align-content: space-between;
+    width: 100%;
+    height: 80%;
+    
+  } */
+  /* .joined-users{
+    display: flex;
+    align-self: center;
+    height: 50%;
+    width: 30%;
+  }
+  .user-wrapper{
+    width: 100%;
+    display: flex;
+  
+  } */
+  /* .user-1-container{
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      background-color: greenyellow;
+      font-size: 24px;
+      font-weight: bold;
+      position: relative; 
+      margin-left: -20px;
+  } */
+  /* .user-1{
+    width: 32px;
+    height: 32px;
+    border: 1px solid #2d8eff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    position: relative; 
+    margin-left: -1px;
+    
+  }
+  .user-2{
+    width: 32px;
+    height: 32px;
+    border: 1px solid #2d8eff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    position: relative; 
+    margin-left: -9px;
+  }
+  .user-3{
+    width: 32px;
+    height: 32px;
+    border: 1px solid #2d8eff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    position: relative; 
+    margin-left: -9px;
+  }
+  /* .user-count{
+    width: 32px;
+    height: 32px;
+    border: 1px solid #2d8eff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #2d8eff;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    position: relative; 
+    margin-left: -9px;
+  }
+  .number-count{
+    font-size: 0.9rem;
+    
+  } */ */
+  
+  .join-btn-container{
+    align-content: flex-end;
+    height: 100%;
+  }
+  .room-join-wrapper{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0; /* No padding inside the container */
+    margin: 0;  /* No margin around the container */
+    width: 100%; /* Adjust width as needed */
+  }
+  .counter{
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    align-items: center;
+    width: 50%;
+    height: 100%;
+    padding-top: 1px;
+    gap: 4px;
+    margin: 0;
+  }
+  .user-counter{
+    position: relative;
+    display: flex;
+    align-content: start;
+    justify-content: center;
+    min-width: 18%;
+    width: 20%;
+    height: 50%;
+    border-radius: 6px;
+    background-color: #D9D9D9;
+    box-shadow: 3px 3px 5px #5f5f5f inset;
+    margin-left: 0;
+  }
+  .user-counter h4{
+    position: absolute;
+    align-self: center;
+  }
+  .join-btn {
+    font-weight: bolder;
+    border: none;
+    border-radius: 12px;
+    height: 42px;
+    width: 124px;
+    color: white;
+    background-color: #2d8eff;
+    
+  }
+  button {
+    cursor: pointer;
+  }
+
+  .mobile-host-container{
+    display: none;
+  }
+
+  /* MEDIA QUERIES */
+  
+  /* @media (max-width: 1925px) {
+    .status-icon-wrapper{
+      position: absolute;
+      display: flex;
+      justify-content: flex-end;
+      height: 50%;
+      width:20%;
+      background-color: rgb(255, 255, 255);
+      border-radius: 50%;
+      align-items: center;  
+      grid-column: 3;
+      grid-row: 2;  
+      right: 4%;    
+      border: 1px solid #2d8eff;
+      transform: translateY(20%);
+    }.status-icon{
+      width: 100%;
+      align-self: center;
+    }
+    .status-icon img {
+      margin-right: 0;
+    }
+  }
+  @media (max-width: 1386px) {
+    .image-content {
+    position: relative;
+    background-image: url(../images/SVG/room-background_2.svg);
+    display: grid;
+    grid-template-columns: 28% 1fr 1fr;
+    grid-template-rows: auto auto;
+    border-radius: 12px 12px 0px 0px;
+    height: 60%;
+    background-color: #2d8eff;
+    
+  } */
+  
+  /* .hosting-container {
+    position: absolute;
+    top: 35px;
+    right: 120px;
+    background-color: rgb(255, 255, 255);
+    height: 64px;
+    width: 64px;
+    border-radius: 50%;
+    background-image: url("../images/UserProfileStocks/megan.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  } */
+  
+  /* .status-icon-wrapper{
+    position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    height: 70%;
+    width:50%;
+    background-color: rgb(255, 255, 255);
+    border-radius: 50%;
+    align-items: center;  
+    grid-column: 3;
+    grid-row: 2;  
+    right: 10%;    
+    border: 1px solid #2d8eff;
+    transform: translateY(-120%);
+  }.status-icon{
+    width: 100%;
+    align-self: center;
+  }
+  .status-icon img {
+    margin-right: 0;
+  }
+  } */
+  
+  @media (max-width: 1228px) {
+    .room-form {
+      grid-template-columns: repeat(2, 1fr); /* Two columns for smaller screens */
+    }
+  }
+  @media (max-width: 1100px) {
+    
+    
+  }
+  
+  @media (max-width: 820px) {
+  }
+ 
+  @media (max-width: 794px){
+    
+    .room-form {
+      grid-template-columns: 1fr; /* One column for even smaller screens */
+    }
+    .status-icon-wrapper{
+      position: absolute;
+      display: flex;
+      justify-content: flex-end;
+      height: 80%;
+      width:30%;
+      background-color: rgb(255, 255, 255);
+      border-radius: 50%;
+      align-items: center;  
+      grid-column: 3;
+      grid-row: 2;  
+      right: 10%;    
+      border: 1px solid #2d8eff;
+      transform: translateY(-110%);
+    }.status-icon{
+      width: 100%;
+      align-self: center;
+    }
+    .status-icon img {
+      margin-right: 0;
+    }
+
+    .mobile-content{
+      position: absolute;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      top: 29%;
+      left: 20px;
+    }
+    .mobile-host-container{
+      position: fixed;
+      background-color: rgb(15, 253, 246);
+      width: 10%;
+      border-radius: 50%;
+    }
+    .mobile-host-container img{
+      align-self: center;
+    }
+  }
+  @media (max-width: 600px) {
+    .room-form {
+      grid-template-columns: 1fr; /* One column for even smaller screens */
+    }
+  }
+  @media (max-width: 375px) {
+    
+    .counter{
+      display: flex;
+      flex-direction: row;
+      align-self: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      padding-top: 1px;
+      gap: 4px;
+      margin: 0;
+    }
+    .user-counter{
+      position: relative;
+      display: flex;
+      align-content: start;
+      justify-content: center;
+      min-width: 18%;
+      width: 20%;
+      height: 50%;
+      border-radius: 6px;
+      background-color: #D9D9D9;
+      box-shadow: 3px 3px 5px #5f5f5f inset;
+      margin-left: 0;
+    }
+    .user-counter h4{
+      position: absolute;
+      align-self: center;
+    }
+
+    
+  }

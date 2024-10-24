@@ -1,12 +1,33 @@
 <script setup>
-import HostRoomModal from '../components/HostRoomModal.vue'
-import JoinRoomModal from '../components/JoinRoomModal.vue'
+//Styles
+import '@/assets/styles/homeView.css';
+import '@/assets/styles/home-components.css';
+//imported icon
+import LockIcon from '@/assets/images/SVG/lock-password-svgrepo-com-red.svg';
+import UnlockIcon from  '@/assets/images/SVG/lock-unlocked-svgrepo-com-green.svg';
+import lockStatusIcon from '@/assets/images/SVG/lock-svgrepo-com-black.svg';
+import hostIcon from '@/assets/images/SVG/user-svgrepo-com-black.svg';
+
+import HostRoomModal from '@/components/HostRoomModal.vue';
+import JoinRoomModal from '@/components/JoinRoomModal.vue';
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { ref as dbRef, onValue, off, push } from 'firebase/database';
 import { realTimeDb as database } from '../firebase/firebaseconfig.js'
 import { useRouter, RouterLink } from 'vue-router';
 import { useAuthStore } from '../stores/authStore'
 import { useRoomStore } from '../stores/roomStore'
+//test filter modal
+// import Modal from '@/components/test-modal.vue';//this should be FilterModal.vue
+const isModalVisible = ref(false);
+
+const openModal = () => {
+  isModalVisible.value = true;
+};
+
+const closeModal = () => {
+  isModalVisible.value = false;
+};
+ // Import Modal component
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -26,12 +47,12 @@ const isCreateRoomVisible = ref(false);
 const isDropdownOpen = ref(false)
 const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value
 
-const uniqueCategories = computed(() => {
-  const categories = new Set(
-    roomStore.rooms.map((room) => room.category).filter(Boolean)
-  );
-  return Array.from(categories);
-})
+// const uniqueCategories = computed(() => {
+//   const categories = new Set(
+//     roomStore.rooms.map((room) => room.category).filter(Boolean)
+//   );
+//   return Array.from(categories);
+// })
 
 const createRoomHandler = async (roomData) => {
   try {
@@ -130,216 +151,335 @@ const logout = async () => {
     console.error('Logout error:', error)
   }
 }
+// const isDisplayed = ref(false);
+
+// const toggleInput = () => {
+//   isDisplayed.value = !isDisplayed.value;
+// }
+
+// const filter = () => {
+//   alert("filtered");
+// };
+
+// const sort = () => {
+//   alert("sorted search");
+// };
+
+// const emit = defineEmits(["open-room"]);
+
+// const HostRoom = () => {
+//   console.log("button clicked");
+//   emit("open-room");
+// };
+
+//from homeView
+// const join = () => {
+//   alert("neil joined the program!");
+// };
+
+// //const title = ref("Production Design");
+
+//function update(newTitle) {
+  //title.value = newTitle;
+//}
+//test condition of the color background change in the private or public
+//create a condition that will check if privacy is private and if it is change ref(true);
+const isPrivate =ref(false);
+console.log(isPrivate);
+
 </script>
+
+
+
 
 <template>
   <header>
-    <header>
-      <nav class="nav-bar">
-        <div class="nav-div">
-          <div class="logo-container">
-            <img
-              src="../images/logo/logo.png"
-              alt="ViCoSpaces-Logo"
-              class="logo-img"
-            >
-            <span class="logo-name">ViCoSpaces</span>
-          </div>
-          <div
-            class="burger"
-            @click="toggleMenu"
+    <nav class="nav-bar">
+      <div class="nav-div">
+        <div class="logo-container">
+          <img
+            src="../assets/images/logo/transparentlogo 1080.png"
+            alt="ViCoSpaces-Logo"
+            class="logo-img"
+            width="100%"
+            height="100%"
           >
+          <span class="logo-name">ViCoSpaces</span>
+        </div>
+        <div class="open-sidebar">
+          <div class="open-sidebar-icon">
             <img
-              src="../images/SVG/burger-simple-svgrepo-com.svg"
-              alt="menu-icon"
-              width="30px"
+              src="../assets/images/SVG/mobile-menu-bar.svg"
+              alt="side icon"
+              width="40px"
             >
           </div>
           <div class="nav-links-and-buttons">
+            <div class="mobile-content">
+              <button
+                class="mobile-host-container"
+                @click="isCreateRoomVisible = true"
+              >
+                <img
+                  src="../assets/images/SVG/add-square-svgrepo-com white.svg"
+                  alt="host-icon"
+                  width="30px"
+                >
+              </button>
+            </div>
             <ul class="pages-container">
               <ul class="pages-container">
                 <li>
-                  <RouterLink to="/">
+                  <router-link to="/">
                     Home
-                  </RouterLink>
+                  </router-link>
                 </li>
                 <li>
-                  <RouterLink to="/about">
+                  <router-link to="/about">
                     About
-                  </RouterLink>
+                  </router-link>
                 </li>
                 <li>
-                  <RouterLink to="/contact">
+                  <router-link to="/contact">
                     Contact
-                  </RouterLink>
+                  </router-link>
                 </li>
               </ul>
             </ul>
-            <div
-              class="user-profile"
-              @click="toggleDropdown"
+            <a
+              id="user-profile"
+              href=""
             >
-              <img
-                src="../images/black-default-user-profile-ll(1).webp"
-                alt="User Profile"
+              <div class="user-profile">
+                <img
+                  src="../assets/images/SVG/user-svgrepo-com.svg"
+                  alt="User Profile"
+                  width="30px"
+                >
+              </div>
+              <div
+                v-if="isDropdownOpen"
+                class="dropdown"
               >
-            </div>
-            <div
-              v-if="isDropdownOpen"
-              class="dropdown"
-            >
-              <RouterLink
-                to="/settings"
-                class="dropdown-item"
-              >
-                Settings
-              </RouterLink>
-              <RouterLink
-                to="/profile"
-                class="dropdown-item"
-              >
-                Profile
-              </RouterLink>
-              <a
-                class="dropdown-item"
-                @click.prevent="logout"
-              >
-                Log out
-              </a>
-            </div>
+                <RouterLink
+                  to="/settings"
+                  class="dropdown-item"
+                >
+                  Settings
+                </RouterLink>
+                <RouterLink
+                  to="/profile"
+                  class="dropdown-item"
+                >
+                  Profile
+                </RouterLink>
+                <RouterLink
+                  to="/logout"
+                  class="dropdown-item"
+                  @click.prevent="logout"
+                >
+                  Log out
+                </RouterLink>
+              </div>
+            </a>
           </div>
         </div>
-      </nav>
-    </header>
+      </div>
+    </nav>
+  </header>
   
-    <main>
-      <div class="search-bar">
-        <div class="search">
+  <main>
+    <div class="search-bar">
+      <div class="search">
+        <img
+          class="search-icon"
+          src="../assets/images/SVG/search-svgrepo-com.svg"
+          alt="search-icon"
+          width="30px"
+          @click="toggleDropdown"
+        >
+        <div
+          v-show="isDropdownVisible"
+          class="dropdown-menu"
+        >
+          <a
+            v-for="(item, index) in dropdownItems"
+            :key="index"
+            href="#"
+            class="dropdown-item"
+          >
+            {{ item }}
+          </a>
+        </div>
+        <!-- </div> -->
+        <!-- search bar input -->
+        <input
+          v-model="searchQuery"
+          type="text"
+          class="search-input"
+          name="search-input"
+          placeholder="Search rooms by ID"
+        >
+        <input
+          v-model="searchQuery"
+          type="text"
+          class="search-input-small"
+          name="search-input"
+          placeholder="Search room ID"
+        >
+  
+        <div class="filter-sort">
+          <a
+            href="#"
+            @click.prevent="filter"
+          >
+            <img
+              class="filter-icon"
+              src="../assets/images/SVG/filters-2-svgrepo-com.svg"
+              alt="filter-icon"
+              width="30px"
+              @click="openModal"
+            >
+          </a>
+          <Modal
+            v-if="isModalVisible"
+            @close="closeModal"
+          />
+  
+          <a
+            href="#"
+            @click.prevent="sort"
+          >
+            <img
+              class="sort-icon"
+              src="../assets/images/SVG/sort-vertical-svgrepo-com.svg"
+              alt="sort-icon"
+              width="30px"
+              @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"
+            >
+          </a>
+        </div>
+      </div>
+      <div class="button-container">
+        <button
+          class="join-btn-container"
+          @click="showModal = true"
+        >
           <img
-            class="search-icon"
-            src="../images/SVG/search-svgrepo-com.svg"
-            alt="search-icon"
+            class="join-icon"
+            src="../assets/images/SVG/session-join-svgrepo-com white.svg"
+            alt="join-icon"
             width="30px"
           >
-          <input
-            v-model="searchQuery"
-            type="text"
-            class="search-input"
-            name="search-input"
-            placeholder="Search rooms by ID"
+          <p class="join-text-hide">
+            Join <span class="room-text-hide-on-small">Room</span>
+          </p>
+        </button>
+        <button
+          class="host-btn-container"
+          @click="isCreateRoomVisible = true"
+        >
+          <img
+            src="../assets/images/SVG/add-square-svgrepo-com white.svg"
+            alt="host-icon"
+            width="30px"
           >
-  
-          <div class="filter-sort">
-            <a
-              href="#"
-              @click.prevent="filter"
-            >
-              <img
-                class="filter-icon"
-                src="../images/SVG/filters-2-svgrepo-com.svg"
-                alt="filter-icon"
-                width="30px"
-              >
-            </a>
-  
-            <a
-              href="#"
-              @click.prevent="sort"
-            >
-              <img
-                class="sort-icon"
-                src="../images/SVG/sort-vertical-svgrepo-com.svg"
-                alt="sort-icon"
-                width="30px"
-                @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"
-              >
-            </a>
+          <p>Host <span class="room-text-hide-on-small">Room</span></p>
+        </button>
+      </div>
+    </div>
+
+    <!-- ROOM -->
+
+    <main class="room-view-container">
+      <div class="room-form">
+        <div
+          v-for="room in filteredAndSortedRooms"
+          :key="room.id"
+          class="room"
+        >
+          <div class="image-content">
+            <div class="status-icon-wrapper">
+              <div class="status-icon">
+                <img
+                  :src="room.privacyType === 'public' ? UnlockIcon : LockIcon"
+                  alt="status icon"
+                  width="32"
+                  height="32"
+                >
+              </div>
+            </div>
+
+            <div class="room-name-container">
+              <h2 class="room-name">
+                {{ room.name }}
+              </h2>
+            </div>
           </div>
-        </div>
-        <div class="button-container">
-          <button @click="showModal = true">
-            Join Room
-          </button>
-          <button @click="isCreateRoomVisible = true">
-            Host Room
-          </button>
+          <div class="text-content">
+            <div class="bottom-content">
+              <div class="host-wrapper">
+                <div class="hiw">
+                  <img
+                    :src="hostIcon"
+                    alt="status icon"
+                    class="status-icon-privacy"
+                    width="26"
+                    height="26"
+                  >
+                </div>
+                <p>{{ room.host?.name || 'Unknown' }}</p>
+              </div>
+              <div class="privacy-wrapper">
+                <div class="sip">
+                  <img
+                    :src="lockStatusIcon"
+                    alt="status icon"
+                    class="status-icon-privacy"
+                    width="26"
+                    height="26"
+                  >
+                </div>
+                <div class="status-background">
+                  <!-- The container's background color changes based on isPrivate -->
+                  <div
+                    class="status-background"
+                    :style="{ backgroundColor: isPrivate ? 'red' : 'lightgreen' }"
+                  >
+                    <p class="p-text">
+                      {{ isPrivate ? 'Private' : 'Public' }}
+                    </p>
+                  </div>
+                </div>
+                <p>privacy:{{ room.privacyType }}</p>
+              </div>
+              <div class="joined-users">
+                <i class="icon" />
+              </div>
+              <div class="room-join-wrapper">  
+                <div class="counter">
+                  <div class="capaticy-txt">
+                    Capacity:
+                  </div>
+                  <div class="user-counter">
+                    <h4>{{ room.currentUsers }} / {{ room.maxCapacity }}</h4>
+                  </div>
+                </div>
+                <button
+                  class="join-a-room-btn"
+                  :disabled="room.currentUsers >= room.maxCapacity"
+                  @click="joinRoom(room.id, room.privacyType)"
+                >
+                  {{ room.currentUsers >= room.maxCapacity ? 'Full' : 'Join' }}
+                </button>           
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </main>
-    <categoryBar @changetitle="update" />
-  </header>
-  <div class="search-sort">
-    <select v-model="sortBy">
-      <option value="capacity">
-        Capacity
-      </option>
-      <option value="createdAt">
-        Latest
-      </option>
-      <option value="createdAtOldest">
-        Oldest
-      </option>
-    </select>
-  </div>
-  <div class="filters">
-    <select v-model="privacyFilter">
-      <option value="all">
-        All Privacy
-      </option>
-      <option value="public">
-        Public
-      </option>
-      <option value="private">
-        Private
-      </option>
-    </select>
-    <select v-model="categoryFilter">
-      <option value="all">
-        All Categories
-      </option>
-      <option
-        v-for="category in uniqueCategories"
-        :key="category"
-        :value="category"
-      >
-        {{ category }}
-      </option>
-    </select>
-  </div>
-  <main class="room-view-container">
-    <div
-      v-for="room in filteredAndSortedRooms"
-      :key="room.id"
-      class="room"
-    >
-      <div class="image-content">
-        <div class="hosting-container">
-          <div class="host-profile" />
-        </div>
-      </div>
-      <div class="text-content">
-        <h2>{{ room.name }}</h2>
-        <h4>{{ room.currentUsers }} / {{ room.maxCapacity }}</h4>
-        <p>Host: {{ room.host?.name || 'Unknown' }}</p>
-        <p>Privacy: {{ room.privacyType }}</p>
-        <div class="joined-users">
-          <i class="icon" />
-        </div>
-        <div class="join-btn-container">  
-          <button
-            class="join-btn"
-            :disabled="room.currentUsers >= room.maxCapacity"
-            @click="joinRoom(room.id, room.privacyType)"
-          >
-            {{ room.currentUsers >= room.maxCapacity ? 'Full' : 'Join' }}
-          </button>           
-        </div>
-      </div>
-    </div>
     <JoinRoomModal
       v-if="showModal"
-      :room-id-to-join="roomIdToJoin"
-      :is-private="privacyCondition"
       @close="showModal = false"
       @join="joinRoomById"
     />
@@ -351,381 +491,13 @@ const logout = async () => {
     />
   </main>
 </template>
-
-<style scoped>
-.room-view-container {
-  display: grid;
-  column-gap: 20px;
-  row-gap: 20px;
-  grid-template-columns: 28% 1fr 1fr; 
-  grid-template-rows: 300px auto auto; 
-  background-color: rgb(255, 255, 255);
-  width: 96%;
-  height: 71.8vh;
-  margin: auto;
-}
-.room {
-  border-radius: 12px;
-  height: 100%; 
-  width: 100%;
-  flex-direction: column; 
-  overflow: hidden;
-  box-shadow: 3px 5px 20px #9e9e9e;
-}
-.image-content{
-  background-image: url(../images/SVG/room-background_2.svg);
-  display: grid;
-  grid-template-columns: 28% 1fr 1fr; 
-  grid-template-rows: auto auto; 
-  border-radius: 12px 12px 0px 0px;
-  height: 60%;
-  background-color: #2d8eff;
-}
-.hosting-container{
-  grid-column: 3;
-  background-color: rgb(255, 255, 255);
-  height: 64px;
-  width: 64px;
-  border-radius: 50%;
-  align-self: center;
-  transform: translate(107px, -20px); 
-  background-image: url('../images/UserProfileStocks/megan.jpg'); 
-  background-size: 220%; 
-  background-size: cover; 
-  background-position: center; 
-  background-repeat: no-repeat;
-}
-.text-content {
-  display: grid;
-  grid-template-columns: auto auto auto 130px;
-  grid-template-rows: auto 1fr auto;
-  height: 40%; 
-  max-height: 100%; 
-  max-width: 100%; 
-  border-radius: 0px 0px 12px 12px;
-  background-color: rgb(255, 255, 255);
-  padding: 0px 10px 10px 10px;
-  align-items: center;
-  box-sizing: border-box; 
-}
-.title {
-  grid-column: 1 / span 3; 
-  grid-row: 1; 
-  font-size: 24px;
-  font-weight: bold;
-  align-items: center;
-  text-align: center;
-}
-.title h2 {
-  color: white;
-}
-.joined-users {
-  grid-column: 1 / span 1; 
-  grid-row: 3; 
-  background-color: rgb(9, 255, 140);
-  border-radius: 50%;
-  height: 32px;
-  width: 32px;
-  font-size: 24px;
-}
-.join-btn-container {
-  grid-column: 4; 
-  grid-row: 3;
-  display: flex;
-  justify-content: center; 
-  align-items: center;
-}
-.join-btn {
-  font-weight: bolder;
-  border: none;
-  border-radius: 12px;
-  height: 42px;
-  width: 124px;
-  color: white;
-  background-color: #2d8eff;
-}
-
-.nav-bar {
-  background: #2d8eff;
-  font-family: Calibri, sans-serif;
-  align-items: center;
-  height: 70px;
-  padding: 15px 40px 0px 40px;
-}
-
-.nav-div {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.burger {
-  display: none;
-  cursor: pointer;
-}
-
-.logo-container {
-  display: flex;
-  align-items: center;
-  font-size: 35px;
-  font-weight: 600;
-  color: white;
-}
-
-.logo-img {
-  height: 40px;
-  margin-right: 10px;
-}
-
-.nav-links-and-buttons {
-  display: flex;
-  align-items: center;
-  gap: 70px;
-}
-
-.pages-container {
-  display: flex;
-  list-style: none;
-  gap: 80px;
-  margin: 0;
-}
-
-.pages-container li a {
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
-  position: relative;
-  text-align: center;
-}
-
-.pages-container li a::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: -2px;
-  width: 0;
-  height: 2px;
-  background-color: white;
-  transition: all 0.3s ease-in-out;
-  transform: translateX(-50%);
-}
-
-.pages-container li a:hover::after {
-  width: 100%;
-  left: 50%; 
-  transform: translateX(-50%);
-}
-
-.user-profile {
-  display: flex;
-  background-color: white;
-  height: 40px;
-  width: 40px;
-  border-radius: 50%;
-  justify-content: center;
-}
-
-.search-bar {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.search {
-  --padding: 14px;
-  width: max-content;
-  display: flex;
-  align-items: center;
-  padding: var(--padding);
-  border-radius: 12px;
-  background: #f6f6f6;
-  width: 75%;
-}
-
-.search-input {
-  font-size: 16px;
-  font-family: sans-serif;
-  color: black;
-  margin-left: var(--padding);
-  margin-right: var(--padding);
-  outline: none;
-  border: none;
-  background: transparent;
-  flex: 1;
-}
-
-.search-icon, .sort-icon, .filter-icon {
-  cursor: pointer;
-}
-
-.filter-sort {
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
-}
-
-.button-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  width: 20%;
-}
-
-button {
-  background-color: #2d8eff;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  width: 123px;
-  height: 50px;
-  font-weight: bold;
-}
-
-.dropdown {
-  position: absolute;
-  right: 0;
-  top: 15%;
-  margin-top: 0.5rem;
-  width: 12rem;
-  background-color: #ffffff;
-  border-radius: 0.375rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e5e7eb;
-  z-index: 10;
-}
-
-.dropdown-item {
-  display: block;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  color: #374151;
-  text-decoration: none;
-  transition: background-color 0.2s;
-}
-
-.dropdown-item:hover {
-  background-color: #f3f4f6;
-}
-
-.dropdown-item:not(:last-child) {
-  border-bottom: 1px solid #e5e7eb;
-}
-
-@media (max-width: 794px) {
-
-  .nav-bar {
-  background: #0f1112;
-  font-family: Calibri, sans-serif;
-  align-items: center;
-  height: 70px;
-  padding: 15px 40px 0px 40px;
-}
-
-.nav-div {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.logo-container {
-  display: flex;
-  align-items: center;
-  font-size: clamp(50px, 1vw, 100px);
-  font-weight: 600;
-  color: white;
-}
-
-.logo-img {
-  height: 40px;
-  margin-right: 10px;
-}
-
-.nav-links-and-buttons {
-  display: flex;
-  align-items: center;
-  gap: 70px;
-}
-.pages-container {
-  display: flex;
-  list-style: none;
-  gap: 80px;
-  margin: 0;
-}
-
-.pages-container li a {
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
-  position: relative;
-  text-align: center;
-}
-
-.pages-container li a::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: -2px;
-  width: 0;
-  height: 2px;
-  background-color: white;
-  transition: all 0.3s ease-in-out;
-  transform: translateX(-50%);
-}
-
-.pages-container li a:hover::after {
-  width: 100%;
-  left: 50%; 
-  transform: translateX(-50%);
-}
-}
-
-@media (max-width: 641px) {
-  .nav-bar {
-    background: #003d5b;
-    font-family: Calibri, sans-serif;
-    align-items: center;
-    height: 70px;
-
+<style scope>
+  * {
+    text-decoration: none;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
-
-  .burger {
-    display: block;
-
-  }
-
-  .logo-container {
-  display: none;
-  align-items: center;
-  font-size: 35px;
-  font-weight: 600;
-  color: white;
-}
-
-.logo-img {
-  height: 40px;
-  margin-right: 10px;
-}
-
-  .nav-links-and-buttons {
-    display: none;
-  }
-
-  .nav-links-and-buttons.menu-open {
-    display: flex;
-    position: absolute;
-    top: 70px;
-    right: 0;
-    background: #003d5b;
-    width: 100%;
-    padding: 20px;
-    gap: 20px;
-    z-index: 10;
-  }
-
-  .pages-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-}
 </style>
+

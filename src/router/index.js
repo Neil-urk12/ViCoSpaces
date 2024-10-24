@@ -18,7 +18,7 @@ const router = createRouter({
       name: 'Room',
       component: () => import('../views/RoomView.vue'),
       props: route => ({ roomId: route.params.id, roomName: route.query.name }),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: false },
       beforeEnter: async (to, from, next) => {
         const roomId = to.params.id;
         const roomRef = dbRef(database, `rooms/${roomId}`);
