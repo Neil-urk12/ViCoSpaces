@@ -4,7 +4,7 @@
     background: #2d8eff;
     font-family: Calibri, sans-serif;
     height: 70px;
-    padding: 15px 40px 0px 40px;
+    padding: 10px 40px 0px 0px;
     z-index: 10;
   }
   
@@ -37,9 +37,16 @@
   }
   
   .logo-img {
-    height: 40px;
-    margin-right: 10px;
+    position: absolute;
+    height: 200px;
+    width: 200px;
+    left: -1%;
+    top: -130%;
+    margin-top: 30px;
+
+
   }
+
   
   .nav-links-and-buttons {
     display: flex;
@@ -286,6 +293,16 @@
   
     cursor: pointer;
   }
+  @media (min-width: 1879px) {
+    .logo-img {
+      position: absolute;
+      height: 200px;
+      width: 200px;
+      left: 0;
+      top: -130%;
+      margin-top: 30px;
+    }
+  }
   
   @media (max-width: 1339px) {
   
@@ -368,7 +385,11 @@
     }
     
   }
-
+@media (max-width: 877px) {
+  .logo-name{
+    display: none;
+  }
+}
   @media (max-width: 823px) {
     .button-container{
       width: 20%;
@@ -381,9 +402,6 @@
       align-items: center;
       height: 70px;
       padding: 15px 40px 0px 40px;
-    }
-    .logo-container img {
-      display: none;
     }
     .logo-container {
       display: flex;
@@ -538,6 +556,16 @@
     
       cursor: pointer;
     }
+    .logo-img {
+      position: absolute;
+      height: 200px;
+      width: 200px;
+      left: -2%;
+      top: -130%;
+      margin-top: 30px;
+  
+  
+    }
     
 
   }
@@ -662,6 +690,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding-left: 0px;
     }
     
     .mobile-buttons {
@@ -708,17 +737,16 @@
     }
     .host-btn-container {
       display: block;
-      
-      z-index: 20;
-      position: fixed;
-      right: 10px; /* Move to the right */
-      bottom: -1300%; /* Move to the bottom */
-      width: 50px; /* Adjust the size for the button */
-      height: 50px;
-      border-radius: 50%;
-      border: solid 1px #ffffff; /* Make it circular */
-      align-items: center;
-
+      position: absolute;
+      right: 6%;      
+      bottom: -32rem;
+      width: 4rem;
+      height: 4rem;
+      border: 1px solid white;
+    }
+    .host-btn-container img{
+      align-self: center;
+      margin-top: 4px;
     }
     
     button {
@@ -726,6 +754,15 @@
     
       cursor: pointer;
     }
-
+    .logo-img {
+      position: absolute;
+      height: 190px;
+      width: 200px;
+      left: -9%;
+      top: -125%;
+      margin-top: 30px;
+  
+  
+    }
      
   }

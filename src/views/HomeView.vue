@@ -199,13 +199,13 @@ const logout = async () => {
       <div class="nav-div">
         <div class="logo-container">
           <img
-            src="../assets/images/logo/transparentlogo 1080.png"
+            src="../assets/images/logo/Logo.png"
             alt="ViCoSpaces-Logo"
             class="logo-img"
-            width="100%"
-            height="100%"
+            width="100px"
+            height="100px"
           >
-          <span class="logo-name">ViCoSpaces</span>
+          <span class="logo-name" />
         </div>
         <div class="open-sidebar">
           <div class="open-sidebar-icon">
