@@ -189,7 +189,6 @@ body{
   background-color: #ffffff;
 }
 .erroMessage{
-  width: 35%;
   margin: 1% 0 0 0;
   color: red;
 }
