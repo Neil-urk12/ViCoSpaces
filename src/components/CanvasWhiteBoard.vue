@@ -152,7 +152,7 @@ function handleSingleReload() {
  }                         
                                                                                                                                         
  window.addEventListener('beforeunload', () => saveCanvasToDatabase(canvas, route.params.id));   
-
+                                                                                                               
 function throttle(func, limit) {
   let lastFunc;
   let lastRan;
@@ -211,7 +211,6 @@ const renderCanvasFromDatabase = async (canvas, roomId) => {
 
       canvas.renderAll();
       isUpdating = false;
-
     })
 
     onValue(canvasRef, throttledUpdate);
@@ -222,25 +221,21 @@ const renderCanvasFromDatabase = async (canvas, roomId) => {
     console.error('Error loading canvas from database:', error);
     isUpdating = false;
   }
-}
+};
 
 function loadObjectsToCanvas(canvas, objects, activeObjectId = null) {
   for (const objData of objects) {
     createFabricObject(objData).then(fabricObj => {
       if (fabricObj) {
         canvas.add(fabricObj);
-
-        // Restore active selection if it matches
-        if (activeObjectId && fabricObj.id === activeObjectId) {
+        if (activeObjectId && fabricObj.id === activeObjectId) 
           canvas.setActiveObject(fabricObj);
-        }
       }
     });
   }
   canvas.renderAll();
 }
 
-// Function to create fabric objects
 async function createFabricObject(objData) {
   const commonProps = {
     id: objData.id || Math.random().toString(36).substr(2, 9),
@@ -266,29 +261,29 @@ async function createFabricObject(objData) {
     case 'rect':
       return new fabric.Rect(commonProps);
     case 'circle':
-      return new fabric.Circle({ ...commonProps, radius: objData.radius || (objData.width ? objData.width / 2 : 50) })
+      return new fabric.Circle({ ...commonProps, radius: objData.radius || (objData.width ? objData.width / 2 : 50) });
     case 'triangle':
-      return new fabric.Triangle(commonProps)
+      return new fabric.Triangle(commonProps);
     case 'ellipse':
-      return new fabric.Ellipse({ ...commonProps, rx: objData.rx || 50, ry: objData.ry || 30 })
+      return new fabric.Ellipse({ ...commonProps, rx: objData.rx || 50, ry: objData.ry || 30 });
     case 'polygon':
-      return objData.points ? new fabric.Polygon(objData.points, commonProps) : null
+      return objData.points ? new fabric.Polygon(objData.points, commonProps) : null;
     case 'textbox':
-      return new fabric.Textbox(objData.text || 'Text', { ...commonProps, fontSize: objData.fontSize || 20 })
+      return new fabric.Textbox(objData.text || 'Text', { ...commonProps, fontSize: objData.fontSize || 20 });
     case 'path':
       return objData.path ? new fabric.Path(objData.path, commonProps) : null;
     case 'image':
       if (objData.src) {
         return await new Promise((resolve) => {
           fabric.Image.fromURL(objData.src, (img) => {
-            img.set(commonProps);
-            resolve(img);
+            img.set(commonProps)
+            resolve(img)
           }, { crossOrigin: 'anonymous', objectCaching: false })
-        })
+        });
       }
-      return null;
+      return null
     default:
-      return null;
+      return null
   }
 }
 
@@ -296,7 +291,6 @@ function addCanvasEventListeners(canvas, roomId) {
   const saveToDatabase = debounce(() => saveCanvasToDatabase(canvas, roomId), 300)
   canvas.on('object:modified', saveToDatabase)
   canvas.on('object:moving', saveToDatabase)
-  canvas.on('object:removed', saveToDatabase);
 }
 
 function debounce(func, wait) {
@@ -360,8 +354,8 @@ const showShapeLibrary = ref(false);
 
 function addCustomBorder(obj) {
   obj.set({
-    borderColor: 'yellow',
-    cornerColor: 'lightblue',
+    borderColor: 'Yellow',
+    cornerColor: 'Light Blue',
     cornerSize: 6,
     transparentCorners: false
   });
@@ -472,9 +466,10 @@ function addShapeToCanvas(shapeType, isFilled) {
   canvas.add(shape);
   canvas.setActiveObject(shape);
   canvas.requestRenderAll();
+
 }
 
-function createPolygon(sides, radius, fillColor, strokeColor) {
+function createPolygon(sides, radius, fillColor, strokeColor) {//Used for creating Polygon Shapes
   const points = Array.from({ length: sides }, (_, i) => {
     const angle = (i * 2 * Math.PI) / sides;
     return {
@@ -493,7 +488,7 @@ function createPolygon(sides, radius, fillColor, strokeColor) {
   });
 }
 
-function createDiamond(fillColor, strokeColor) {
+function createDiamond(fillColor, strokeColor) {//Used for creating Diamond Shape
   return new fabric.Polygon([
     { x: 0, y: -50 },
     { x: 50, y: 0 },
@@ -509,7 +504,7 @@ function createDiamond(fillColor, strokeColor) {
   });
 }
 
-function createParallelogram(fillColor, strokeColor) {
+function createParallelogram(fillColor, strokeColor) {//Used for creating Parallelogram Shape
   return new fabric.Polygon([
     { x: -50, y: -25 },
     { x: 50, y: -25 },
@@ -525,7 +520,7 @@ function createParallelogram(fillColor, strokeColor) {
   });
 }
 
-const applyBrushSettings = () => {
+const applyBrushSettings = () => {//Drawing Feature
   switch (selectedBrush.value) {
     case 'pencil':
       canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
@@ -554,30 +549,30 @@ const toggleDrawMode = () => {
   }
 };
 
-const removeSelected = () => {
+const removeSelected = () => {//Removing Selected Object Feature
   const activeObject = canvas.getActiveObject();
   if (activeObject) {
     canvas.remove(activeObject);
-    saveCanvasToDatabase(canvas, route.params.id);
     canvas.requestRenderAll();
+    saveCanvasToDatabase(canvas, route.params.id);
   }
 };
 
-const clearCanvas = () => {
+const clearCanvas = () => {//Clearing the entire board feature
   canvas.getObjects().forEach((obj) => {
     if (!obj.isGrid) {
       canvas.remove(obj);
     }
   });
-  saveCanvasToDatabase(canvas, route.params.id);
   canvas.requestRenderAll();
+  saveCanvasToDatabase(canvas, route.params.id);
 };
 
 const triggerFileSelect = () => {
   imageInput.value.click();
 };
 
-const insertImage = (event) => { 
+const insertImage = (event) => { //Image Insertion Feature
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
@@ -1308,8 +1303,8 @@ const downloadCanvasAsImage = () => {
     position: absolute; 
     backdrop-filter: blur(10px);
     color: #fff;  
-    left: 30%;                                                                                                                                                                                  
-    top: 10px;                                                                                                   
+    left: 3%;                                                                                                                                                                                  
+    top: 110%;                                                                                                   
     background: rgba(13, 13, 48, 0.95);
     border: 1px solid #2d2d6e;                                                                                     
     padding: 10px;                                                                                               

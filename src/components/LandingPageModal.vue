@@ -1,13 +1,35 @@
+<script setup>
+import { RouterLink } from 'vue-router'
+import { useAuthStore } from '../stores/authStore'
+const authStore = useAuthStore()
+const isAuthenticated = authStore.isAuthenticated
+</script>
+
 <template>
   <div
     class="modal-content"
   >
     <nav class="space-nav">
-      <RouterLink to="/register">
+      <RouterLink
+        v-if="!isAuthenticated"
+        to="/register"
+      >
         Sign Up
       </RouterLink>
-      <RouterLink to="/login">
+      <RouterLink
+        v-if="!isAuthenticated"
+        to="/login"
+      >
         Sign In
+      </RouterLink>
+      <RouterLink
+        v-if="isAuthenticated"
+        to="/home"
+      >
+        Home
+      </RouterLink>
+      <RouterLink to="/contact">
+        Contact
       </RouterLink>
       <RouterLink to="/about">
         About
