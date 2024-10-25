@@ -12,7 +12,15 @@ const showpass = () => {
      document.querySelector('#showpass').style.display = 'block'                                               
    }                                                                                                            
  }                                                                                                         
-                                                                                                                
+  
+ const signUpWithGithub = async () => {                                                                         
+   try {                                                                                                        
+     await authStore.signInWithGitHub();                                                                        
+   } catch (error) {                                                                                            
+     console.error(error);                                                                                      
+   }                                                                                                            
+ }                                                                                                              
+   
  const hidepass = () => {                                                                                       
    if (document.querySelector('#password').type === 'text') {                                                   
      document.querySelector('#password').type = 'password'                                                     
@@ -143,13 +151,13 @@ const signInWithGoogle = async () => {
             >
             Sign Up with Google
           </button>
-          <button
-            class="btn btn-Third"
-            @click="signUpWithGithub"
-          >
-            <i class="fa-brands fa-github" />
-            Sign Up with Github
-          </button>
+          <button                                                                                                        
+            class="btn btn-Third"                                                                                        
+            @click="signUpWithGithub"                                                                                    
+          >                                                                                                              
+            <i class="fa-brands fa-github" />                                                                            
+            Sign Up with Github                                                                                          
+          </button>  
 
           <p class="switch-form">
             Already have an account? 

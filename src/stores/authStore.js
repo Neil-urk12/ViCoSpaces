@@ -1,9 +1,12 @@
 import { defineStore } from 'pinia';
 import { authnow, googleprovider } from '@/firebase/firebaseconfig';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged,              
-  signInWithPopup, sendPasswordResetEmail } from 'firebase/auth';   
+  signInWithPopup, sendPasswordResetEmail, signInWithRedirect, getRedirectResult } from 'firebase/auth'; 
+import { GithubAuthProvider } from 'firebase/auth'; 
+import { useRouter } from 'vue-router'; 
 import validator from 'validator';
 
+const router = useRouter()
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: JSON.parse(localStorage.getItem('user')) || null,
@@ -103,6 +106,63 @@ export const useAuthStore = defineStore('auth', {
         }
       })
     },
+    async signInWithGoogleRedirect() {                                                                         
+      try {                                                                                                    
+        await signInWithRedirect(authnow, googleprovider);                                                     
+      } catch (error) {                                                                                        
+        console.error(error);                                                                                  
+        throw new Error('Google sign-in failed');                                                              
+      }                                                                                                        
+    },                                                                                                         
+                                                                                                               
+    async handleRedirectResult() {                                                                             
+      try {                                                                                                    
+        const result = await getRedirectResult(authnow);                                                       
+        if (result) {                                                                                          
+          const user = result.user;                                                                            
+          this.user = user;                                                                                    
+          localStorage.setItem('user', JSON.stringify({                                                        
+            uid: user.uid,                                                                                     
+            email: user.email,                                                                                 
+            displayName: user.displayName || user.email.split('@')[0],                                         
+            accessToken: await user.getIdToken(),                                                              
+          }));                                                                                                 
+          router.push('/home');                                                                                
+        }                                                                                                      
+      } catch (error) {                                                                                        
+        console.error(error);                                                                                  
+        throw new Error('Google sign-in failed');                                                              
+      }                                                                                                        
+    },    
+    async signInWithGitHub() {                                                                                 
+      const provider = new GithubAuthProvider();                                                               
+      try {                                                                                                    
+        const result = await signInWithPopup(authnow, provider);                                               
+        const user = result.user;                                                                              
+        this.user = user;                                                                                      
+        localStorage.setItem('user', JSON.stringify({                                                          
+          uid: user.uid,                                                                                       
+          email: user.email,                                                                                   
+          displayName: user.displayName || user.email.split('@')[0],                                           
+          accessToken: await user.getIdToken(),                                                                
+        }));                                                                                                   
+        router.push('/home');                                                                                  
+      } catch (error) {                                                                                        
+        console.error("Error during sign-in:", error);                                                         
+        throw new Error('GitHub sign-in failed');                                                              
+      }                                                                                                        
+    },                                                                                                         
+                                                                                                               
+    async signInWithGitHubRedirect() {                                                                         
+      const provider = new GithubAuthProvider();                                                               
+      try {                                                                                                    
+        await signInWithRedirect(authnow, provider);                                                           
+      } catch (error) {                                                                                        
+        console.error("Error during sign-in:", error);                                                         
+        throw new Error('GitHub sign-in failed');                                                              
+      }                                                                                                        
+    },                                                                                                         
+           
 
     async forgotPassword(email) {                                                                              
       try {                                                                                                    

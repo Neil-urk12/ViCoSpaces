@@ -18,7 +18,14 @@ const showpass = () => {
      document.querySelector('#showpass').style.display = 'block';                                               
    }                                                                                                            
  };                                                                                                             
-                                                                                                                
+ const signInWithGithub = async () => {                                                                         
+   try {                                                                                                        
+     await auth.signInWithGitHub();                                                                             
+   } catch (error) {                                                                                            
+     console.error(error);                                                                                      
+   }                                                                                                            
+ }                                                                                                              
+                                                                                                       
  const hidepass = () => {                                                                                       
    if (document.querySelector('#password').type === 'text') {                                                   
      document.querySelector('#password').type = 'password';                                                     
@@ -143,12 +150,12 @@ const signInWithGoogle = async () => {
             Google
           </button>
 
-          <button
-            class="btn btn-social github"
-            @click="signInWithGithub"
-          >
-            <i class="fa-brands fa-github" />
-            Github
+          <button                                                                                                        
+            class="btn btn-social github"                                                                                
+            @click="signInWithGithub"                                                                                    
+          >                                                                                                              
+            <i class="fa-brands fa-github" />                                                                            
+            Github                                                                                                       
           </button>
         </div>
         <p class="switch-form">
