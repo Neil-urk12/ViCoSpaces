@@ -1,8 +1,9 @@
 <script setup>
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore'
 import LandingPageModal from '@/components/LandingPageModal.vue';
 import { ref } from 'vue'
+const router = useRouter()
 const authStore = useAuthStore();
 const isAuthenticated = authStore.isAuthenticated;
 const showModal = ref(false)
