@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { authnow, googleprovider } from '@/firebase/firebaseconfig';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, signInWithPopup } from 'firebase/auth';
+import validator from 'validator';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -35,12 +36,14 @@ export const useAuthStore = defineStore('auth', {
           accessToken: await userCredential.user.getIdToken(),
         }));
       } catch (error) {
-        console.error('Login error:', error.message);
-        throw error;
+        console.error('Login error:', error.message);                                                              
+        throw new Error('Invalid email or password');
       }
     },
 
     async register({ email, password }) {
+      if(!validator.isEmail(email)) throw new Error('Invalid email format');
+      
       try {
         const userCredential = await createUserWithEmailAndPassword(authnow, email, password);
 
@@ -55,8 +58,7 @@ export const useAuthStore = defineStore('auth', {
         return userCredential.user;
 
       } catch (error) {
-        console.error('Registration error:', error.code, error.message);
-        throw error;
+        throw new Error('Invalid email or password'), error
       }
     },
 
@@ -64,42 +66,41 @@ export const useAuthStore = defineStore('auth', {
       try {
         await signOut(authnow);
         this.user = null;
-        localStorage.removeItem('user');
+        localStorage.removeItem('user')
       } catch (error) {
-        console.error('Error during logout:', error.message);
-        throw error;
+        console.error('Error during logout:', error.message)
+        throw error
       }
     },
 
-    async signInWithGoogle() {
-      try {
-        const confidential = await signInWithPopup(authnow, googleprovider);
-        if (confidential) {
-          const user = confidential.user;
-          console.log(`User Info: ${user}`);
-          this.user = user;
-          localStorage.setItem('user', JSON.stringify({
-            uid: user.uid,
-            email: user.email,
-            displayName: user.displayName || user.email.split('@')[0],
-            accessToken: await user.getIdToken(),
-          }));
-        }
-      } catch (error) {
-        console.error(error);
-        throw error;
-      }
+    async signInWithGoogle() {                                                                                     
+      try {                                                                                                        
+        const confidential = await signInWithPopup(authnow, googleprovider)                                       
+        if (confidential) {                                                                                        
+          const user = confidential.user                                                                        
+          this.user = user                                                                                       
+          localStorage.setItem('user', JSON.stringify({                                                            
+            uid: user.uid,                                                                                         
+            email: user.email,                                                                                     
+            displayName: user.displayName || user.email.split('@')[0],                                             
+            accessToken: await user.getIdToken(),                                                                  
+          }))                                                                                                     
+        }                                                                                                          
+      } catch (error) {                                                                                            
+        console.error(error);                                                                                      
+        throw new Error('Google sign-in failed');                                                                  
+      }                                                                                                            
     },
 
     checkAuthState() {
       onAuthStateChanged(authnow, (user) => {
-        if (user) {
-          this.user = user;
-        } else {
-          this.user = null;
-          localStorage.removeItem('user');
+        if (user) 
+          this.user = user
+        else {
+          this.user = null
+          localStorage.removeItem('user')
         }
-      });
+      })
     },
   },
-});
+})
