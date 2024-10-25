@@ -33,6 +33,7 @@ const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value
 const isModalVisible = ref(false)
 const openFilterModal = () => isModalVisible.value = true
 const closeFilterModal = () => isModalVisible.value = false
+const isJoining = ref(false)
 
 let isCreatingRoom = false;                                                                                                                                                                                                  
  const createRoomHandler = async (roomData) => {                                                                
@@ -54,6 +55,7 @@ let isCreatingRoom = false;
  }  
 
 const joinRoom = async (roomId, privacyType) => {
+  isJoining.value = true
   if (privacyType === 'private') {
     showModal.value = true
     privacyCondition.value = privacyType
@@ -68,7 +70,7 @@ const joinRoom = async (roomId, privacyType) => {
       router.push(`/room/${roomId}`)
     } catch (error) {
       console.error('Error joining room:', error)
-    }
+    } finally { isJoining.value = false}
   }
 }
 
@@ -481,7 +483,7 @@ const logout = async () => {
                 </div>
                 <button
                   class="join-a-room-btn"
-                  :disabled="room.currentUsers >= room.capacity"
+                  :disabled="room.currentUsers >= room.capacity || isJoining"
                   @click="joinRoom(room.id, room.privacyType)"
                 >
                   {{ room.currentUsers >= room.capacity ? 'Full' : 'Join' }}
