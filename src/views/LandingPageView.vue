@@ -518,7 +518,7 @@ svg {
 }
 @media (max-width: 375px){
   .header {
-    background-color: rgba(157, 154, 154, 0.187); 
+    background-color: rgba(246, 246, 246, 0.074); 
     position: sticky;
     top: 0;
     width: 100%;
