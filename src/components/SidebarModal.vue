@@ -137,7 +137,8 @@ z-index: 1000;
 .modal-content {
 display: flex;
 flex-direction: column;
-background: white;
+background: rgba(86, 86, 86, 0.555);
+color: white;
 border-radius: 10px;
 height: 100%;
 width: 300px;
@@ -200,7 +201,7 @@ color: red;
   .modal-content {
     display: flex;
     flex-direction: column;
-    background: white;
+    background: rgba(86, 86, 86, 0.555);
     border-radius: 10px;
     height: 100%;
     width: 250px;
@@ -211,7 +212,8 @@ color: red;
     .modal-content {
         display: flex;
         flex-direction: column;
-        background: white;
+        background: rgba(86, 86, 86, 0.555);
+        color: white;
         border-radius: 10px;
         height: 100%;
         width: 200px;

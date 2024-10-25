@@ -169,6 +169,7 @@ const logout = async () => {
 
 <template>
   <header>
+    <div class="stars" />
     <nav class="nav-bar">
       <div class="nav-div">
         <div class="logo-container">
@@ -210,8 +211,8 @@ const logout = async () => {
             <ul class="pages-container">
               <ul class="pages-container">
                 <li>
-                  <RouterLink to="/home">
-                    Home
+                  <RouterLink to="/roadmap">
+                    Road Map
                   </RouterLink>
                 </li>
                 <li>
@@ -510,5 +511,28 @@ const logout = async () => {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+  }
+  .stars::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(#c49952, #faae33, 2px, transparent 4px),
+      radial-gradient(#c49952, 1px, transparent 30px),
+      radial-gradient(#c49952, #faae33, 1px, transparent 3px),
+      radial-gradient(#c49952, 1px, transparent 10px),
+      radial-gradient(#c49952, #faae33, 2px, transparent 4px),
+      radial-gradient(#c49952, 1px, transparent 20px);
+    background-size: 550px 550px, 350px 350px, 250px 250px;
+    background-position: 0 0, 40px 60px, 130px 270px;
+    animation: twinkle 10s linear infinite;
+    z-index: -1;
+  }
+  @keyframes twinkle {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-550px); }
   }
 </style>
