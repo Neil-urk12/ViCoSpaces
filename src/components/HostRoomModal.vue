@@ -332,6 +332,13 @@ select {
   font-weight: bold;
   margin-right: 0px;
 }
+.create-btn:hover{
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+ 
+  color: #ffffff;
+  border:solid 1px #2d8eff;
+  box-shadow: 0 0.6em 0.5em -0.4em #2cbe00;
+}
 
 /* Responsive Styles */
 
