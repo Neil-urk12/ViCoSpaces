@@ -660,16 +660,14 @@
   .search-input{display: block;}
   
 }
-
 }
 @media (max-width: 375px) {
 
   .nav-bar {
-    position: sticky;
-    background-color: rgba(246, 246, 246, 0.074);     font-family: Calibri, sans-serif;
+    position: sticky;   
+    font-family: Calibri, sans-serif;
     align-items: center;
     height: 70px;
-
   }
   .nav-div {
     display: flex;
@@ -690,8 +688,6 @@
   .search {
     display: flex;
     width: 100%;
-    
-    
   }
   .search-input {
     display: none;
@@ -709,7 +705,6 @@
   
     cursor: pointer;
   }
-  
   .button-container button {
     color: white;
     border-radius: 12px;
@@ -732,7 +727,6 @@
     position: absolute;
     right: 25%;
     top: 26%;
-
   }
   .logo-img {
     position: absolute;
@@ -742,5 +736,4 @@
     top: -125%;
     margin-top: 30px;
   }
-    
 }
