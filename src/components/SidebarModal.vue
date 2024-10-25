@@ -39,7 +39,6 @@ const logout = async () => {
           @click="close"
         >
       </div>
-      <!-- User Option Wrapper -->
       <div class="user-option-wrapper">
         <ul class="user-option">
           <li
@@ -51,7 +50,6 @@ const logout = async () => {
               alt="profile-icon"
               class="icon"
             >
-            
             Profile
           </li>
           <li
@@ -102,7 +100,10 @@ const logout = async () => {
             
             Contact
           </li>
-          <li class="option-item logout" @click.prevent="logout">
+          <li
+            class="option-item logout"
+            @click.prevent="logout"
+          >
             <img
               src="../assets/images/SVG/log-out-svgrepo-com.svg"
               alt="logout-icon"

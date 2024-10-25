@@ -283,7 +283,7 @@ const logout = async () => {
                     height="20"
                   > 
                   <RouterLink
-                    to="/logout"
+                    to="/"
                     class="dropdown-item 3"
                     @click.prevent="logout"
                   >
