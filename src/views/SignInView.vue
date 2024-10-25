@@ -9,30 +9,21 @@ const router = useRouter()
 const errorMessage = ref()
 const auth = useAuthStore()
 
-if(auth.isAuthenticated) router.push('/home')
+const showPassword = ref(false) // Reactive variable for password visibility
 
-const showpass = () => {                                                                                       
-   if (document.querySelector('#password').type === 'password') {                                               
-     document.querySelector('#password').type = 'text';                                                         
-     document.querySelector('#hidepass').style.display = 'none';                                                
-     document.querySelector('#showpass').style.display = 'block';                                               
-   }                                                                                                            
- };                                                                                                             
-                                                                                                                
- const hidepass = () => {                                                                                       
-   if (document.querySelector('#password').type === 'text') {                                                   
-     document.querySelector('#password').type = 'password';                                                     
-     document.querySelector('#hidepass').style.display = 'block';                                               
-     document.querySelector('#showpass').style.display = 'none';                                                
-   }                                                                                                            
- };
- const forgotPassword = async () => {                                                                           
-   try {                                                                                                        
-     await auth.forgotPassword(email.value);                                                                    
-   } catch (error) {                                                                                            
-     errorMessage.value = error.message;                                                                        
-   }                                                                                                            
- };
+if (auth.isAuthenticated) router.push('/home')
+
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value
+}
+
+const forgotPassword = async () => {
+  try {
+    await auth.forgotPassword(email.value)
+  } catch (error) {
+    errorMessage.value = error.message
+  }
+}
 
 const login = async () => {
   try {
@@ -42,25 +33,20 @@ const login = async () => {
     switch (error.code) {
       case 'auth/missing-password':
         errorMessage.value = 'Missing Password'
-        document.querySelector("#password").style.border = "2px solid red"
-        document.querySelector("#email").style.border = "2px solid #4a90e2"
         break
       case 'auth/invalid-credential':
         errorMessage.value = 'Incorrect email or password'
-        document.querySelector("#password").style.border = "2px solid red"
-        document.querySelector("#email").style.border = "2px solid red"
         break
       case 'auth/invalid-email':
         errorMessage.value = 'Complete all fields'
-        document.querySelector("#password").style.border = "2px solid red"
-        document.querySelector("#email").style.border = "2px solid red"
-        break;
+        break
       default:
         alert('Please check your network')
-      break
+        break
     }
   }
 }
+
 const signInWithGoogle = async () => {
   try {
     await auth.signInWithGoogle()
@@ -70,6 +56,7 @@ const signInWithGoogle = async () => {
   }
 }
 </script>
+
 <template>
   <div class="signin">
     <div class="stars" />
@@ -84,7 +71,7 @@ const signInWithGoogle = async () => {
             v-model="email"
             type="email"
             placeholder=" "
-            requireda
+            required
           >
           <label for="email">Email</label>
         </div>
@@ -92,27 +79,21 @@ const signInWithGoogle = async () => {
           <input
             id="password"
             v-model="password"
-            type="password"
+            :type="showPassword ? 'text' : 'password'"
             placeholder=" "
             required
           >
           <label for="password">Password</label>
           <i
-            id="hidepass"
-            class="fa-solid fa-eye-slash toggle-password"
-            @click="showpass"
-          />
-          <i
-            id="showpass"
-            class="fa-solid fa-eye toggle-password"
-            @click="hidepass"
+            :class="showPassword ? 'fa-solid fa-eye toggle-password' : 'fa-solid fa-eye-slash toggle-password'"
+            @click="togglePasswordVisibility"
           />
         </div>
-        <span                                                                                                  
-          class="forgotpass"                                                                                   
-          @click="forgotPassword"                                                                              
-        >                                                                                                      
-          Forgot Password?                                                                                     
+        <span
+          class="forgotpass"
+          @click="forgotPassword"
+        >
+          Forgot Password?
         </span>
         <p
           v-if="errorMessage"
