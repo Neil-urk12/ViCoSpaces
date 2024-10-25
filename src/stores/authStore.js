@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { authnow, googleprovider } from '@/firebase/firebaseconfig';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, signInWithPopup } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged,              
+  signInWithPopup, sendPasswordResetEmail } from 'firebase/auth';   
 import validator from 'validator';
 
 export const useAuthStore = defineStore('auth', {
@@ -101,6 +102,22 @@ export const useAuthStore = defineStore('auth', {
           localStorage.removeItem('user')
         }
       })
+    },
+
+    async forgotPassword(email) {                                                                              
+      try {                                                                                                    
+        await sendPasswordResetEmail(authnow, email);                                                          
+        alert('Password reset email sent!');                                                                   
+      } catch (error) {                                                                                        
+        switch (error.code) {                                                                                  
+          case 'auth/user-not-found':                                                                          
+            throw new Error('No user found with this email');                                                  
+          case 'auth/invalid-email':                                                                           
+            throw new Error('Invalid email address');                                                          
+          default:                                                                                             
+            throw new Error('An error occurred. Please try again.');                                           
+        }                                                                                                      
+      }                                                                                                        
     },
   },
 })

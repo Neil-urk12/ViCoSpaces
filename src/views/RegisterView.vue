@@ -1,21 +1,25 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { signInWithPopup } from 'firebase/auth';
+import { signInWithPopup,  } from 'firebase/auth';
 import { authnow , googleprovider } from '@/firebase/firebaseconfig';
 import { useAuthStore } from '@/stores/authStore'
 
-// const showpass = () => {
-//   document.getElementById('password').type = 'text'
-//   document.getElementById('showpass').style.display = 'none'
-//   document.getElementById('hidepass').style.display = 'inline'
-// }
-
-// const hidepass = () => {
-//   document.getElementById('password').type = 'password'
-//   document.getElementById('hidepass').style.display = 'none'
-//   document.getElementById('showpass').style.display = 'inline'
-// }
+const showpass = () => {                                                                                       
+   if (document.querySelector('#password').type === 'password') {                                               
+     document.querySelector('#password').type = 'text'                                                         
+     document.querySelector('#hidepass').style.display = 'none'                                                
+     document.querySelector('#showpass').style.display = 'block'                                               
+   }                                                                                                            
+ }                                                                                                         
+                                                                                                                
+ const hidepass = () => {                                                                                       
+   if (document.querySelector('#password').type === 'text') {                                                   
+     document.querySelector('#password').type = 'password'                                                     
+     document.querySelector('#hidepass').style.display = 'block'                                               
+     document.querySelector('#showpass').style.display = 'none'                                                
+   }                                                                                                            
+ }
 
 const email = ref('')
 const password = ref('')
@@ -71,20 +75,6 @@ const signInWithGoogle = async () => {
           console.error(error)
       }
 }
-// const showpass = () => {
-//       if(document.querySelector('#password').type == 'password'){
-//         document.querySelector('#password').type = 'text'
-//         document.querySelector('#hidepass').style.display = 'none'
-//         document.querySelector('#showpass').style.display = 'block'
-//       }
-//     }
-// const hidepass = () => {
-//   if(document.querySelector('#password').type == 'text'){
-//     document.querySelector('#password').type = 'password'
-//     document.querySelector('#hidepass').style.display = 'block'
-//     document.querySelector('#showpass').style.display = 'none'
-//   }
-// }
 </script>
 
 <template>
@@ -104,30 +94,29 @@ const signInWithGoogle = async () => {
             >
           </div>
 
-          <div class="input-group">
-            <label for="password">Password</label>
-            <div class="password-input">
-              <input
-                id="password"
-                v-model="password"
-                type="password"
-                placeholder="Enter password"
-              >
-              <div class="password-toggle">
-                <i
-                  id="hidepass"
-                  class="fa-solid fa-eye-slash"
-                  @click="showpass"
-                />
-                <i
-                  id="showpass"
-                  class="fa-solid fa-eye"
-                  @click="hidepass"
-                />
-              </div>
-            </div>
+          <div class="input-group">                                                                            
+            <label for="password">Password</label>                                                             
+            <div class="password-input">                                                                       
+              <input                                                                                           
+                id="password"                                                                                  
+                v-model="password"                                                                             
+                type="password"                                                                                
+                placeholder="Enter password"                                                                   
+              >                                                                                                
+              <div class="password-toggle">                                                                    
+                <i                                                                                             
+                  id="hidepass"                                                                                
+                  class="fa-solid fa-eye-slash"                                                                
+                  @click="showpass"                                                                            
+                />                                                                                             
+                <i                                                                                             
+                  id="showpass"                                                                                
+                  class="fa-solid fa-eye"                                                                      
+                  @click="hidepass"                                                                            
+                />                                                                                             
+              </div>                                                                                           
+            </div>                                                                                             
           </div>
-
           <p
             v-if="errorMessage"
             class="error-message"

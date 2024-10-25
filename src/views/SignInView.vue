@@ -11,6 +11,29 @@ const auth = useAuthStore()
 
 if(auth.isAuthenticated) router.push('/home')
 
+const showpass = () => {                                                                                       
+   if (document.querySelector('#password').type === 'password') {                                               
+     document.querySelector('#password').type = 'text';                                                         
+     document.querySelector('#hidepass').style.display = 'none';                                                
+     document.querySelector('#showpass').style.display = 'block';                                               
+   }                                                                                                            
+ };                                                                                                             
+                                                                                                                
+ const hidepass = () => {                                                                                       
+   if (document.querySelector('#password').type === 'text') {                                                   
+     document.querySelector('#password').type = 'password';                                                     
+     document.querySelector('#hidepass').style.display = 'block';                                               
+     document.querySelector('#showpass').style.display = 'none';                                                
+   }                                                                                                            
+ };
+ const forgotPassword = async () => {                                                                           
+   try {                                                                                                        
+     await auth.forgotPassword(email.value);                                                                    
+   } catch (error) {                                                                                            
+     errorMessage.value = error.message;                                                                        
+   }                                                                                                            
+ };
+
 const login = async () => {
   try {
     await auth.login({ email: email.value, password: password.value })
@@ -44,20 +67,6 @@ const signInWithGoogle = async () => {
     router.push('/home')
   } catch (error) {
     console.error(error)
-  }
-}
-const showpass = () => {
-  if(document.querySelector('#password').type == 'password'){
-    document.querySelector('#password').type = 'text'
-    document.querySelector('#hidepass').style.display = 'none'
-    document.querySelector('#showpass').style.display = 'block'
-  }
-}
-const hidepass = () => {
-  if(document.querySelector('#password').type == 'text'){
-    document.querySelector('#password').type = 'password'
-    document.querySelector('#hidepass').style.display = 'block'
-    document.querySelector('#showpass').style.display = 'none'
   }
 }
 </script>
@@ -99,8 +108,11 @@ const hidepass = () => {
             @click="hidepass"
           />
         </div>
-        <span class="forgotpass">
-          Forgot Password?
+        <span                                                                                                  
+          class="forgotpass"                                                                                   
+          @click="forgotPassword"                                                                              
+        >                                                                                                      
+          Forgot Password?                                                                                     
         </span>
         <p
           v-if="errorMessage"
