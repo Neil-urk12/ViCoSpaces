@@ -1,6 +1,6 @@
 <script setup>        
-import * as fabric from 'fabric'       
-import { FabricImage } from 'fabric'                                                                                
+import * as fabric from 'fabric';        
+import { FabricImage } from 'fabric';                                                                                 
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue'                                          
 import { useCursorStore } from '@/stores/cursorStore'                                                    
 import { onValue, ref as dbRef, get, set } from 'firebase/database'  
@@ -8,17 +8,13 @@ import { realTimeDb as db } from '@/firebase/firebaseconfig'
 import { useAuthStore } from '@/stores/authStore'                                                           
 import { useRoute } from 'vue-router'                                                               
 import { useChatStore } from '@/stores/chatStore'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faT, faShapes, faPencil, faTrash, faDeleteLeft, faFileImport, faPen, faPenNib } from '@fortawesome/free-solid-svg-icons'
-import { faImage } from '@fortawesome/free-regular-svg-icons'
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faT, faShapes, faPencil, faTrash, faDeleteLeft, faFileImport, faPen, faPenNib } from '@fortawesome/free-solid-svg-icons';
+import { faImage } from '@fortawesome/free-regular-svg-icons';
 
-library.add(faT, faShapes, faPencil, faTrash, faImage, faDeleteLeft, faFileImport, faPen, faPenNib)
-                          
-let batchTimeout = null
-let pendingUpdates = new Set()
-let lastUpdateTimestamp = Date.now()
-const THROTTLE_DELAY = 500;
+library.add(faT, faShapes, faPencil, faTrash, faImage, faDeleteLeft, faFileImport, faPen, faPenNib);
+                                                                                                               
 const authStore = useAuthStore()                                                                        
 const cursorStore = useCursorStore()                                                                       
 const chatStore = useChatStore()                                                              
@@ -26,134 +22,174 @@ const route = useRoute()
 
 const userId = computed(() => authStore.getUid)                                                            
 const username = computed(() => authStore.getDisplayName)    
+let debounceTimeout;
 
 function handleSingleReload() {
   if (!sessionStorage.getItem('roomReloadFlag')) {
-    sessionStorage.setItem('roomReloadFlag', 'true')
-    location.reload()
-  } else sessionStorage.removeItem('roomReloadFlag')
+    sessionStorage.setItem('roomReloadFlag', 'true');
+    location.reload();
+  } else {
+    sessionStorage.removeItem('roomReloadFlag');
+  }
 }
 
-const saveCanvasToDatabase = async (canvas, roomId) => {   
-  if (!canvas) return console.error('Canvas or roomId is missing');                                                                                                                        
-  const currentTime = Date.now()
-  if (currentTime - lastUpdateTimestamp < THROTTLE_DELAY) {
-    clearTimeout(batchTimeout)
-    batchTimeout = setTimeout(() => saveCanvasToDatabase(canvas, roomId), THROTTLE_DELAY)
-    return
-  }                                        
-                                                                  
-  try {                                                                                                      
-    const currentCanvasObjects = canvas.getObjects().map((obj) => {                                          
-      return {                                                                                               
-      type: obj.type,
-      left: obj.left,
-      top: obj.top,
-      fill: obj.fill,
-      stroke: obj.stroke,
-      strokeWidth: obj.strokeWidth,
-      scaleX: obj.scaleX,
-      scaleY: obj.scaleY,
-      angle: obj.angle,
-      width: obj.width,
-      height: obj.height,
-      flipX: obj.flipX,
-      flipY: obj.flipY,
-      id: obj.id || Math.random().toString(36).substr(2, 9)
-      }                                                                                                      
-    })               
-    await set(dbRef(db, `rooms/${roomId}/canvas`), {
-    currentCanvasObjects,
-    timestamp: currentTime
-  });
-  lastUpdateTimestamp = currentTime;
-  pendingUpdates.clear();                                                                                         
-  } catch (error) {                                                                                          
-    console.error('Error saving canvas elements to the database:', error);                                   
-    alert('Failed to save canvas elements. Please try again.');                                              
-  }                                                                                                                                                                 
-}                         
-                                                                                                                                       
-window.addEventListener('beforeunload', () => saveCanvasToDatabase(canvas, route.params.id)); 
+ const saveCanvasToDatabase = async (canvas, roomId) => {   
+  if (!canvas) {
+    console.error('Canvas or roomId is missing');
+    return;
+  }                                                    
+   clearTimeout(debounceTimeout);                                                                               
+                                                                                                                
+   debounceTimeout = setTimeout(async () => {                                                                   
+     try {                                                                                                      
+       const currentCanvasObjects = canvas.getObjects().map((obj) => {                                          
+         return {                                                                                               
+          type: obj.type,                                                                                      
+          left: obj.left,                                                                                      
+          top: obj.top,                                                                                        
+          fill: obj.fill,                                                                                      
+          stroke: obj.stroke,                                                                                  
+          strokeWidth: obj.strokeWidth,                                                                        
+          scaleX: obj.scaleX,                                                                                  
+          scaleY: obj.scaleY,                                                                                  
+          angle: obj.angle,                                                                                    
+          width: obj.width,                                                                                    
+          height: obj.height, 
+          flipX: obj.flipX,
+          flipY: obj.flipY,
+         }                                                                                                      
+       })    
+                                                                                                                                                                                                                
+       const canvasRef = dbRef(db, `rooms/${roomId}/canvas`);                                                   
+       const canvasSnapshot = await get(canvasRef);                                                             
+       const previousCanvasObjects = canvasSnapshot.exists() ? canvasSnapshot.val() : [];                       
+                                                                                                                
+       const diff = currentCanvasObjects.filter((obj, index) => {                                               
+         return JSON.stringify(obj) !== JSON.stringify(previousCanvasObjects[index]);                           
+       });                                                                                                      
+                                               
+       const filteredObjects = currentCanvasObjects.filter(obj => !obj.isGrid);
+       await set(dbRef(db, `rooms/${roomId}/canvas`), {
+        objects: filteredObjects,
+        timestamp: Date.now(),
+      });
+
+       if (diff.length > 0) {                                                                                   
+         await set(canvasRef, diff);                                                                            
+         console.log('Canvas elements saved to the database successfully');                                     
+       }                                                                                                        
+     } catch (error) {                                                                                          
+       console.error('Error saving canvas elements to the database:', error);                                   
+       alert('Failed to save canvas elements. Please try again.');                                              
+     }                                                                                                          
+   }, 500)                                                        
+ }                         
+                                                                                                                                        
+ window.addEventListener('beforeunload', () => saveCanvasToDatabase(canvas, route.params.id));   
                                                                                                                
+// Throttle utility function
 function throttle(func, limit) {
-  let lastFunc
-  let lastRan
+  let lastFunc;
+  let lastRan;
   return function(...args) {
-    const context = this
+    const context = this;
     if (!lastRan) {
-      func.apply(context, args)
-      lastRan = Date.now()
+      func.apply(context, args);
+      lastRan = Date.now();
     } else {
-      clearTimeout(lastFunc)
+      clearTimeout(lastFunc);
       lastFunc = setTimeout(() => {
         if ((Date.now() - lastRan) >= limit) {
-          func.apply(context, args)
-          lastRan = Date.now()
+          func.apply(context, args);
+          lastRan = Date.now();
         }
-      }, limit - (Date.now() - lastRan))
+      }, limit - (Date.now() - lastRan));
     }
-  }
+  };
 }
+
 const renderCanvasFromDatabase = async (canvas, roomId) => {
-  if (!canvas || !roomId) return console.error('Canvas or roomId is missing')
-    
-  let isUpdating = false
-  let lastUpdateTimestamp = 0
+  if (!canvas || !roomId) {
+    console.error('Canvas or roomId is missing');
+    return;
+  }
+
+  let isUpdating = false;
+  let lastUpdateTimestamp = 0;
+
   try {
-    const canvasRef = dbRef(db, `rooms/${roomId}/canvas`)
-    const snapshot = await get(canvasRef)
+    const canvasRef = dbRef(db, `rooms/${roomId}/canvas`);
+
+    // Fetch initial data to render shapes on load
+    const snapshot = await get(dbRef(db, `rooms/${roomId}/canvas`));
     if (snapshot.exists()) {
-      const data = snapshot.val()
-      if (data.objects && Array.isArray(data.objects)) 
-        loadObjectsToCanvas(canvas, data.objects)
+      const data = snapshot.val();
+      if (data.objects && Array.isArray(data.objects)) {
+        loadObjectsToCanvas(canvas, data.objects);
+      }
     }
 
+    // Throttle the update process to limit redraws
     const throttledUpdate = throttle(async (snapshot) => {
-      if (!snapshot.exists()) return
+      if (!snapshot.exists()) return;
 
-      const data = snapshot.val()
-      if (!data.objects || !Array.isArray(data.objects)) return
+      const data = snapshot.val();
+      if (!data.objects || !Array.isArray(data.objects)) return;
 
-      if (data.timestamp <= lastUpdateTimestamp) return
-      lastUpdateTimestamp = data.timestamp
+      // Check for new updates
+      if (data.timestamp <= lastUpdateTimestamp) return;
+      lastUpdateTimestamp = data.timestamp;
 
-      if (isUpdating) return
+      // Prevent multiple simultaneous updates
+      if (isUpdating) return;
       isUpdating = true;
 
-      const activeObject = canvas.getActiveObject()
-      const activeObjectId = activeObject ? activeObject.id : null
+      // Get the currently selected object
+      const activeObject = canvas.getActiveObject();
+      const activeObjectId = activeObject ? activeObject.id : null;
 
-      const existingObjects = canvas.getObjects().filter(obj => !obj.isGrid)
-      existingObjects.forEach(obj => canvas.remove(obj))
+      // Clear existing objects except the grid
+      const existingObjects = canvas.getObjects().filter(obj => !obj.isGrid);
+      existingObjects.forEach(obj => canvas.remove(obj));
 
-      loadObjectsToCanvas(canvas, data.objects, activeObjectId)
+      // Add objects from the database
+      loadObjectsToCanvas(canvas, data.objects, activeObjectId);
 
-      canvas.renderAll()
-      isUpdating = false
+      canvas.renderAll();
+      isUpdating = false;
 
-    }, 500)
+    }, 100)
 
-    onValue(canvasRef, throttledUpdate)
-    addCanvasEventListeners(canvas, roomId)
+    // Bind throttled function to the database value changes
+    onValue(canvasRef, throttledUpdate);
+
+    // Add canvas event listeners
+    addCanvasEventListeners(canvas, roomId);
+
   } catch (error) {
-    console.error('Error loading canvas from database:', error)
-    isUpdating = false
+    console.error('Error loading canvas from database:', error);
+    isUpdating = false;
   }
-}
+};
+
+// Load objects onto the canvas
 function loadObjectsToCanvas(canvas, objects, activeObjectId = null) {
   for (const objData of objects) {
     createFabricObject(objData).then(fabricObj => {
       if (fabricObj) {
         canvas.add(fabricObj);
-        if (activeObjectId && fabricObj.id === activeObjectId) 
+
+        // Restore active selection if it matches
+        if (activeObjectId && fabricObj.id === activeObjectId) {
           canvas.setActiveObject(fabricObj);
+        }
       }
     });
   }
-  canvas.renderAll()
+  canvas.renderAll();
 }
 
+// Function to create fabric objects
 async function createFabricObject(objData) {
   const commonProps = {
     id: objData.id || Math.random().toString(36).substr(2, 9),
@@ -179,108 +215,111 @@ async function createFabricObject(objData) {
     case 'rect':
       return new fabric.Rect(commonProps);
     case 'circle':
-      return new fabric.Circle({ ...commonProps, radius: objData.radius || (objData.width ? objData.width / 2 : 50) })
+      return new fabric.Circle({ ...commonProps, radius: objData.radius || (objData.width ? objData.width / 2 : 50) });
     case 'triangle':
-      return new fabric.Triangle(commonProps)
+      return new fabric.Triangle(commonProps);
     case 'ellipse':
-      return new fabric.Ellipse({ ...commonProps, rx: objData.rx || 50, ry: objData.ry || 30 })
+      return new fabric.Ellipse({ ...commonProps, rx: objData.rx || 50, ry: objData.ry || 30 });
     case 'polygon':
-      return objData.points ? new fabric.Polygon(objData.points, commonProps) : null
+      return objData.points ? new fabric.Polygon(objData.points, commonProps) : null;
     case 'textbox':
-      return new fabric.Textbox(objData.text || 'Text', { ...commonProps, fontSize: objData.fontSize || 20 })
+      return new fabric.Textbox(objData.text || 'Text', { ...commonProps, fontSize: objData.fontSize || 20 });
     case 'path':
-      return objData.path ? new fabric.Path(objData.path, commonProps) : null
+      return objData.path ? new fabric.Path(objData.path, commonProps) : null;
     case 'image':
       if (objData.src) {
         return await new Promise((resolve) => {
           fabric.Image.fromURL(objData.src, (img) => {
-            img.set(commonProps)
-            resolve(img)
-          }, { crossOrigin: 'anonymous', objectCaching: false })
-        })
+            img.set(commonProps);
+            resolve(img);
+          }, { crossOrigin: 'anonymous', objectCaching: false });
+        });
       }
-      return null
+      return null;
     default:
-      return null
+      return null;
   }
 }
 
+// Add event listeners for object modifications
 function addCanvasEventListeners(canvas, roomId) {
-  const saveToDatabase = debounce(() => saveCanvasToDatabase(canvas, roomId), 300)
+  const saveToDatabase = debounce(() => saveCanvasToDatabase(canvas, roomId), 300);
 
-  canvas.on('object:modified', saveToDatabase)
-  canvas.on('object:moving', saveToDatabase)
+  canvas.on('object:modified', saveToDatabase);
+  canvas.on('object:moving', saveToDatabase);
 }
 
+// Utility debounce function
 function debounce(func, wait) {
   let timeout;
   return function(...args) {
     clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait)
-  }
+    timeout = setTimeout(() => func(...args), wait);
+  };
 }
 
 
 const initializeCanvas = async () => {
-  canvas = new fabric.Canvas(canvasEl.value)
+  canvas = new fabric.Canvas(canvasEl.value);
   resizeCanvas();
-  await renderCanvasFromDatabase(canvas, route.params.id)
-  window.addEventListener('resize', resizeCanvas) 
+  await renderCanvasFromDatabase(canvas, route.params.id);
+  window.addEventListener('resize', resizeCanvas); 
   canvas.on('object:added', function(e) {
-    if (e.target) addCustomBorder(e.target)
-  })
+    if (e.target) addCustomBorder(e.target);
+  });
   canvas.on('selection:created', async function(e) {
     if (e.selected && e.selected.length > 0) {
-      if (e.selected.length > 1) 
-        e.selected.forEach(addCustomBorder)
-      else 
-        addCustomBorder(e.selected[0])
+      if (e.selected.length > 1) {
+        e.selected.forEach(addCustomBorder);
+      } else {
+        addCustomBorder(e.selected[0]);
+      }
     }
   })
-  canvas.defaultCursor = 'default'
-  canvas.hoverCursor = 'default'
-  canvas.moveCursor = 'default'
-  canvas.isDrawingMode = false
-  canvas.renderAll()
+  canvas.defaultCursor = 'default';
+  canvas.hoverCursor = 'default';
+  canvas.moveCursor = 'default';
+  canvas.isDrawingMode = false;
+  canvas.renderAll();
   canvas.on('object:moving', (options) => {
-    const obj = options.target
+    const obj = options.target;
     obj.set({
       originX: 'left',
       originY: 'top',
-    })
-    const snappedLeft = Math.round(obj.left / gridSize) * gridSize
-    const snappedTop = Math.round(obj.top / gridSize) * gridSize
+    });
+    const snappedLeft = Math.round(obj.left / gridSize) * gridSize;
+    const snappedTop = Math.round(obj.top / gridSize) * gridSize;
     obj.set({
       left: snappedLeft,
       top: snappedTop
-    })
+    });
     obj.setCoords();
-  })
-}
+  });
+};
  
 onMounted(async () => {                                                                                   
   cursorStore.setUserId(userId.value)                                                                         
   cursorStore.setRoomId(route.params.id) 
-  window.addEventListener('resize', resizeCanvas)                                               
+  window.addEventListener('resize', resizeCanvas);                                               
                                                                                                                
   const userCursorRef = dbRef(db, `rooms/${route.params.id}/cursors/${userId.value}`)                         
-  const userCursorSnapshot = await get(userCursorRef);                                                        
+  const userCursorSnapshot = await get(userCursorRef);                                                         
   if (userCursorSnapshot.exists()) cursorStore.localCursor = userCursorSnapshot.val()
-  else cursorStore.localCursor = { x: 0, y: 0, username: username.value }
+  else cursorStore.localCursor = { x: 0, y: 0, username: username.value };
 
   onValue(dbRef(db, `rooms/${route.params.id}/cursors`), (snapshot) => {                                       
-    const data = snapshot.val() || {}                                                                    
+    const data = snapshot.val() || {};                                                                         
     cursorStore.otherCursors = Object.entries(data).reduce((acc, [key, value]) => {                            
       if (key !== userId.value)                                                                               
-        acc[key] = value                                                                                                                                                                             
-      return acc                                                                                              
+        acc[key] = value;                                                                                                                                                                             
+      return acc;                                                                                              
     }, {})                                                                                                    
   })    
-  handleSingleReload()
+  handleSingleReload();
   await initializeCanvas()
-  canvas.on('object:modified', () => saveCanvasToDatabase(canvas, route.params.id))                             
-  canvas.on('object:added', () => saveCanvasToDatabase(canvas, route.params.id))                            
-  canvas.on('object:removed', () => saveCanvasToDatabase(canvas, route.params.id))                                                                                                                                                                                                                                                                     
+  canvas.on('object:modified', () => saveCanvasToDatabase(canvas, route.params.id));                             
+  canvas.on('object:added', () => saveCanvasToDatabase(canvas, route.params.id));                                
+  canvas.on('object:removed', () => saveCanvasToDatabase(canvas, route.params.id));                                                                                                                                                                                                                                                                      
 })        
 
 onUnmounted(() => {                                                                                            
@@ -289,17 +328,19 @@ onUnmounted(() => {
   saveCanvasToDatabase(canvas, route.params.id);                                                                     
 })  
 
-const canvasEl = ref(null)
-let canvas = null
-const isDrawingMode = ref(false)
-const selectedColor = ref('#000000')
+const canvasEl = ref(null);
+let canvas = null;
+const isDrawingMode = ref(false);
+const selectedColor = ref('#000000');
 const brushThickness = ref(5);
-const selectedBrush = ref('pencil'); 
+const selectedBrush = ref('pencil'); onMounted( async() => { 
+  
+})
 const showBrushOptions = ref(false);
-const gridSize = 20
+const gridSize = 20;
 
-const imageInput = ref(null)
-const showShapeLibrary = ref(false)
+const imageInput = ref(null);
+const showShapeLibrary = ref(false);
 
 function addCustomBorder(obj) {
   obj.set({
@@ -314,11 +355,11 @@ const resizeCanvas = () => {
   const width = window.innerWidth * 0.8;
   const height = window.innerHeight * 0.85;
 
-  canvas.setWidth(width)
-  canvas.setHeight(height)
-  canvas.setZoom(1)
-  canvas.calcOffset()
-  canvas.requestRenderAll()
+  canvas.setWidth(width);
+  canvas.setHeight(height);
+  canvas.setZoom(1);
+  canvas.calcOffset();
+  canvas.requestRenderAll();
 }
 
 const addTextToCanvas = () => { 
@@ -331,10 +372,10 @@ const addTextToCanvas = () => {
     editable: true, 
   })
   
-  addCustomBorder(text)
-  canvas.add(text)
-  canvas.setActiveObject(text)
-  canvas.requestRenderAll()
+  addCustomBorder(text);
+  canvas.add(text);
+  canvas.setActiveObject(text);
+  canvas.requestRenderAll();
 }
 
 function addShapeToCanvas(shapeType, isFilled) { 
@@ -415,16 +456,17 @@ function addShapeToCanvas(shapeType, isFilled) {
   canvas.add(shape);
   canvas.setActiveObject(shape);
   canvas.requestRenderAll();
+
 }
 
-function createPolygon(sides, radius, fillColor, strokeColor) {
+function createPolygon(sides, radius, fillColor, strokeColor) {//Used for creating Polygon Shapes
   const points = Array.from({ length: sides }, (_, i) => {
     const angle = (i * 2 * Math.PI) / sides;
     return {
       x: radius * Math.cos(angle),
       y: radius * Math.sin(angle),
-    }
-  })
+    };
+  });
 
   return new fabric.Polygon(points, {
     left: 200,
@@ -433,10 +475,10 @@ function createPolygon(sides, radius, fillColor, strokeColor) {
     stroke: strokeColor,
     strokeWidth: 2,
     selectable: true,
-  })
+  });
 }
 
-function createDiamond(fillColor, strokeColor) {
+function createDiamond(fillColor, strokeColor) {//Used for creating Diamond Shape
   return new fabric.Polygon([
     { x: 0, y: -50 },
     { x: 50, y: 0 },
@@ -452,7 +494,7 @@ function createDiamond(fillColor, strokeColor) {
   });
 }
 
-function createParallelogram(fillColor, strokeColor) {
+function createParallelogram(fillColor, strokeColor) {//Used for creating Parallelogram Shape
   return new fabric.Polygon([
     { x: -50, y: -25 },
     { x: 50, y: -25 },
@@ -465,10 +507,10 @@ function createParallelogram(fillColor, strokeColor) {
     stroke: strokeColor,
     strokeWidth: 2,
     selectable: true,
-  })
+  });
 }
 
-const applyBrushSettings = () => {
+const applyBrushSettings = () => {//Drawing Feature
   switch (selectedBrush.value) {
     case 'pencil':
       canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
@@ -479,75 +521,81 @@ const applyBrushSettings = () => {
     default:
       canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
   }
+
   canvas.freeDrawingBrush.color = selectedColor.value;
   canvas.freeDrawingBrush.width = brushThickness.value;
-  canvas.requestRenderAll()
-}
+  canvas.requestRenderAll();
+};
 
-watch([selectedBrush, selectedColor, brushThickness], applyBrushSettings)
+watch([selectedBrush, selectedColor, brushThickness], applyBrushSettings);
 
 const toggleDrawMode = () => {
-  isDrawingMode.value = !isDrawingMode.value
-  canvas.isDrawingMode = isDrawingMode.value
-  showBrushOptions.value = isDrawingMode.value
-  if (isDrawingMode.value) 
-    applyBrushSettings()
-}
+  isDrawingMode.value = !isDrawingMode.value;
+  canvas.isDrawingMode = isDrawingMode.value;
+  showBrushOptions.value = isDrawingMode.value;
 
-const removeSelected = () => {
-  const activeObject = canvas.getActiveObject()
-  if (activeObject) {
-    canvas.remove(activeObject)
-    canvas.requestRenderAll()
-    saveCanvasToDatabase(canvas, route.params.id)
+  if (isDrawingMode.value) {
+    applyBrushSettings();
   }
 };
 
-const clearCanvas = () => {
+const removeSelected = () => {//Removing Selected Object Feature
+  const activeObject = canvas.getActiveObject();
+  if (activeObject) {
+    canvas.remove(activeObject);
+    canvas.requestRenderAll();
+    saveCanvasToDatabase(canvas, route.params.id);
+  }
+};
+
+const clearCanvas = () => {//Clearing the entire board feature
   canvas.getObjects().forEach((obj) => {
-    if (!obj.isGrid) 
+    if (!obj.isGrid) {
       canvas.remove(obj);
-  })
+    }
+  });
   canvas.requestRenderAll();
-  saveCanvasToDatabase(canvas, route.params.id)
-}
+  saveCanvasToDatabase(canvas, route.params.id);
+};
 
-const triggerFileSelect = () => imageInput.value.click()
+const triggerFileSelect = () => {
+  imageInput.value.click();
+};
 
-const insertImage = (event) => {
-  const file = event.target.files[0]
+const insertImage = (event) => { //Image Insertion Feature
+  const file = event.target.files[0];
   if (file) {
-    const reader = new FileReader()
+    const reader = new FileReader();
     reader.onload = (f) => {
-      const img = new Image()
-      img.src = f.target.result
+      const img = new Image();
+      img.src = f.target.result;
       img.onload = () => {
         const fabricImage = new FabricImage(img, {
           left: 50,
           top: 50,
           angle: 0,
           opacity: 1,
-        })
+        });
 
-        const canvasWidth = canvas.getWidth()
-        const canvasHeight = canvas.getHeight()
+        const canvasWidth = canvas.getWidth();
+        const canvasHeight = canvas.getHeight();
 
-        const imageOriginalWidth = img.width
-        const imageOriginalHeight = img.height
+        const imageOriginalWidth = img.width;
+        const imageOriginalHeight = img.height;
 
-        const scaleX = canvasWidth / imageOriginalWidth
-        const scaleY = canvasHeight / imageOriginalHeight
-        let scaleFactor = Math.min(scaleX, scaleY) * 0.8
+        const scaleX = canvasWidth / imageOriginalWidth;
+        const scaleY = canvasHeight / imageOriginalHeight;
+        let scaleFactor = Math.min(scaleX, scaleY) * 0.8;
 
-        fabricImage.scale(scaleFactor)
+        fabricImage.scale(scaleFactor);
 
-        canvas.add(fabricImage)
-        canvas.requestRenderAll()
-      }
-    }
-    reader.readAsDataURL(file)
+        canvas.add(fabricImage);
+        canvas.requestRenderAll();
+      };
+    };
+    reader.readAsDataURL(file);
   }
-}
+};
 
 const downloadCanvasAsImage = () => {
   const dataURL = canvas.toDataURL({ format: 'png' })
@@ -1135,7 +1183,7 @@ const downloadCanvasAsImage = () => {
   }
   
   .toolbar {
-    background-color: #fff;
+    background: rgba(13, 13, 48, 0.95);
     padding: 0.5rem;
     display: flex;
     gap: 1rem;
@@ -1143,19 +1191,21 @@ const downloadCanvasAsImage = () => {
     border-bottom: 1px solid #e2e8f0;
     flex-wrap: wrap;
     z-index: 1;
+    backdrop-filter: blur(10px);
   }
   
   .tool-group {
     display: flex;
     gap: 0.5rem;
     padding: 0.25rem;
-    background-color: #f1f5f9;
+    background: rgba(26, 26, 58, 0.5);
     border-radius: 0.5rem;
+    border: 1px solid #2d2d6e;
   }
   
   .tool-btn {
-    background-color: #fff;
-    border: 1px solid #e2e8f0;
+    background: linear-gradient(145deg, #1a1a4a, #0d0d2a);
+    border: 1px solid #2d2d6e;
     border-radius: 0.375rem;
     padding: 0.5rem;
     cursor: pointer;
@@ -1163,8 +1213,9 @@ const downloadCanvasAsImage = () => {
   }
   
   .tool-btn:hover {
-    background-color: #f8fafc;
+    background: linear-gradient(145deg, #2d2d6e, #1a1a4a);
     transform: translateY(-1px);
+    box-shadow: 0 0 15px rgba(82, 82, 255, 0.4);
   }
   
   .color-picker {
@@ -1173,6 +1224,7 @@ const downloadCanvasAsImage = () => {
     padding: 0;
     border: none;
     border-radius: 0.375rem;
+    border: 2px solid #2d2d6e;
     cursor: pointer;
   }
   
@@ -1187,9 +1239,10 @@ const downloadCanvasAsImage = () => {
   }
   
   canvas {
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.05);
     border-radius: 0.5rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 30px rgba(82, 82, 255, 0.2);
+    border: 1px solid #2d2d6e;
   }
   
   .cursor {
@@ -1203,11 +1256,11 @@ const downloadCanvasAsImage = () => {
     font-size: 1.5rem;
     line-height: 1;
     transform: rotate(-85deg);
-    z-index: 1000;
+    filter: drop-shadow(0 0 5px rgba(82, 82, 255, 0.5));
   }
   
   .cursor-label {
-    background-color: rgba(0, 0, 0, 0.8);
+    background: rgba(13, 13, 48, 0.95);
     color: #fff;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
@@ -1216,6 +1269,8 @@ const downloadCanvasAsImage = () => {
     position: absolute;
     left: 100%;
     margin-left: 0.5rem;
+    border: 1px solid #2d2d6e;
+    box-shadow: 0 0 10px rgba(82, 82, 255, 0.2);
   }
   
   .shape-library {
@@ -1223,24 +1278,28 @@ const downloadCanvasAsImage = () => {
     top: 4rem;
     left: 50%;
     transform: translateX(-50%);
-    background-color: #fff;
+    background: rgba(13, 13, 48, 0.95);
     border-radius: 0.5rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 30px rgba(82, 82, 255, 0.3);
     padding: 1rem;
     display: grid;
+    border: 1px solid #2d2d6e;
+    backdrop-filter: blur(10px);
     grid-template-columns: repeat(4, 1fr);
     gap: 0.5rem;
     z-index: 1000;
   }
   .brush-options-popup {                                                                                         
-    position: absolute;   
+    position: absolute; 
+    backdrop-filter: blur(10px);
+    color: #fff;  
     left: 30%;                                                                                                                                                                                  
     top: 10px;                                                                                                   
-    background-color: white;                                                                                     
-    border: 1px solid #ccc;                                                                                      
+    background: rgba(13, 13, 48, 0.95);
+    border: 1px solid #2d2d6e;                                                                                     
     padding: 10px;                                                                                               
     border-radius: 5px;                                                                                          
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);                                                                  
+    box-shadow: 0 0 20px rgba(82, 82, 255, 0.3);                                                               
     display: flex;                                                                                               
     flex-direction: column;                                                                                      
     width: 180px; 
@@ -1249,38 +1308,65 @@ const downloadCanvasAsImage = () => {
   .brush-option {                                                                                                
     margin-bottom: 10px;                                                                                         
   } 
+  .brush-option select,
+  .brush-option input[type="range"] {
+    background: #1a1a4a;
+    border: 1px solid #2d2d6e;
+    border-radius: 4px;
+    color: #fff;
+    width: 100%;
+  }
   @media (max-width: 768px) {
+    .room-header {
+      padding: 1rem;
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+    }
+    
+    .room-actions {
+      width: 100%;
+      justify-content: center;
+    }
+    
     .toolbar {
       padding: 0.25rem;
       gap: 0.5rem;
     }
+    
     .tool-group {
       padding: 0.125rem;
     }
+    
     .tool-btn {
       padding: 0.375rem;
     }
+    
     .shape-library {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.5rem;
-    width: 40%;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+      width: 40%;
+    }
+    
+    .shape-option {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .shape-option svg {
+      max-width: 80%;
+      height: auto;
+    }
   }
-  .shape-option {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  
+  @media (max-width: 480px) {
+    .shape-library {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .shape-option svg {
+      max-width: 70%;
+    }
   }
-  .shape-option svg {
-    max-width: 80%;
-    height: auto;
-  }
-}
-@media (max-width: 480px) {
-  .shape-library {
-    grid-template-columns: repeat(3, 1fr); 
-  }
-  .shape-option svg {
-    max-width: 70%;
-  }
-}
 </style>

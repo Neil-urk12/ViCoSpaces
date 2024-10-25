@@ -123,69 +123,64 @@ onMounted(async () => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #f8fafc;
+  background: linear-gradient(to bottom, #0B0B2A, #1a1a3a);
 }
-
 .room-header {
-  background-color: #fff;
+  background: rgba(13, 13, 48, 0.95);
   padding: 1rem 2rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #2d2d6e;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 15px rgba(82, 82, 255, 0.15);
+  backdrop-filter: blur(10px);
 }
-
 .room-info h1 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1e293b;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(82, 82, 255, 0.5);
   margin: 0;
 }
-
 .host-info {
-  color: #64748b;
+  color: #8f8fff;
   font-size: 0.875rem;
   margin: 0.25rem 0 0;
 }
-
 .room-actions {
   display: flex;
   gap: 1rem;
 }
-
 .btn {
   padding: 0.5rem 1rem;
   border-radius: 0.375rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
-  border: 1px solid #e2e8f0;
-  background-color: #fff;
-  color: #64748b;
-}
-
-.btn:hover {
-  background-color: #f1f5f9;
-}
-
-.btn-danger {
-  background-color: #ef4444;
+  transition: all 0.3s;
+  border: 1px solid #2d2d6e;
+  background: linear-gradient(145deg, #1a1a4a, #0d0d2a);
   color: #fff;
-  border: none;
+  text-shadow: 0 0 5px rgba(82, 82, 255, 0.5);
+  box-shadow: 0 0 10px rgba(82, 82, 255, 0.2);
 }
-
+.btn:hover {
+  background: linear-gradient(145deg, #2d2d6e, #1a1a4a);
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(82, 82, 255, 0.4);
+}
+.btn-danger {
+  background: linear-gradient(145deg, #6e2d2d, #4a1a1a);
+  border: 1px solid #6e2d2d;
+}
 .btn-danger:hover {
-  background-color: #dc2626;
+  background: linear-gradient(145deg, #8f3d3d, #6e2d2d);
 }
-
 .workspace {
   flex: 1;
   display: flex;
   position: relative;
   overflow: hidden;
 }
-
 @media (max-width: 768px) {
   .room-header {
     padding: 1rem;
@@ -193,7 +188,6 @@ onMounted(async () => {
     gap: 1rem;
     text-align: center;
   }
-
   .room-actions {
     width: 100%;
     justify-content: center;
