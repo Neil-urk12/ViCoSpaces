@@ -5,7 +5,6 @@ main{
   flex-grow: 1;
   width: 100%;
   height: 100%;
-  /* background-color: #0a192f; */
 }
 .room-view-container {
   position: relative;
@@ -37,12 +36,11 @@ main{
   overflow: hidden;
   word-wrap: break-word;
   border: solid 2px white;
-  
-  transition: transform 0.5s ease;
+  transition: all 0.4s ease-in-out;
 }
 .room:hover{
   box-shadow: 3px 5px 10px #faae33;
-  transform: translateY(-2%);
+  transform: translateY(-0.8%);
 }
 .image-content {
   position: relative;
@@ -57,12 +55,10 @@ main{
   box-sizing: border-box;
   background-color: #2d8eff;
 }
-
 .room-name-container{
   height: 50%;
   display: flex;
   align-items: end;
-
 }
 .room-name{
   color: white;
@@ -71,11 +67,8 @@ main{
   width: 100%;
   cursor: default;
 }
-p{
-  cursor: default;
-}
+p{cursor: default}
 .shape {
-  
   display: flex;
   justify-content: center;
   padding: 40% 0px 0px 0px;
@@ -83,7 +76,6 @@ p{
   height: 120px;
   background-color: #ffffff66;
   border-radius: 0 0 75px 75px;
-  
 }
 .boton{
   display: flex;
@@ -184,9 +176,7 @@ p{
     height: 50px;
     font-size: 1em;
     font-weight: bold;
-  
     cursor: pointer;
-
 }
 .join-a-room-btn{
   background-color: #2d8eff;
@@ -197,19 +187,14 @@ p{
   height: 50px;
   font-size: 1em;
   font-weight: bold;
-
-  transition: transform 0.5s ease;
-
+  transition: 0.4s ease-in-out
 }
 .join-a-room-btn:hover{
-  box-shadow: 0 0.6em 0.5em -0.4em #faae33;
-  transform: translateY(-0.25em);
-  background: #ffffff;
-  border:solid 1px #2d8eff;
+  background: #ffffff;  
   color: #2d8eff;
+  border:solid 1px #2d8eff;
+  box-shadow: 0 0.6em 0.5em -0.4em #faae33;
 }
-
-
 .counter{
   display: flex;
   flex-direction: row;
