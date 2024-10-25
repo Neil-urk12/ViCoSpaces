@@ -45,7 +45,7 @@ const saveProfile = async () => {
   }
 }
 const goToHome = () => {
-    router.push('/')
+    router.push('/home')
   }
 </script>
 
@@ -58,7 +58,7 @@ const goToHome = () => {
         @click="goToHome"
       >
         <img
-          src="../assets/images/SVG/home-svgrepo-com-white.svg"
+          src="../assets/images/SVG/return-svgrepo-com.svg"
           alt=""
           width="40"
         >
