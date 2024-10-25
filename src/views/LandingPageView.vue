@@ -156,10 +156,10 @@ const showModal = ref(false)
           <RouterLink to="/contact">
             Contact
           </RouterLink>
-          <RouterLink to="/privacy">
+          <RouterLink>
             Privacy Policy
           </RouterLink>
-          <RouterLink to="/terms">
+          <RouterLink>
             Terms of Service
           </RouterLink>
         </div>
