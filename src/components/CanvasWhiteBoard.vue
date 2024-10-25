@@ -146,7 +146,7 @@ function handleSingleReload() {
        }                                                                                                        
      } catch (error) {                                                                                          
        console.error('Error saving canvas elements to the database:', error);                                   
-       alert('Failed to save canvas elements. Please try again.');                                              
+       throw new Error(error)                                        
      }                                                                                                          
    }, 500)                                                        
  }                         
