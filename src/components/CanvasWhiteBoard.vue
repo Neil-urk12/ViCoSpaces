@@ -31,42 +31,41 @@ function handleSingleReload() {
   if (!sessionStorage.getItem('roomReloadFlag')) {
     sessionStorage.setItem('roomReloadFlag', 'true')
     location.reload()
-  } else 
-    sessionStorage.removeItem('roomReloadFlag')
+  } else sessionStorage.removeItem('roomReloadFlag')
 }
 
- const saveCanvasToDatabase = async (canvas, roomId) => {   
+const saveCanvasToDatabase = async (canvas, roomId) => {   
   if (!canvas) return console.error('Canvas or roomId is missing');                                                                                                                        
-const currentTime = Date.now()
-if (currentTime - lastUpdateTimestamp < THROTTLE_DELAY) {
-  clearTimeout(batchTimeout)
-  batchTimeout = setTimeout(() => saveCanvasToDatabase(canvas, roomId), THROTTLE_DELAY)
-  return
-}                                        
+  const currentTime = Date.now()
+  if (currentTime - lastUpdateTimestamp < THROTTLE_DELAY) {
+    clearTimeout(batchTimeout)
+    batchTimeout = setTimeout(() => saveCanvasToDatabase(canvas, roomId), THROTTLE_DELAY)
+    return
+  }                                        
                                                                   
-try {                                                                                                      
-  const currentCanvasObjects = canvas.getObjects().map((obj) => {                                          
-    return {                                                                                               
-    type: obj.type,
-    left: obj.left,
-    top: obj.top,
-    fill: obj.fill,
-    stroke: obj.stroke,
-    strokeWidth: obj.strokeWidth,
-    scaleX: obj.scaleX,
-    scaleY: obj.scaleY,
-    angle: obj.angle,
-    width: obj.width,
-    height: obj.height,
-    flipX: obj.flipX,
-    flipY: obj.flipY,
-    id: obj.id || Math.random().toString(36).substr(2, 9)
-    }                                                                                                      
-  })               
-  await set(dbRef(db, `rooms/${roomId}/canvas`), {
-  currentCanvasObjects,
-  timestamp: currentTime
-});
+  try {                                                                                                      
+    const currentCanvasObjects = canvas.getObjects().map((obj) => {                                          
+      return {                                                                                               
+      type: obj.type,
+      left: obj.left,
+      top: obj.top,
+      fill: obj.fill,
+      stroke: obj.stroke,
+      strokeWidth: obj.strokeWidth,
+      scaleX: obj.scaleX,
+      scaleY: obj.scaleY,
+      angle: obj.angle,
+      width: obj.width,
+      height: obj.height,
+      flipX: obj.flipX,
+      flipY: obj.flipY,
+      id: obj.id || Math.random().toString(36).substr(2, 9)
+      }                                                                                                      
+    })               
+    await set(dbRef(db, `rooms/${roomId}/canvas`), {
+    currentCanvasObjects,
+    timestamp: currentTime
+  });
   lastUpdateTimestamp = currentTime;
   pendingUpdates.clear();                                                                                         
   } catch (error) {                                                                                          
@@ -295,9 +294,7 @@ let canvas = null
 const isDrawingMode = ref(false)
 const selectedColor = ref('#000000')
 const brushThickness = ref(5);
-const selectedBrush = ref('pencil'); onMounted( async() => { 
-  
-})
+const selectedBrush = ref('pencil'); 
 const showBrushOptions = ref(false);
 const gridSize = 20
 

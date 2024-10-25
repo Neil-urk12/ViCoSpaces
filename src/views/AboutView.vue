@@ -3,7 +3,7 @@
     <div class="about-container">
       <button
         class="home-button"
-        @click="goToHome"
+        @click="$router.push('/')"
       >
         Return to Home
       </button>
@@ -15,7 +15,6 @@
           <h2>About Our Cosmic Collaboration</h2>
           <p><strong>Target Audience:</strong> {{ targetAudience }}</p>
         </section>
-          
         <section class="purpose">
           <h2>Our Galactic Mission</h2>
           <ul>
@@ -27,7 +26,6 @@
             </li>
           </ul>
         </section>
-          
         <section class="features">
           <h2>Stellar Features</h2>
           <ul>
@@ -52,11 +50,8 @@
   </div>
 </template>
   
-  <script setup>
+<script setup>
   import { ref, computed } from 'vue'
-  import { useRouter } from 'vue-router'
-  
-  const router = useRouter()
   
   const appName = ref('ViCo')
   const fullName = ref('Virtual Co-working and Virtual Collaboration Spaces')
@@ -83,23 +78,15 @@
       ]
     }
   ])
-  
   const formattedFeatures = computed(() => {
     return features.value.map(feature => {
-      if (feature.details.length === 0) {
-        return { name: feature.name }
-      } else {
-        return feature
-      }
+      if (feature.details.length === 0) return { name: feature.name }
+      else return feature
     })
   })
+</script>
   
-  const goToHome = () => {
-    router.push('/')
-  }
-  </script>
-  
-  <style scoped>
+<style scoped>
   .space-background {
     background: linear-gradient(to bottom, #0b3d91, #1e2761);
     min-height: 100vh;

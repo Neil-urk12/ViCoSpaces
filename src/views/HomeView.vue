@@ -1,8 +1,6 @@
 <script setup>
-//Styles
 import '@/assets/styles/homeView.css';
 import '@/assets/styles/home-components.css';
-//imported icon
 import LockIcon from '@/assets/images/SVG/lock-password-svgrepo-com-red-large.svg';
 import UnlockIcon from  '@/assets/images/SVG/lock-svgrepo-com-green-bold.svg';
 import SidebarModal from '@/components/SidebarModal.vue';
@@ -10,7 +8,7 @@ import FilterModal from '@/components/FilterModal.vue';
 import HostRoomModal from '@/components/HostRoomModal.vue';
 import JoinRoomModal from '@/components/JoinRoomModal.vue';
 import { ref, onMounted, onUnmounted, computed, watch} from 'vue';
-import { ref as dbRef, onValue, off, push } from 'firebase/database';
+import { ref as dbRef, off} from 'firebase/database';
 import { realTimeDb as database } from '../firebase/firebaseconfig.js'
 import { useRouter, RouterLink } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
@@ -33,36 +31,31 @@ const isCreateRoomVisible = ref(false)
 const isDropdownOpen = ref(false)
 const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value
 const isModalVisible = ref(false)
-const openFilterModal = () => {
-  isModalVisible.value = true
-}
+const openFilterModal = () => isModalVisible.value = true
 const closeFilterModal = () => isModalVisible.value = false
-
 
 let isCreatingRoom = false;                                                                                                                                                                                                  
  const createRoomHandler = async (roomData) => {                                                                
-   if (isCreatingRoom) {                                                                                        
-     console.warn('Room creation is already in progress.');                                                     
-     return;                                                                                                    
-   }                                                                                                                                                                                                                         
-   isCreatingRoom = true;                                                                                                                                                                                                  
+   if (isCreatingRoom)                                                                              
+    return console.warn('Room creation is already in progress.')                                                                                                                                                                                                                                                                  
+   isCreatingRoom = true;                                                                                                                                                                                                 
    try {                                                                                                        
      const roomId = await roomStore.createRoom(                                                                 
        roomData,                                                                                                
        authStore.user.uid,                                                                                      
        authStore.user.email                                                                                     
-     );                                                                                                         
-     router.push(`/room/${roomId}`);                                                                            
+     )                                                                                                         
+     router.push(`/room/${roomId}`)                                                                            
    } catch (error) {                                                                                            
-     console.error('Error creating room:', error);                                                              
+     console.error('Error creating room:', error)                                                              
    } finally {                                                                                                  
-     isCreatingRoom = false;                                                                                    
+     isCreatingRoom = false                                                                                    
    }                                                                                                            
  }  
 
 const joinRoom = async (roomId, privacyType) => {
   if (privacyType === 'private') {
-    showModal.value = true;
+    showModal.value = true
     privacyCondition.value = privacyType
     roomIdToJoin.value = roomId
   } else {
@@ -71,7 +64,7 @@ const joinRoom = async (roomId, privacyType) => {
         roomId,
         authStore.user.uid,
         authStore.user.email
-      );
+      )
       router.push(`/room/${roomId}`)
     } catch (error) {
       console.error('Error joining room:', error)
@@ -86,19 +79,21 @@ const joinRoomById = async (roomId, password) => {
       authStore.user.uid,
       authStore.user.email,
       password
-    );
+    )
     router.push(`/room/${roomId}`)
   } catch (error) {
     console.error('Error joining room:', error)
   }
-};
+}
 
 onMounted(async () => {
   if (!authStore.isAuthenticated) router.push('/login')
   else await roomStore.fetchRooms()
+  document.addEventListener('click', handleClickOutsideProfile);
 })
 onUnmounted(() => {
   off(roomsRef)
+  document.removeEventListener('click', handleClickOutsideProfile)
 })
 
 const handleClickOutsideProfile= (event) => {
@@ -108,45 +103,38 @@ const handleClickOutsideProfile= (event) => {
     isDropdownOpen.value = false
   }
 }
-onMounted(() => {
-  document.addEventListener('click', handleClickOutsideProfile);
-});
 
-onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutsideProfile);
-});
-//Filters
 const handleFilterChange = (filters) => {
-  searchQuery.value = filters.searchQuery;
-  sortBy.value = filters.sortBy;
-  sortOrder.value = filters.sortOrder;
-  privacyFilter.value = filters.privacyFilter;
-  categoryFilter.value = filters.categoryFilter;
-};
+  searchQuery.value = filters.searchQuery
+  sortBy.value = filters.sortBy
+  sortOrder.value = filters.sortOrder
+  privacyFilter.value = filters.privacyFilter
+  categoryFilter.value = filters.categoryFilter
+}
 
 const uniqueCategories = computed(() => {
-  const categories = new Set(roomStore.rooms.map((room) => room.category).filter(Boolean));
-  return Array.from(categories);
-});
+  const categories = new Set(roomStore.rooms.map((room) => room.category).filter(Boolean))
+  return Array.from(categories)
+})
 
 const filteredAndSortedRooms = computed(() => {
   let filteredRooms = roomStore.rooms.filter(
     (room) => room && typeof room === 'object'
-  );
+  )
   if (searchQuery.value) {
     filteredRooms = filteredRooms.filter((room) =>
       room.id.includes(searchQuery.value)
-    );
+    )
   }
   if (privacyFilter.value !== 'all') {
     filteredRooms = filteredRooms.filter(
       (room) => room.privacyType === privacyFilter.value
-    );
+    )
   }
   if (categoryFilter.value !== 'all') {
     filteredRooms = filteredRooms.filter(
       (room) => room.category === categoryFilter.value
-    );
+    )
   }
   return filteredRooms.sort((a, b) => {
     let comparison = 0;
@@ -166,7 +154,7 @@ const filteredAndSortedRooms = computed(() => {
 })
 watch(roomStore.rooms, (newRooms) => {
   const categories = new Set(newRooms.map((room) => room.category).filter(Boolean));
-  categoryFilter.value = 'all'; // Reset category filter to ensure dynamic updates
+  categoryFilter.value = 'all'
 });
 
 const logout = async () => {
@@ -223,23 +211,22 @@ const logout = async () => {
             <ul class="pages-container">
               <ul class="pages-container">
                 <li>
-                  <router-link to="/">
+                  <RouterLink to="/home">
                     Home
-                  </router-link>
+                  </RouterLink>
                 </li>
                 <li>
-                  <router-link to="/about">
+                  <RouterLink to="/about">
                     About
-                  </router-link>
+                  </RouterLink>
                 </li>
                 <li>
-                  <router-link to="/contact">
+                  <RouterLink to="/contact">
                     Contact
-                  </router-link>
+                  </RouterLink>
                 </li>
               </ul>
             </ul>
-
             <div
               class="user-profile"
               @click="toggleDropdown"
@@ -308,7 +295,6 @@ const logout = async () => {
       </div>
     </nav>
   </header>
-  
   <main>
     <div class="search-bar">
       <div class="search">
