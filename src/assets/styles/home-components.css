@@ -67,7 +67,8 @@
 }
 .user-profile {
   display: flex;
-  background-color: rgb(255, 255, 255);  
+  background-color: #0a192f99;
+  border: solid 1px white;
   height: 46px;
   width: 45px;
   border-radius: 50%;

@@ -2,6 +2,16 @@
 
 ViCoSpaces, a new and user-friendly collaborative co-working space application designed to enhance productivity and foster seamless collaboration among individuals. Built with the Vue 3 Composition API and Firebase, ViCo provides a robust platform for students, individuals and teams to work together in real-time and visualize ideas.
 
+| Frontend      | Backend         | Database           | Tools                |
+|---------------|-----------------|--------------------|----------------------|
+|![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D)|![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=white)|![Firebase Realtime Database](https://img.shields.io/badge/Firebase%20Realtime%20Database-FFCA28?style=for-the-badge&logo=firebase&logoColor=white)|![Pinia](https://img.shields.io/badge/Pinia-ffd859?style=for-the-badge&logo=pinia&logoColor=black) ![Fabric.js](https://img.shields.io/badge/Fabric.js-1E90FF?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjI1NiIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjU2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0yMyAySDRjLTEuMSAwLTIgLjktMiAydjE2YzAgMS4xLjkgMiAyIDJoMThjMS4xIDAgMi0uOSAyLTJWMmMwLTEuMS0uOS0yLTItMnpNNCAwYy0xLjkgMC0zIDEuMS0zIDN2MThjMCAxLjguOSAzIDMgM2gxOGMxLjkgMCAzLTEuMSAzLTNWM2MwLTEuOC0xLjEtMy0zLTNINVptNC4yIDkuOGwxLjItLjQgMS4xLS4zLjc0IDEuOCAxLjEgMyAuNyAyLjktLjUtMi45Yy0uMS0uMi0uMS0uMy0uMS0uNGgxLjFjMS4xIDAgMi4yLS4xIDMuMS0uNC4zLS4xLjUtLjMgMS0uM2wuMS41LTIuNS45Yy0uOC4yLTEuNy4zLTIuNS4zSDkuN2wuNC0yem0xMi42LTZ2MWgtMnYtMWguMnoiLz48L3N2Zz4=)
+
+
+
+
+
+
+
 ## Table of Contents
 - [Features](#features)
 - [Installation](#installation)
