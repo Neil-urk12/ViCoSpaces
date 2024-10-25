@@ -1,37 +1,34 @@
 <script setup>
-import visible from '@/assets/images/SVG/eye-open-svgrepo-com.svg';
-import invisible from '@/assets/images/SVG/eye-closed-svgrepo-com.svg';
-import { computed, ref } from 'vue';
+import visible from '@/assets/images/SVG/eye-open-svgrepo-com.svg'
+import invisible from '@/assets/images/SVG/eye-closed-svgrepo-com.svg'
+import { computed, ref } from 'vue'
 
-const emit = defineEmits(['close-room', 'create', 'close']);
-const props = defineProps({ isVisible: Boolean });
+const emit = defineEmits(['close-room', 'create', 'close'])
+const props = defineProps({ isVisible: Boolean })
 
-const roomName = ref('');
-const privacyType = ref('public');
-const password = ref('');
-const confirmPassword = ref('');
-const roomCapacity = ref(1);
-const category = ref('');
-const showPassword = ref(false);
-const showConfirmPassword = ref(false); // Separate variable for confirm password
+const roomName = ref('')
+const privacyType = ref('public')
+const password = ref('')
+const confirmPassword = ref('')
+const roomCapacity = ref(1)
+const category = ref('')
+const showPassword = ref(false)
+const showConfirmPassword = ref(false)
 const isPrivate = computed(() => privacyType.value === 'private');
 
 const handleSubmit = () => {
-  if (privacyType.value === 'private' && password.value !== confirmPassword.value) {
-    console.error('Passwords do not match');
-    return;
-  }
-  
+  if (privacyType.value === 'private' && password.value !== confirmPassword.value) 
+   return console.error('Passwords do not match');
+  if (roomName.value.trim() === '') return console.error('Room name cannot be empty')
   emit('create', {
     name: roomName.value,
     privacyType: privacyType.value,
     capacity: roomCapacity.value,
     category: category.value,
     password: privacyType.value === 'private' ? password.value : null
-  });
-  
-  emit('close');
-};
+  })
+  emit('close')
+}
 
 const togglePasswordVisibility = () => showPassword.value = !showPassword.value;
 console.log(props);
@@ -65,6 +62,7 @@ console.log(props);
               class="input-room-name"
               type="text"
               placeholder="Room Name"
+              minlength="3"
               maxlength="30"
               required
             >

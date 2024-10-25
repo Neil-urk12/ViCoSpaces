@@ -1206,6 +1206,7 @@ const downloadCanvasAsImage = () => {
   .tool-btn {
     background: linear-gradient(145deg, #1a1a4a, #0d0d2a);
     border: 1px solid #2d2d6e;
+    color: white;
     border-radius: 0.375rem;
     padding: 0.5rem;
     cursor: pointer;

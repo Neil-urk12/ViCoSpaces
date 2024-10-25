@@ -1,15 +1,11 @@
 <script setup>
-import { RouterLink, useRouter } from 'vue-router';
+import { RouterLink } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore'
 import LandingPageModal from '@/components/LandingPageModal.vue';
 import { ref } from 'vue'
 const authStore = useAuthStore();
 const isAuthenticated = authStore.isAuthenticated;
 const showModal = ref(false)
-const router = useRouter();
-const goToRegister = () => {
-    router.push('/register')
-  }
 </script>
 
 <template>
@@ -113,7 +109,7 @@ const goToRegister = () => {
             <div class="r-con">
               <button
                 class="btn"
-                @click="goToRegister"
+                @click="router.push('/register')"
               >
                 <svg
                   width="180px"

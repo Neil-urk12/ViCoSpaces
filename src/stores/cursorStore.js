@@ -5,7 +5,7 @@ import { useAuthStore } from '@/stores/authStore'
 
 export const useCursorStore = defineStore('cursor', {                                                          
   state: () => ({                                                                                              
-    localCursor: { x: 0, y: 0, username: '' },                                                                 
+    localCursor: { x: 0, y: 0, username: '', timestamp: Date.now() },                                                               
     otherCursors: {},                                                                                          
     userId: null,                                                                                              
     roomId: null,                                                                   
@@ -66,7 +66,7 @@ export const useCursorStore = defineStore('cursor', {
         const x = event.clientX - rect.left + offsetX;                                                         
         const y = event.clientY - rect.top + offsetY;                                        
 
-        this.localCursor = { x, y, username: this.currentUserName };                                           
+        this.localCursor = { x, y, username: this.currentUserName, timestamp: Date.now() };                                           
         this.updateFirebaseCursor(x, y);                                                                       
       }                                                                                                       
     },                                                                                                         
@@ -93,6 +93,27 @@ export const useCursorStore = defineStore('cursor', {
       const cursorsRef = dbRef(db, `rooms/${this.roomId}/cursors`);                                            
       off(cursorsRef);                                                                                         
       set(dbRef(db, `rooms/${this.roomId}/cursors/${this.userId}`), null);                                     
-    },                                                                                                         
+    },    
+    removeInactiveCursors() {                                                                                    
+      const now = Date.now();                                                                                    
+      const twoMinutesAgo = now - 2 * 60 * 1000;                                                                 
+                                                                                                                 
+      Object.keys(this.otherCursors).forEach(userId => {                                                         
+        const cursor = this.otherCursors[userId];                                                                
+        if (cursor.timestamp < twoMinutesAgo) {                                                                  
+          delete this.otherCursors[userId];                                                                      
+          set(dbRef(db, `rooms/${this.roomId}/cursors/${userId}`), null);                                        
+        }                                                                                                        
+      });                                                                                                        
+    },                                                                                                                                                                                                                
+    startInactiveCursorCheck() {                                                                                 
+      this.inactiveCursorCheckInterval = setInterval(() => {                                                     
+        this.removeInactiveCursors();                                                                            
+      }, 60 * 1000);                                                                      
+    },                                                                                                           
+                                                                                                                 
+    stopInactiveCursorCheck() {                                                                                  
+      clearInterval(this.inactiveCursorCheckInterval);                                                           
+    },                                                                                                          
   },                                                                                                           
 });

@@ -3,10 +3,10 @@
     class="modal-content"
   >
     <nav class="space-nav">
-      <RouterLink to="/signup">
+      <RouterLink to="/register">
         Sign Up
       </RouterLink>
-      <RouterLink to="/signin">
+      <RouterLink to="/login">
         Sign In
       </RouterLink>
       <RouterLink to="/about">

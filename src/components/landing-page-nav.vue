@@ -15,7 +15,6 @@
 <style scoped>
     * {
       text-decoration: none;
-      font-family: Arial, Helvetica, sans-serif;
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -37,5 +36,4 @@
       color: white;
       width: 100%;
     }
-    
 </style>
