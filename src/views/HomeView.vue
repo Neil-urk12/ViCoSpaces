@@ -211,8 +211,8 @@ const logout = async () => {
             <ul class="pages-container">
               <ul class="pages-container">
                 <li>
-                  <RouterLink to="/home">
-                    Home
+                  <RouterLink to="/roadmap">
+                    Road Map
                   </RouterLink>
                 </li>
                 <li>
@@ -512,7 +512,7 @@ const logout = async () => {
     padding: 0;
     box-sizing: border-box;
   }
-  body::before {
+  .stars::before {
     content: '';
     position: absolute;
     top: 0;

@@ -46,7 +46,7 @@ const goToRegister = () => {
               to="/roadmap"
               class="nav-link"
             >
-              Star Map
+              Road Map
             </RouterLink>
             <RouterLink
               to="/about"
