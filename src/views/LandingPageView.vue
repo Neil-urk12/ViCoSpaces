@@ -14,161 +14,163 @@ const goToRegister = () => {
 
 <template>
   <div class="background">
-    <div class="bg">
+    <div class="star-bg">
       <div id="stars" />
       <div id="stars2" />
       <div id="stars3" />
       <div id="stars4" />
     </div>
-    <header class="header">
-      <nav class="nav">
-        <div class="logo">
-          <div class="logo-placeholder">
-            <img
-              class="vico-logo"
-              src="../assets/images/logo/Logo.png"
-              alt=""
-              width="200"
-            >
+    <div class="all-content">
+      <header class="header">
+        <nav class="nav">
+          <div class="logo">
+            <div class="logo-placeholder">
+              <img
+                class="vico-logo"
+                src="../assets/images/logo/Logo.png"
+                alt=""
+                width="200"
+              >
+            </div>
+            <span class="logo-text" />
           </div>
-          <span class="logo-text" />
+          <button
+            class="menu-toggle"
+            aria-label="Toggle menu"
+            @click="showModal = !showModal"
+          >
+            ☰
+          </button>
+          <div :class="['nav-links', { 'is-open': menuOpen }]">
+            <RouterLink
+              to="/roadmap"
+              class="nav-link"
+            >
+              Star Map
+            </RouterLink>
+            <RouterLink
+              to="/about"
+              class="nav-link"
+            >
+              Our Mission
+            </RouterLink>
+            <RouterLink
+              v-if="!isAuthenticated"
+              to="/login"
+              class="nav-link login-link"
+            >
+              Sign In
+            </RouterLink>
+            <RouterLink
+              v-if="!isAuthenticated"
+              to="/register"
+              class="nav-link cta-button"
+            >
+              Sign Up
+            </RouterLink>
+          </div>
+        </nav>
+      </header>
+      <main class="main">
+        <div class="main-content">
+          <h1 class="title">
+            <span>ViCo</span>Spaces
+          </h1>
+          <p class="description">
+            "A collaborative virtual workspace, built to enhance productivity for collaborators through seamless collaboration."
+          </p>
+          <div class="features">
+            <div class="feature one">
+              <div class="feature-icon">
+                👨‍🚀
+              </div>
+              <h3>Virtual Offices</h3>
+              <p>Customizable spaces for your team</p>
+            </div>
+            <div class="feature two">
+              <div class="feature-icon">
+                💬
+              </div>
+              <h3>Real-time Chat</h3>
+              <p>Instant communication across the cosmos</p>
+            </div>
+            <div class="feature three">
+              <div class="feature-icon">
+                ✅
+              </div>
+              <h3>Task Management</h3>
+              <p>Organize your mission with ease</p>
+            </div>
+            <div class="feature four">
+              <div class="feature-icon">
+                📊
+              </div>
+              <h3>Analytics</h3>
+              <p>Track your team's progress</p>
+            </div>
+          </div>
+          <div class="signin-info">
+            <div class="r-con">
+              <button
+                class="btn"
+                @click="goToRegister"
+              >
+                <svg
+                  width="180px"
+                  height="60px"
+                  viewBox="0 0 180 60"
+                  class="border"
+                >
+                  <polyline
+                    points="179,1 179,59 1,59 1,1 179,1"
+                    class="bg-line"
+                  />
+                  <polyline
+                    points="179,1 179,59 1,59 1,1 179,1"
+                    class="hl-line"
+                  />
+                </svg>
+                <span
+                  v-if="!isAuthenticated"
+                  class="sj"
+                >
+                  Start Your Journey
+                </span>
+                <span
+                  v-else
+                  class="sj"
+                >
+                  Hyperdrive to Savepointer
+                </span>
+              </button>
+            </div>
+            
+            <p class="cta-subtext">
+              Free Forever.
+            </p>     
+          </div>
         </div>
-        <button
-          class="menu-toggle"
-          aria-label="Toggle menu"
-          @click="showModal = !showModal"
-        >
-          ☰
-        </button>
-        <div :class="['nav-links', { 'is-open': menuOpen }]">
-          <RouterLink
-            to="/roadmap"
-            class="nav-link"
-          >
-            Star Map
+      </main>
+      <footer class="footer">
+        <div class="footer-links">
+          <RouterLink to="/about">
+            About Us
           </RouterLink>
-          <RouterLink
-            to="/about"
-            class="nav-link"
-          >
-            Our Mission
+          <RouterLink to="/contact">
+            Contact
           </RouterLink>
-          <RouterLink
-            v-if="!isAuthenticated"
-            to="/login"
-            class="nav-link login-link"
-          >
-            Sign In
+          <RouterLink to="/privacy">
+            Privacy Policy
           </RouterLink>
-          <RouterLink
-            v-if="!isAuthenticated"
-            to="/register"
-            class="nav-link cta-button"
-          >
-            Sign Up
+          <RouterLink to="/terms">
+            Terms of Service
           </RouterLink>
         </div>
-      </nav>
-    </header>
-    <main class="main">
-      <div class="main-content">
-        <h1 class="title">
-          <span>ViCo</span>Spaces
-        </h1>
-        <p class="description">
-          "A collaborative virtual workspace, built to enhance productivity for collaborators through seamless collaboration."
+        <p class="copyright">
+          &copy; 2024 ViCo. All rights reserved.
         </p>
-        <div class="features">
-          <div class="feature one">
-            <div class="feature-icon">
-              👨‍🚀
-            </div>
-            <h3>Virtual Offices</h3>
-            <p>Customizable spaces for your team</p>
-          </div>
-          <div class="feature two">
-            <div class="feature-icon">
-              💬
-            </div>
-            <h3>Real-time Chat</h3>
-            <p>Instant communication across the cosmos</p>
-          </div>
-          <div class="feature three">
-            <div class="feature-icon">
-              ✅
-            </div>
-            <h3>Task Management</h3>
-            <p>Organize your mission with ease</p>
-          </div>
-          <div class="feature four">
-            <div class="feature-icon">
-              📊
-            </div>
-            <h3>Analytics</h3>
-            <p>Track your team's progress</p>
-          </div>
-        </div>
-        <div class="signin-info">
-          <div class="r-con">
-            <button
-              class="btn"
-              @click="goToRegister"
-            >
-              <svg
-                width="180px"
-                height="60px"
-                viewBox="0 0 180 60"
-                class="border"
-              >
-                <polyline
-                  points="179,1 179,59 1,59 1,1 179,1"
-                  class="bg-line"
-                />
-                <polyline
-                  points="179,1 179,59 1,59 1,1 179,1"
-                  class="hl-line"
-                />
-              </svg>
-              <span
-                v-if="!isAuthenticated"
-                class="sj"
-              >
-                Start Your Journey
-              </span>
-              <span
-                v-else
-                class="sj"
-              >
-                Hyperdrive to Savepointer
-              </span>
-            </button>
-          </div>
-          
-          <p class="cta-subtext">
-            Free Forever.
-          </p>     
-        </div>
-      </div>
-    </main>
-    <footer class="footer">
-      <div class="footer-links">
-        <RouterLink to="/about">
-          About Us
-        </RouterLink>
-        <RouterLink to="/contact">
-          Contact
-        </RouterLink>
-        <RouterLink to="/privacy">
-          Privacy Policy
-        </RouterLink>
-        <RouterLink to="/terms">
-          Terms of Service
-        </RouterLink>
-      </div>
-      <p class="copyright">
-        &copy; 2024 ViCo. All rights reserved.
-      </p>
-    </footer>
+      </footer>
+    </div>
   </div>
   <LandingPageModal v-show="showModal" />
 </template>
@@ -202,12 +204,23 @@ a {
   text-decoration: none;
   cursor: pointer;
 }
+p{
+  cursor: default;
+}
 .background {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   min-height: 100vh;
   background-color: #0a192f;
+}
+.star-bg{
+  position: fixed;
+  z-index: 0;
+}
+.all-content{
+  position: relative;
+  z-index: 10;
 }
 .container {
   width: 100%;
@@ -325,9 +338,6 @@ a {
   margin: 0;
   padding: 0
 }
-.feature{
-  width: 100% ;
-}
 .features .feature {
   padding: 20px;
   background-color: whitesmoke;
@@ -376,7 +386,6 @@ a {
   justify-content: center;
   gap: 20px;
   margin-top: 4%
-
 }
 .btn {
   position: relative;
@@ -446,6 +455,9 @@ svg {
   .menu-toggle {
     display: block;
   }
+  .header{
+    background-color: #0a192f;
+  }
   .nav-links {
     display: none;
     position: absolute;
@@ -490,6 +502,21 @@ svg {
   left: 0;
   width: 100%;
   height: 100%;
+}
+@media(max-width: 567px){
+  .features {
+    gap: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  .one {
+    width: 100%;
+  }
 }
 @media (max-width: 375px){
   .header {

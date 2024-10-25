@@ -209,7 +209,8 @@ header {
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  background-color: #2d8eff;
+  background-color: #2e2e2e70;
+  border: solid 1px white;
   color: white;
   z-index: 1000;
   width: 400px;
@@ -227,7 +228,7 @@ button {
 }
 .close-btn {
   width: 40px;
-  background-color: #2d8eff;
+  background: transparent;
   border: none;
 }
 .close-btn img {

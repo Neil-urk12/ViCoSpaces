@@ -12,14 +12,12 @@ const privacyFilter = ref('all');
 const categoryFilter = ref('all');
 
 const roomStore = useRoomStore();
-
 const props = defineProps({
   availableCategories: {
     type: Array,
     default: () => [],
   },
 });
-
 const applyFilters = () => {
   emit('filterChange', {
     searchQuery: searchQuery.value,
@@ -29,9 +27,6 @@ const applyFilters = () => {
     categoryFilter: categoryFilter.value,
   });
 };
-
-
-// Whenever a filter changes, call applyFilters
 watch([searchQuery, sortBy, sortOrder, privacyFilter, categoryFilter], applyFilters);
 
 const closeModal = () => {
@@ -40,7 +35,6 @@ const closeModal = () => {
 </script>
 
 <template>
-  <!-- Modal Content -->
   <div
     class="modal-overlay"
     @click.self="closeModal"
@@ -103,9 +97,6 @@ const closeModal = () => {
     </div>
   </div>
 </template>
-  
-  
-  
   <style scoped>
   .modal-overlay {
     position: fixed;
@@ -118,28 +109,25 @@ const closeModal = () => {
     align-items: center;
     z-index: 10;
   }
-  
   .modal-content {
     position: absolute;
     right: 24%;
-    top: 13%;
+    top: 14%;
     display: flex;
     flex-direction: column;
-    background-color: white;
+    background-color: #2e2e2e70;
     border-radius: 12px;
-    border: solid 1px #2d8eff;
+    border: solid 1px #ffffff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     width: 250px;
     padding: 20px;
-    gap: 15px; /* Add spacing between elements */
+    gap: 15px;
   }
-  
   .filters {
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
-  
   select {
     background-color: #f5f5f5;
     border: none;
@@ -150,59 +138,52 @@ const closeModal = () => {
     cursor: pointer;
     transition: background-color 0.3s, box-shadow 0.3s;
   }
-  
   select:focus {
     background-color: #eaeaea;
     box-shadow: 0 0 0 2px #2d8eff;
     outline: none;
   }
-  
   select:hover {
     background-color: #e0e0e0;
   }
-  
   .sortby-filter, .privacy-filter, .category-filter {
     display: flex;
     flex-direction: column;
   }
-  
   .wrapper {
     padding: 10px 0;
   }
-  
   .option {
     padding: 8px;
   }
+  @media (max-width: 1339px ) {
+    .modal-content {
+      right: 26%;
+      top: 13%;
+    }
+  }
+  @media(max-width: 663px){
+    .modal-content {
+      right: 32%;
+      top: 13%;
+    }
+  }
+  @media (max-width: 504px) {
+    .modal-content {
+      right: 27%;
+      top: 11%;
+    }
+  }
   @media (max-width: 414px) {
     .modal-content {
-      position: absolute;
       right: 22%;
       top: 14%;
-      display: flex;
-      flex-direction: column;
-      background-color: white;
-      border-radius: 12px;
-      border: solid 1px #2d8eff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      width: 250px;
-      padding: 20px;
-      gap: 15px;
     }
   }
   @media (max-width: 375px) {
     .modal-content {
-      position: absolute;
       right: 17%;
-      top: 18%;
-      display: flex;
-      flex-direction: column;
-      background-color: white;
-      border-radius: 12px;
-      border: solid 1px #2d8eff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      width: 250px;
-      padding: 20px;
-      gap: 15px;
+      top: 19%;
     }
   }
   </style>
