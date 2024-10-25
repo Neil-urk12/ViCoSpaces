@@ -21,7 +21,72 @@ const chatStore = useChatStore()
 const route = useRoute()                                                                                 
 
 const userId = computed(() => authStore.getUid)                                                            
-const username = computed(() => authStore.getDisplayName)    
+const username = computed(() => authStore.getDisplayName)   
+async function runTransaction(ref, transactionUpdate) {                                                        
+   let currentData;                                                                                             
+   let newData;                                                                                                 
+                                                                                                                
+   do {                                                                                                         
+     const snapshot = await get(ref);                                                                           
+     currentData = snapshot.exists() ? snapshot.val() : null;                                                   
+     newData = transactionUpdate(currentData);                                                                  
+   } while (!await set(ref, newData));                                                                          
+                                                                                                                
+   return newData;                                                                                              
+ } 
+async function handleBeforeUnload() {                                                                          
+   try {                                                                                                        
+     const roomId = route.params.id;                                                                            
+     const userId = authStore.getUid;                                                                                                                
+     await runTransaction(ref(db, `rooms/${roomId}`), (room) => {                                               
+       if (room) {                                                                                              
+         room.currentUsers = Math.max(0, room.currentUsers - 1);                                                
+         delete room.users[userId];                                                                             
+       }                                                                                                        
+       return room;                                                                                             
+     });                                                                                                        
+   } catch (error) {                                                                                            
+     console.error('Error updating room data on beforeunload:', error);                                         
+   }                                                                                                            
+ }                                                                                                              
+  
+onMounted(async () => {                                                                                   
+  cursorStore.setUserId(userId.value)                                                                         
+  cursorStore.setRoomId(route.params.id) 
+  window.addEventListener('resize', resizeCanvas);                                               
+                                                                                                               
+  const userCursorRef = dbRef(db, `rooms/${route.params.id}/cursors/${userId.value}`)                         
+  const userCursorSnapshot = await get(userCursorRef);                                                         
+  if (userCursorSnapshot.exists()) cursorStore.localCursor = userCursorSnapshot.val()
+  else cursorStore.localCursor = { x: 0, y: 0, username: username.value };
+
+  onValue(dbRef(db, `rooms/${route.params.id}/cursors`), (snapshot) => {                                       
+    const data = snapshot.val() || {};                                                                         
+    cursorStore.otherCursors = Object.entries(data).reduce((acc, [key, value]) => {                            
+      if (key !== userId.value)                                                                               
+        acc[key] = value;                                                                                                                                                                             
+      return acc;                                                                                              
+    }, {})                                                                                                    
+  })    
+  
+  handleSingleReload();
+  await initializeCanvas()
+  
+  canvas.on('object:modified', () => saveCanvasToDatabase(canvas, route.params.id));                             
+  canvas.on('object:added', () => saveCanvasToDatabase(canvas, route.params.id));                                
+  canvas.on('object:removed', () => saveCanvasToDatabase(canvas, route.params.id)); 
+  cursorStore.startInactiveCursorCheck();  
+  window.addEventListener('beforeunload', handleBeforeUnload);                                                                                                                                                                                                                                                                     
+})        
+
+onUnmounted(() => {                                                                                            
+  cursorStore.unsubscribeCursors()  
+  chatStore.unsubscribeMessages()    
+  saveCanvasToDatabase(canvas, route.params.id);  
+  cursorStore.stopInactiveCursorCheck();  
+  window.removeEventListener('beforeunload', handleBeforeUnload);                                                                   
+})  
+
 let debounceTimeout;
 
 function handleSingleReload() {
@@ -43,7 +108,8 @@ function handleSingleReload() {
    debounceTimeout = setTimeout(async () => {                                                                   
      try {                                                                                                      
        const currentCanvasObjects = canvas.getObjects().map((obj) => {                                          
-         return {                                                                                               
+         return {
+          id: obj.id || Math.random().toString(36).substr(2, 9),
           type: obj.type,                                                                                      
           left: obj.left,                                                                                      
           top: obj.top,                                                                                        
@@ -57,6 +123,10 @@ function handleSingleReload() {
           height: obj.height, 
           flipX: obj.flipX,
           flipY: obj.flipY,
+          text: obj.text || '',
+          fontSize: obj.fontSize || 20,
+          path: obj.path || '',
+          src: obj.src || ''                                                                                               
          }                                                                                                      
        })    
                                                                                                                                                                                                                 
@@ -64,18 +134,14 @@ function handleSingleReload() {
        const canvasSnapshot = await get(canvasRef);                                                             
        const previousCanvasObjects = canvasSnapshot.exists() ? canvasSnapshot.val() : [];                       
                                                                                                                 
-       const diff = currentCanvasObjects.filter((obj, index) => {                                               
-         return JSON.stringify(obj) !== JSON.stringify(previousCanvasObjects[index]);                           
+       const diff = currentCanvasObjects.filter((obj, index) => {                                 
+        return JSON.stringify(obj) !== JSON.stringify(previousCanvasObjects[index]);                           
        });                                                                                                      
-                                               
-       const filteredObjects = currentCanvasObjects.filter(obj => !obj.isGrid);
-       await set(dbRef(db, `rooms/${roomId}/canvas`), {
-        objects: filteredObjects,
-        timestamp: Date.now(),
-      });
-
-       if (diff.length > 0) {                                                                                   
-         await set(canvasRef, diff);                                                                            
+        if (diff.length > 0) {                                                                                   
+        await set(canvasRef, {
+          objects: diff,
+          timestamp: Date.now(),
+        });                                                                          
          console.log('Canvas elements saved to the database successfully');                                     
        }                                                                                                        
      } catch (error) {                                                                                          
@@ -109,10 +175,8 @@ function throttle(func, limit) {
 }
 
 const renderCanvasFromDatabase = async (canvas, roomId) => {
-  if (!canvas || !roomId) {
-    console.error('Canvas or roomId is missing');
-    return;
-  }
+  if (!canvas || !roomId) 
+   return console.error('Canvas or roomId is missing')
 
   let isUpdating = false;
   let lastUpdateTimestamp = 0;
@@ -120,7 +184,6 @@ const renderCanvasFromDatabase = async (canvas, roomId) => {
   try {
     const canvasRef = dbRef(db, `rooms/${roomId}/canvas`);
 
-    // Fetch initial data to render shapes on load
     const snapshot = await get(dbRef(db, `rooms/${roomId}/canvas`));
     if (snapshot.exists()) {
       const data = snapshot.val();
@@ -129,41 +192,31 @@ const renderCanvasFromDatabase = async (canvas, roomId) => {
       }
     }
 
-    // Throttle the update process to limit redraws
     const throttledUpdate = throttle(async (snapshot) => {
+      if (isUpdating) return;
+      isUpdating = true;
       if (!snapshot.exists()) return;
 
       const data = snapshot.val();
       if (!data.objects || !Array.isArray(data.objects)) return;
 
-      // Check for new updates
       if (data.timestamp <= lastUpdateTimestamp) return;
       lastUpdateTimestamp = data.timestamp;
 
-      // Prevent multiple simultaneous updates
-      if (isUpdating) return;
-      isUpdating = true;
-
-      // Get the currently selected object
       const activeObject = canvas.getActiveObject();
       const activeObjectId = activeObject ? activeObject.id : null;
 
-      // Clear existing objects except the grid
       const existingObjects = canvas.getObjects().filter(obj => !obj.isGrid);
       existingObjects.forEach(obj => canvas.remove(obj));
-
-      // Add objects from the database
       loadObjectsToCanvas(canvas, data.objects, activeObjectId);
 
       canvas.renderAll();
       isUpdating = false;
 
-    }, 100)
+    })
 
-    // Bind throttled function to the database value changes
     onValue(canvasRef, throttledUpdate);
 
-    // Add canvas event listeners
     addCanvasEventListeners(canvas, roomId);
 
   } catch (error) {
@@ -241,23 +294,19 @@ async function createFabricObject(objData) {
   }
 }
 
-// Add event listeners for object modifications
 function addCanvasEventListeners(canvas, roomId) {
-  const saveToDatabase = debounce(() => saveCanvasToDatabase(canvas, roomId), 300);
-
-  canvas.on('object:modified', saveToDatabase);
-  canvas.on('object:moving', saveToDatabase);
+  const saveToDatabase = debounce(() => saveCanvasToDatabase(canvas, roomId), 300)
+  canvas.on('object:modified', saveToDatabase)
+  canvas.on('object:moving', saveToDatabase)
 }
 
-// Utility debounce function
 function debounce(func, wait) {
-  let timeout;
+  let timeout
   return function(...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  };
+    clearTimeout(timeout)
+    timeout = setTimeout(() => func(...args), wait)
+  }
 }
-
 
 const initializeCanvas = async () => {
   canvas = new fabric.Canvas(canvasEl.value);
@@ -297,45 +346,13 @@ const initializeCanvas = async () => {
   });
 };
  
-onMounted(async () => {                                                                                   
-  cursorStore.setUserId(userId.value)                                                                         
-  cursorStore.setRoomId(route.params.id) 
-  window.addEventListener('resize', resizeCanvas);                                               
-                                                                                                               
-  const userCursorRef = dbRef(db, `rooms/${route.params.id}/cursors/${userId.value}`)                         
-  const userCursorSnapshot = await get(userCursorRef);                                                         
-  if (userCursorSnapshot.exists()) cursorStore.localCursor = userCursorSnapshot.val()
-  else cursorStore.localCursor = { x: 0, y: 0, username: username.value };
-
-  onValue(dbRef(db, `rooms/${route.params.id}/cursors`), (snapshot) => {                                       
-    const data = snapshot.val() || {};                                                                         
-    cursorStore.otherCursors = Object.entries(data).reduce((acc, [key, value]) => {                            
-      if (key !== userId.value)                                                                               
-        acc[key] = value;                                                                                                                                                                             
-      return acc;                                                                                              
-    }, {})                                                                                                    
-  })    
-  handleSingleReload();
-  await initializeCanvas()
-  canvas.on('object:modified', () => saveCanvasToDatabase(canvas, route.params.id));                             
-  canvas.on('object:added', () => saveCanvasToDatabase(canvas, route.params.id));                                
-  canvas.on('object:removed', () => saveCanvasToDatabase(canvas, route.params.id));                                                                                                                                                                                                                                                                      
-})        
-
-onUnmounted(() => {                                                                                            
-  cursorStore.unsubscribeCursors()  
-  chatStore.unsubscribeMessages()    
-  saveCanvasToDatabase(canvas, route.params.id);                                                                     
-})  
-
 const canvasEl = ref(null);
 let canvas = null;
 const isDrawingMode = ref(false);
 const selectedColor = ref('#000000');
 const brushThickness = ref(5);
-const selectedBrush = ref('pencil'); onMounted( async() => { 
-  
-})
+const selectedBrush = ref('pencil'); 
+
 const showBrushOptions = ref(false);
 const gridSize = 20;
 
@@ -1177,7 +1194,6 @@ const downloadCanvasAsImage = () => {
     display: flex;
     flex-direction: column;
     height: 100%;
-    background-color: #f8fafc;
     position: relative;
     flex: 1;
   }
