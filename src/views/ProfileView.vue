@@ -57,7 +57,11 @@ const goToHome = () => {
         class="home-button"
         @click="goToHome"
       >
-        Return to Home
+        <img
+          src="../assets/images/SVG/home-svgrepo-com-white.svg"
+          alt=""
+          width="40"
+        >
       </button>
       <h1>Space Explorer Profile</h1>
       
@@ -122,14 +126,22 @@ const goToHome = () => {
             placeholder="Tell us about your cosmic journey..."
           />
         </div>
-
-        <button
-          type="submit"
-          :disabled="isSaving"
-          class="save-button"
-        >
-          {{ isSaving ? 'Saving...' : 'Save Profile' }}
-        </button>
+        <div class="profile-btn">
+          <button
+            type="submit"
+            :disabled="isSaving"
+            class="save-button"
+          >
+            {{ isSaving ? 'Saving...' : 'Save Profile' }}
+          </button>
+          <button
+            class="mobile-home"
+            @click="goToHome"
+          >
+            Return Home
+          </button>
+        </div>
+        
 
         <div
           v-if="saveSuccess"
@@ -177,6 +189,25 @@ const goToHome = () => {
   padding: 30px;
   border-radius: 16px;
   backdrop-filter: blur(10px);
+}
+.home-button{
+  position: absolute;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  width: 10%;
+  left: -5px;
+  top: 3%;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: block;
+  margin: 0 auto;
+}
+.home-button:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
 }
 .image-upload-group {
   display: flex;
@@ -287,6 +318,11 @@ input[type="checkbox"] {
   height: 18px;
   cursor: pointer;
 }
+.profile-btn{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 .save-button {
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   color: white;
@@ -307,6 +343,19 @@ input[type="checkbox"] {
 .save-button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+.mobile-home {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  padding: 12px 30px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: none;
+  margin: 0 auto;
 }
 .success-message {
   margin-top: 16px;
@@ -360,6 +409,15 @@ select:invalid {
   .image-upload-container {
     width: 120px;
     height: 120px;
+  }
+}
+@media (max-width: 508px) {
+  .home-button{
+    display: none;
+  }
+  .mobile-home{
+    display: block;
+    margin: 0;
   }
 }
 </style>

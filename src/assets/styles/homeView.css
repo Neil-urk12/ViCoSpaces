@@ -168,7 +168,7 @@ p{cursor: default}
   width: 100%;
 }
 .room-join-wrapper button{
-    background-color: #2d8eff;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
     color: white;
     border: solid 1px rgb(208, 208, 208);
     border-radius: 12px;

@@ -396,11 +396,13 @@ p{
   border: 1px solid #91C9FF;
   outline: none;
   transition: 1s ease-in-out;
+  font-family: "Saira", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
 }
 .register-bottom {
   color: white;
   text-decoration: none;
-  z-index: 999;
 }
 .cta-subtext{
   color: white;
