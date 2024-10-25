@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import { authnow, googleprovider } from '@/firebase/firebaseconfig';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged,              
-  signInWithPopup, sendPasswordResetEmail } from 'firebase/auth';   
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, signInWithPopup, sendPasswordResetEmail } from 'firebase/auth';   
 import validator from 'validator';
 
 export const useAuthStore = defineStore('auth', {

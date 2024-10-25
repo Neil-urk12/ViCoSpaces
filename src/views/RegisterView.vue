@@ -1,59 +1,40 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { signInWithPopup,  } from 'firebase/auth';
-import { authnow , googleprovider } from '@/firebase/firebaseconfig';
+import { signInWithPopup } from 'firebase/auth';
+import { authnow, googleprovider } from '@/firebase/firebaseconfig';
 import { useAuthStore } from '@/stores/authStore'
-
-const showpass = () => {                                                                                       
-   if (document.querySelector('#password').type === 'password') {                                               
-     document.querySelector('#password').type = 'text'                                                         
-     document.querySelector('#hidepass').style.display = 'none'                                                
-     document.querySelector('#showpass').style.display = 'block'                                               
-   }                                                                                                            
- }                                                                                                         
-                                                                                                                
- const hidepass = () => {                                                                                       
-   if (document.querySelector('#password').type === 'text') {                                                   
-     document.querySelector('#password').type = 'password'                                                     
-     document.querySelector('#hidepass').style.display = 'block'                                               
-     document.querySelector('#showpass').style.display = 'none'                                                
-   }                                                                                                            
- }
 
 const email = ref('')
 const password = ref('')
+const showPassword = ref(false) // Reactive variable for password visibility
 const router = useRouter()
 const errorMessage = ref()
 const authStore = useAuthStore()
 
-if(authStore.isAuthenticated) router.push('/home')
+if (authStore.isAuthenticated) router.push('/home')
+
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value
+}
 
 const register = async () => {
   try {
     await authStore.register({ email: email.value, password: password.value });
     router.push('/home')
   } catch (error) {
-    switch(error.code){
+    switch (error.code) {
       case 'auth/invalid-email':
         errorMessage.value = 'Complete all details'
-        document.querySelector("#password").style.border = "2px solid red";
-        document.querySelector("#email").style.border = "2px solid red";
         break
       case 'auth/missing-password':
         errorMessage.value = 'Missing password'
-        document.querySelector("#password").style.border = "2px solid red";
-        document.querySelector("#email").style.border = "2px solid #4a90e2";
         break
       case 'auth/missing-email':
         errorMessage.value = 'Missing email'
-        document.querySelector("#password").style.border = "2px solid #4a90e2";
-        document.querySelector("#email").style.border = "2px solid red";
         break
       case 'auth/email-already-in-use':
         errorMessage.value = 'Email is already in use'
-        document.querySelector("#password").style.border = "2px solid red";
-        document.querySelector("#email").style.border = "2px solid red";
         break
       default:
         alert('Please check your network')
@@ -64,19 +45,18 @@ const register = async () => {
 }
 
 const signInWithGoogle = async () => {
-      try {
-          const confidential = await  signInWithPopup(authnow , googleprovider)
-          if(confidential) {
-            const user = confidential.user
-            console.log(`user: ${user}`)
-            router.push('/home');
-          } 
-      } catch (error) {
-          console.error(error)
-      }
+  try {
+    const confidential = await signInWithPopup(authnow, googleprovider)
+    if (confidential) {
+      const user = confidential.user
+      console.log(`user: ${user}`)
+      router.push('/home');
+    }
+  } catch (error) {
+    console.error(error)
+  }
 }
 </script>
-
 <template>
   <div class="container">
     <div class="stars" />
@@ -94,29 +74,23 @@ const signInWithGoogle = async () => {
             >
           </div>
 
-          <div class="input-group">                                                                            
-            <label for="password">Password</label>                                                             
-            <div class="password-input">                                                                       
-              <input                                                                                           
-                id="password"                                                                                  
-                v-model="password"                                                                             
-                type="password"                                                                                
-                placeholder="Enter password"                                                                   
-              >                                                                                                
-              <div class="password-toggle">                                                                    
-                <i                                                                                             
-                  id="hidepass"                                                                                
-                  class="fa-solid fa-eye-slash"                                                                
-                  @click="showpass"                                                                            
-                />                                                                                             
-                <i                                                                                             
-                  id="showpass"                                                                                
-                  class="fa-solid fa-eye"                                                                      
-                  @click="hidepass"                                                                            
-                />                                                                                             
-              </div>                                                                                           
-            </div>                                                                                             
+          <div class="input-group">
+            <label for="password">Password</label>
+            <div class="password-input">
+              <input
+                id="password"
+                v-model="password"
+                :type="showPassword ? 'text' : 'password'"
+                placeholder="Enter password"
+              >
+              <div class="password-toggle" @click="togglePasswordVisibility">
+                <i
+                  :class="showPassword ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'"
+                />
+              </div>
+            </div>
           </div>
+
           <p
             v-if="errorMessage"
             class="error-message"
@@ -143,6 +117,7 @@ const signInWithGoogle = async () => {
             >
             Sign Up with Google
           </button>
+
           <button
             class="btn btn-Third"
             @click="signUpWithGithub"
