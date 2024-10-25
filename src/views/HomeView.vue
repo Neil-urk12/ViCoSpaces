@@ -234,7 +234,7 @@ const logout = async () => {
               @click="toggleDropdown"
             >
               <img
-                src="../assets/images/SVG/user-svgrepo-com.svg"
+                src="../assets/images/SVG/user-svgrepo-com-white.svg"
                 alt="User Profile"
                 width="30px"
               >
