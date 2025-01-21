@@ -12,7 +12,7 @@ import { ref as dbRef, off} from 'firebase/database';
 import { realTimeDb as database } from '../firebase/firebaseconfig.js'
 import { useRouter, RouterLink } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
-import { useRoomStore } from '../stores/roomStore'
+import { useRoomStore } from '../stores/roomStore.js'
 
 const showSideBarModal = ref(false)
 const router = useRouter()

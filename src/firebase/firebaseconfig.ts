@@ -18,5 +18,4 @@ const realTimeDb = getDatabase(app)
 const googleprovider = new GoogleAuthProvider()
 const githubProvider = new GithubAuthProvider()
 
-
-export { app, authnow, realTimeDb , googleprovider ,githubProvider }
+export { app, authnow, realTimeDb, googleprovider, githubProvider }

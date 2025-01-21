@@ -1,21 +1,38 @@
 import { defineStore } from 'pinia'
-import {realTimeDb as db } from '../firebase/firebaseconfig'
-import { ref, set, get, push, child, onValue, remove, runTransaction as firebaseRunTransaction } from 'firebase/database'
+// import {realTimeDb as db } from '../firebase/firebaseconfig'
+import { realTimeDb as db } from '../firebase/firebaseconfig'
+import { ref, set, get, push, child, onValue, remove, runTransaction as firebaseRunTransaction, DatabaseReference } from 'firebase/database'
+
+export interface Room {
+  id: string;
+  host: { id: string; name: string };
+  users: { [key: string]: { name: string; isHost: boolean } };
+  currentUsers: number;
+  createdAt: number;
+  privacyType?: 'public' | 'private';
+  password?: string;
+  capacity?: number;
+}
+
+export type TransactionUpdate = (currentData: any) => any
 
 export const useRoomStore = defineStore('rooms', {
   state: () => ({
-    rooms: []
+    rooms: [] as Room[]
   }),
   actions: {
     async fetchRooms() {
       const roomsRef = ref(db, 'rooms')
       onValue(roomsRef, (snapshot) => {
         const data = snapshot.val()
-        this.rooms = data ? Object.entries(data).map(([id, room]) => ({ id, ...room })) : []
+        this.rooms = data ? Object.entries(data).map(([id, room]) => {
+          const roomObj = room as { [key: string]: any }
+          return { id, ...roomObj } as Room
+        }) : []
       })
     },
 
-    async createRoom(roomData, userId, userEmail) {
+    async createRoom(roomData: any, userId: string, userEmail: string) {
       try {
         const newRoomRef = push(child(ref(db), 'rooms'))
         const roomId = newRoomRef.key
@@ -36,7 +53,7 @@ export const useRoomStore = defineStore('rooms', {
       }
     },
 
-    async joinRoom(roomId, userId, userEmail, password = null) {
+    async joinRoom(roomId: string, userId: string, userEmail: string, password = null) {
       try {
         const roomRef = ref(db, `rooms/${roomId}`)
         const snapshot = await get(roomRef)
@@ -45,20 +62,16 @@ export const useRoomStore = defineStore('rooms', {
           if (room.privacyType === 'private' && room.password !== password) 
             throw new Error('Incorrect password')
 
-          await runTransaction(roomRef, (room) => {                                                                
-            if (room) {                                                                                            
+          await runTransaction(roomRef, (room: Room) => {                                                                
+            if (room) {                             
+              if (!room.capacity) return
               if (room.currentUsers >= room.capacity) throw new Error('Room is full');                                                                   
-              if (!room.users)  room.users = {}                                                                                                                          
+              if (!room.users) room.users = {};
               room.currentUsers += 1;                                                                              
-              room.users[userId] = { name: userEmail };                                                            
+              room.users[userId] = { name: userEmail, isHost: false };
             }                                                                                                      
             return room;                                                                                           
           })  
-          // const updates = {
-          //   [`rooms/${roomId}/users/${userId}`]: { name: userEmail },
-          //   [`rooms/${roomId}/currentUsers`]: room.currentUsers + 1
-          // }
-          // await update(ref(db), updates)
         } else {
           throw new Error('Room not found')
         }
@@ -68,7 +81,7 @@ export const useRoomStore = defineStore('rooms', {
       }
     },
 
-    async deleteRoom(roomId) {
+    async deleteRoom(roomId: string) {
       try {
         const roomRef = ref(db, `rooms/${roomId}`)
         await remove(roomRef)
@@ -77,13 +90,12 @@ export const useRoomStore = defineStore('rooms', {
         throw error
       }
     },
-    async leaveRoom(roomId, userId) {                                                                              
+    async leaveRoom(roomId: string, userId: string) {                                                                              
       try {                                                                                                        
         const roomRef = ref(db, `rooms/${roomId}`);                                                                
         const snapshot = await get(roomRef);                                                                       
-        if (snapshot.exists()) {                                                                                                                                                         
-                                                                                                                                                       
-          await runTransaction(roomRef, (room) => {                                                                
+        if (snapshot.exists()) {                                                                                                                                 
+          await runTransaction(roomRef, (room: Room) => {                                                                
             if (room) {                                                                                            
               room.currentUsers = Math.max(0, room.currentUsers - 1);                                              
               delete room.users[userId];                                                                           
@@ -96,36 +108,9 @@ export const useRoomStore = defineStore('rooms', {
         throw error;                                                                                               
       }                                                                                                            
     }
-    // async leaveRoom(roomId, userId) {
-    //   try {
-    //     const roomRef = ref(db, `rooms/${roomId}`)
-    //     const snapshot = await get(roomRef)
-    //     if (snapshot.exists()) {
-    //       const room = snapshot.val()
-    //       const updates = {
-    //         [`rooms/${roomId}/currentUsers`]: Math.max(0, room.currentUsers - 1),
-    //         [`rooms/${roomId}/users/${userId}`]: null
-    //       }
-    //       await update(ref(db), updates)
-    //     }
-    //   } catch (error) {
-    //     console.error('Error leaving room:', error)
-    //     throw error
-    //   }
-    // }
   }
 })
-async function runTransaction(ref, transactionUpdate) {                                                        
-  // let currentData;                                                                                             
-  // let newData;                                                                                                 
-                                                                                                               
-  // do {                                                                                                         
-  //   const snapshot = await get(ref);                                                                           
-  //   currentData = snapshot.exists() ? snapshot.val() : null;                                                   
-  //   newData = transactionUpdate(currentData);                                                                  
-  // } while (!await set(ref, newData));                                                                          
-                                                                                                               
-  // return newData;   
+async function runTransaction(ref: DatabaseReference, transactionUpdate: TransactionUpdate) {                                                        
   return firebaseRunTransaction(ref, (currentData) => {                                                        
     if (currentData === null) {                                                                                
       return currentData                                       
